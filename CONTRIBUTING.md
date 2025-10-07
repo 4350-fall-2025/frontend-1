@@ -1,33 +1,43 @@
 # Intallation steps:
 
-### 1: clone the repository
+### 1: Clone the repository
 
 git clone https://github.com/4350-fall-2025/frontend-1
 
-### 2: install pnpm
+### 2: Install pnpm
+
+Pnpm requires Node.js, so if that is not installed maybe go ahead and install that first.
+
+Using homebrew (if you use mac):
 
 ```bash
 brew install pnpm
 ```
 
-### 3: install dev dependecies :
+Using npm:
+
+```bash
+npm install -g pnpm@latest-10
+```
+
+### 3: Install dev dependecies
 
 ```bash
 pnpm install
 ```
 
-### 4: setup Husky
+### 4: Setup Husky
 
-something something what husky does
+Husky runs pre-commit hooks and post-commit hooks, and ensures your code meets the standards.
 
 ```bash
 pnpm prepare
 ```
 
-### 5: install prettier
+### 5: Install prettier
 
 If your using VSCode, please install the prettier extension.
-Now go into your vsCode settings `Ctrl/Cmd + ,` , and turn on format on save.
+Now go into your vsCode settings `Ctrl/Cmd + ,` , and under `Text Editor -> Formatting`, turn on format on save.
 
 You can also format your code by running:
 
