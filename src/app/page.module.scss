@@ -1,0 +1,115 @@
+@import "globals.scss";
+
+.page {
+
+  h1 {
+    font-family: var(--font-tsukimi_rounded), var(--font-roboto), Arial;
+    text-align: center;
+    font-size: 2rem;
+  }
+
+  p {
+    font-family: var(--font-roboto), Arial;
+    font-size: $font-small;
+  }
+
+  a {
+    font-size: $font-small;
+    color: $color-blue;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.login_footer {
+  padding-top: 20px;
+}
+
+.tabs_panel {
+  padding-top: 20px;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.button_owner {
+  width: fit-content;
+  color: $color-black;
+  background-color: $color-green;
+
+  &:hover {
+    background-color: $color-green-button-hovered;
+    color: $color-white;
+  }
+}
+
+.button_vet {
+  width: fit-content;
+  color: $color-black;
+  background-color: $color-orange;
+
+  &:hover {
+    background-color: $color-orange-button-hovered;
+    color: $color-white;
+  }
+}
+
+@media (min-width: $size-mobile) {
+  .page {
+    overflow: visible;
+  }
+
+  .image_grid {
+    display: none;
+  }
+
+  .login_section {
+    padding: 8vh 8vw;
+  }
+}
+
+@media (min-width: $size-tablet) {
+  .page {
+    overflow: hidden;
+  }
+
+  .image_grid {
+    display: none;
+  }
+}
+
+@media (min-width: $size-desktop) {
+  .page {
+    overflow: hidden;
+  }
+
+  .image_grid {
+    width: 100vw;
+    height: 100vh;
+
+    position: relative;
+    display: grid;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
+
+  .login_section {
+    margin-top: 10vh;
+    padding-left: 10vw;
+    padding-right: 10vw;
+  }
+
+  .grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 45vw 55vw;
+  }
+}
