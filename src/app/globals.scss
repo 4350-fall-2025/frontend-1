@@ -25,39 +25,3 @@ $color-orange-button-hovered: $color-orange-dark;
 // tabs
 $color-green-tabs-selected: lighten($color-green, 0.30);
 $color-orange-tabs-selected: lighten($color-orange, 0.30);
-
-.app {
-  :root {
-    --background: $color-white;
-    --foreground: $color-black;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --background: $color-black;
-      --foreground: $color-white;
-    }
-
-    html {
-      color-scheme: dark;
-    }
-  }
-
-  html,
-  body {
-    max-width: 100vw;
-    overflow-x: hidden;
-  }
-
-  body {
-    color: var(--foreground);
-    background: var(--background);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-}
