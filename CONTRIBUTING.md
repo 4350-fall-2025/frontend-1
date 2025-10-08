@@ -6,7 +6,7 @@ git clone https://github.com/4350-fall-2025/frontend-1
 
 ### 2: Install pnpm
 
-Pnpm requires Node.js, so if that is not installed maybe go ahead and install that first.
+pnpm requires Node.js, so if that is not installed maybe go ahead and install that first.
 
 Using homebrew (if you use mac):
 
@@ -36,8 +36,9 @@ pnpm prepare
 
 ### 5: Install prettier
 
-If your using VSCode, please install the prettier extension.
-Now go into your vsCode settings `Ctrl/Cmd + ,` , and under `Text Editor -> Formatting`, turn on format on save.
+If you're using VSCode, please install the prettier extension.
+Now go into your VSCode settings `Ctrl/Cmd + ,` , and under `Text Editor -> Formatting`, turn on format on save.
+
 
 You can also format your code by running:
 
