@@ -2,8 +2,8 @@ import { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
     sassOptions: {
-        implementation: 'sass-embedded',
+        implementation: "sass-embedded",
     },
-}
+};
 
 export default nextConfig;
