@@ -38,6 +38,10 @@
         "jsxSingleQuote": true
     },
     "lint-staged": {
-        "*.{ts,md}": "prettier --write"
+        "*.ts": [
+            "prettier --write",
+            "oxlint"
+        ],
+        "*.md": "prettier --write"
     }
 }
