@@ -1,16 +1,16 @@
 /**
  * Validates email input of user
  * 
- * @param value 
+ * @param email 
  * @returns string, cause of why email is invalid. Empty if email is valid.
  */
-export const validateEmail = (value) => {
-    if (value.length <= 0) {
+export const validateEmail = (email: string) => {
+    if (email.length <= 0) {
         return "Email can't be empty.";
     }
 
     // Used chatgpt to generate regex pattern
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         return "Incorrect email format. Email should be formatted as youremail@email.com";
     }
 
@@ -19,12 +19,12 @@ export const validateEmail = (value) => {
 
 /**
  * 
- * @param value 
+ * @param password 
  * @returns string, cause of why password is invalid. Empty if password is valid.
  */
-export const validatePassword = (value) => {
+export const validatePassword = (password: string) => {
 
-    if (value.length <= 0) {
+    if (password.length <= 0) {
         return "Password can't be empty.";
     }
 
