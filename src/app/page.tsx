@@ -1,6 +1,6 @@
 "use client" // doesn't use server
 
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import styles from "./page.module.scss";
 import { Tabs, TabsList, TabsTab, TextInput, PasswordInput, Button } from "@mantine/core";
 import ownerImage from "../../public/login/petOwner.jpg" // source: https://unsplash.com/photos/woman-hugging-a-dog-FtuJIuBbUhI
@@ -8,16 +8,16 @@ import vetImage from "../../public/login/vet.jpg" // source: https://www.freepik
 import { useState } from "react";
 
 export default function Home() {
-  const owner = "owner";
-  const vet = "vet";
+  const owner: string = "owner";
+  const vet: string = "vet";
 
   // sets selected tab/user to be owner by default
   const [selectedUser, setSelectedUser] = useState(owner);
 
-  const backdropImage = selectedUser == owner ? ownerImage : vetImage;
-  const backdropImageAltText = selectedUser == owner ? "Dog with the pet owner" : "Cat with vets";
+  const backdropImage: StaticImageData = selectedUser == owner ? ownerImage : vetImage;
+  const backdropImageAltText: string = selectedUser == owner ? "Dog with the pet owner" : "Cat with vets";
 
-  const buttonColor = selectedUser == owner ? styles.button_owner : styles.button_vet;
+  const buttonColor: string = selectedUser == owner ? styles.button_owner : styles.button_vet;
 
   // TODO: extract from back end and add proper error validation
   let emailErrorMessage: string = "Incorrect email format.";

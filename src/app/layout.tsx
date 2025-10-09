@@ -1,12 +1,12 @@
 import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 
-import { Roboto, Tsukimi_Rounded } from "next/font/google";
+import { DM_Sans, Tsukimi_Rounded } from "next/font/google";
 
 // importing font in tsx is more efficient than in css
-const roboto = Roboto({
-  variable: "--font-roboto",
-  subsets: ["symbols"] // required
+const dmSans = DM_Sans({
+  variable: "--font-dm_sans",
+  subsets: ["latin"] // required
 });
 
 const tsukimiRounded = Tsukimi_Rounded({
@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${roboto.variable} ${tsukimiRounded.variable}`}>
+      <body className={`${dmSans.variable} ${tsukimiRounded.variable}`}>
         <MantineProvider>
           {children}
         </MantineProvider>
