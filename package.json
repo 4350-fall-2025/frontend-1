@@ -1,47 +1,51 @@
 {
-    "name": "frontend-1",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "dev": "next dev",
-        "build": "next build",
-        "start": "next start",
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "lint": "oxlint .",
-        "prepare": "husky",
-        "format": "prettier --write ."
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "packageManager": "pnpm@10.17.1",
-    "dependencies": {
-        "next": "^15.5.4",
-        "react": "^19.2.0",
-        "react-dom": "^19.2.0",
-        "sass": "^1.93.2"
-    },
-    "devDependencies": {
-        "@types/node": "^24.6.2",
-        "@types/react": "^19.2.0",
-        "@types/react-dom": "^19.2.0",
-        "husky": "^9.1.7",
-        "lint-staged": "^16.2.3",
-        "oxlint": "^1.19.0",
-        "prettier": "3.6.2",
-        "typescript": "^5.9.3"
-    },
-    "prettier": {
-        "tabWidth": 4,
-        "endOfLine": "lf",
-        "jsxSingleQuote": true
-    },
-    "lint-staged": {
-        "*.ts": [
-            "prettier --write",
-            "oxlint"
-        ],
-        "*.md": "prettier --write"
-    }
+  "name": "frontend-1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "oxlint .",
+    "prepare": "husky",
+    "format": "prettier --write ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.18.1",
+  "dependencies": {
+    "@mantine/core": "^8.3.3",
+    "@mantine/form": "^8.3.3",
+    "@mantine/hooks": "^8.3.3",
+    "next": "^15.5.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "sass": "^1.93.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.6.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.3",
+    "oxlint": "^1.19.0",
+    "prettier": "3.6.2",
+    "sass-embedded": "^1.93.2",
+    "typescript": "^5.9.3"
+  },
+  "prettier": {
+    "tabWidth": 4,
+    "endOfLine": "lf",
+    "jsxSingleQuote": true
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "oxlint"
+    ],
+    "*.md": "prettier --write"
+  }
 }
