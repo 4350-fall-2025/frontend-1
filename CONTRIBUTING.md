@@ -38,9 +38,9 @@ pnpm prepare
 
 If you're using VSCode, please install the prettier extension.
 Now go into your VSCode settings `Ctrl/Cmd + ,` , and under `Text Editor -> Formatting`, turn on format on save.
+This will now run prettier on your file after saving.
 
-
-You can also format your code by running:
+You can also format the entire repo by running:
 
 ```bash
 pnpm format
