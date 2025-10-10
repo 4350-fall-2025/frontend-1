@@ -1,0 +1,27 @@
+// variables
+
+// screen sizes. source: https://www.browserstack.com/guide/common-screen-resolutions
+$size-mobile: 360px;
+$size-tablet: 768px;
+$size-desktop: 1280px;
+
+// font sizes
+$font-small: 12px;
+
+// colors
+$color-white: #ffffff;
+$color-black: #000000;
+$color-gray: #212121;
+$color-orange: #FFC078;
+$color-orange-dark: #d9480f;
+$color-green: #AAD576;
+$color-green-dark: #2b8a3e;
+$color-blue: #1971C2;
+
+// buttons
+$color-green-button-hovered: $color-green-dark;
+$color-orange-button-hovered: $color-orange-dark;
+
+// tabs
+$color-green-tabs-selected: lighten($color-green, 0.30);
+$color-orange-tabs-selected: lighten($color-orange, 0.30);
