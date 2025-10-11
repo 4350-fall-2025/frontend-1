@@ -2,6 +2,7 @@
     display: grid;
     grid-template: 1fr / auto;
     padding: 64px 32px;
+    font-family: var(--font-dm_sans), Arial;
 
     main {
         width: 100%;
@@ -14,6 +15,7 @@
         margin: 0 auto;
 
         h1 {
+            font-family: var(--font-tsukimi_rounded), var(--font-dm_sans), Arial;
             text-align: center;
         }
 

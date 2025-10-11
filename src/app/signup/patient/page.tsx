@@ -5,11 +5,8 @@ import { isEmail, useForm } from "@mantine/form";
 import { CheckIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { useState } from "react";
 
-import {
-    validateName,
-    validatePassword,
-} from "~/util/validation/validate-signup";
 import styles from "./page.module.scss";
+import { validateName, validatePasswordSignup } from "../../../util/validation/validation"
 
 function PasswordRequirement({
     meets,
@@ -54,7 +51,7 @@ export default function PatientSignup() {
             firstName: validateName,
             lastName: validateName,
             email: isEmail("Invalid email format"),
-            password: validatePassword,
+            password: validatePasswordSignup,
         },
     });
 
