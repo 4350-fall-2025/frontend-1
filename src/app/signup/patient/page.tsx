@@ -6,7 +6,7 @@ import { CheckIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { useState } from "react";
 
 import styles from "./page.module.scss";
-import { validateName, validatePasswordSignup } from "../../../util/validation/validation"
+import { validateName, validatePasswordSignup } from "~/util/validation/signup";
 
 function PasswordRequirement({
     meets,
