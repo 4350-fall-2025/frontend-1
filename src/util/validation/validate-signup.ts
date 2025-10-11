@@ -2,17 +2,17 @@
  * Validation functions generated with AI
  */
 
-export function validateName(value: string): string | null {
+export function validateName(value: string): string {
     if (!value || value.trim().length === 0) return "Name is required";
     const trimmed = value.trim();
     if (trimmed.length < 2) return "Name must be at least 2 characters";
     if (trimmed.length > 32) return "Name must be at most 32 characters";
     if (!/^[A-Za-z\-\s]+$/.test(trimmed))
         return "Name may only contain letters, spaces and dashes";
-    return null;
+    return "";
 }
 
-export function validatePassword(value: string): string | null {
+export function validatePassword(value: string): string {
     if (!value) return "Password is required";
     if (value.length < 8) return "Password must be at least 8 characters";
     if (value.length > 120) return "Password must be at most 120 characters";
@@ -25,5 +25,5 @@ export function validatePassword(value: string): string | null {
     // Most symbols that exist on English keyboard
     if (!/[!#$%&()*+,-.:;<=>?@^_~]/.test(value))
         return "Password must include at least one symbol";
-    return null;
+    return "";
 }
