@@ -1,7 +1,3 @@
-/**
- * Validation generated with AI
- */
-
 "use client";
 
 import { Button, Group, PasswordInput, Text, TextInput } from "@mantine/core";
@@ -9,6 +5,10 @@ import { isEmail, useForm } from "@mantine/form";
 import { CheckIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { useState } from "react";
 
+import {
+    validateName,
+    validatePassword,
+} from "~/util/validation/validate-signup";
 import styles from "./page.module.scss";
 
 function PasswordRequirement({
@@ -51,58 +51,12 @@ export default function PatientSignup() {
             phone: "",
         },
         validate: {
-            firstName: validateFirstName,
-            lastName: validateLastName,
+            firstName: validateName,
+            lastName: validateName,
             email: isEmail("Invalid email format"),
             password: validatePassword,
         },
     });
-
-    // Validation helpers
-    function validateFirstName(value: string) {
-        // 2-32 chars, letters, spaces and dashes allowed
-        if (!value || value.trim().length === 0)
-            return "First name is required";
-        const trimmed = value.trim();
-        if (trimmed.length < 2)
-            return "First name must be at least 2 characters";
-        if (trimmed.length > 32)
-            return "First name must be at most 32 characters";
-        if (!/^[A-Za-z\-\s]+$/.test(trimmed))
-            return "First name may only contain letters, spaces and dashes";
-        return null;
-    }
-
-    function validateLastName(value: string) {
-        // same rules as first name
-        if (!value || value.trim().length === 0) return "Last name is required";
-        const trimmed = value.trim();
-        if (trimmed.length < 2)
-            return "Last name must be at least 2 characters";
-        if (trimmed.length > 32)
-            return "Last name must be at most 32 characters";
-        if (!/^[A-Za-z\-\s]+$/.test(trimmed))
-            return "Last name may only contain letters, spaces and dashes";
-        return null;
-    }
-
-    function validatePassword(value: string) {
-        // 8-120 chars, at least one lower, one upper, one digit, one symbol
-        if (!value) return "Password is required";
-        if (value.length < 8) return "Password must be at least 8 characters";
-        if (value.length > 120)
-            return "Password must be at most 120 characters";
-        if (!/[a-z]/.test(value))
-            return "Password must include at least one lowercase letter";
-        if (!/[A-Z]/.test(value))
-            return "Password must include at least one uppercase letter";
-        if (!/[0-9]/.test(value))
-            return "Password must include at least one number";
-        // Most symbols that exist on English keyboard
-        if (!/[!#$%&()*+,-.:;<=>?@^_~]/.test(value))
-            return "Password must include at least one symbol";
-        return null;
-    }
 
     /**
      * Example requirement subcomponent found in Mantine docs:
