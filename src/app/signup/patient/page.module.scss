@@ -1,0 +1,32 @@
+.page {
+    display: grid;
+    grid-template: 1fr / auto;
+    padding: 64px 32px;
+
+    main {
+        width: 100%;
+        max-width: 360px;
+
+        display: grid;
+        grid-template: auto 1fr / 1fr;
+        row-gap: 50px;
+
+        margin: 0 auto;
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+
+            .name_fields {
+                display: flex;
+                flex-direction: row;
+                gap: 1rem;
+            }
+        }
+    }
+}
