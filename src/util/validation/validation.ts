@@ -1,7 +1,7 @@
 /**
  * Validates email input of user
- * 
- * @param email 
+ *
+ * @param email
  * @returns string, cause of why email is invalid. Empty if email is valid.
  */
 export const validateEmail = (email: string) => {
@@ -15,18 +15,17 @@ export const validateEmail = (email: string) => {
     }
 
     return "";
-}
+};
 
 /**
- * 
- * @param password 
+ *
+ * @param password
  * @returns string, cause of why password is invalid. Empty if password is valid.
  */
 export const validatePassword = (password: string) => {
-
     if (password.length <= 0) {
         return "Password can't be empty.";
     }
 
     return "";
-}
+};
