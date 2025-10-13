@@ -9,6 +9,8 @@ import PasswordRequirements from "~components/signup/passwordRequirements";
 import { validateName, validatePasswordSignup } from "~util/validation/signup";
 
 import styles from "./page.module.scss";
+import { OwnersAPI } from "src/api/OwnersAPI";
+import { Owner } from "src/models/Owner";
 
 export default function PatientSignup() {
     const [_password, setPassword] = useState<string>("");
@@ -37,7 +39,9 @@ export default function PatientSignup() {
         <>
             <h1>Sign Up to Track Your Pet's Needs!</h1>
             <form
-                onSubmit={form.onSubmit(() => {
+                onSubmit={form.onSubmit((values) => {
+                    const owner = new Owner(values);
+                    OwnersAPI.ownerSignUp(owner);
                     router.push("/");
                 })}
             >
