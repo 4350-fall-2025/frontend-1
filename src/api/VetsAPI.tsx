@@ -18,32 +18,28 @@ export class VetsAPI {
             firstName: "Test",
             lastName: "Account",
             password: "12345678",
-            id: "01",
+            id: 1,
             certification: "yes",
         });
     }
 
     //input: updated parameters for pets, with unchanged fields as null
     //output: http status code
-    static async updateVet(id: number, vet: Vet): Promise<number> {
+    static async updateVet(id: number, vet: Vet): Promise<void> {
         // const changedValues = this.removeNull(vet);
-
         // const response = await axiosClient.put(`/vets/${id}`, changedValues);
         // return response?.status;
-        return 200;
     }
 
-    static async deleteVet(id: number): Promise<number> {
+    static async deleteVet(id: number): Promise<void> {
         // const response = await axiosClient.delete(`/vets/${id}`);
         // return response?.data;
-        return 200;
     }
 
     //input: vet object with id field as null
     //returns: status code
-    static async vetSignUp(vet: Vet): Promise<number> {
+    static async vetSignUp(vet: Vet): Promise<void> {
         // const response = await axiosClient.post(`/vets/create`, vet);
         // return response?.status;
-        return 200;
     }
 }

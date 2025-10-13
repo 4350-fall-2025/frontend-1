@@ -12,7 +12,7 @@ class PetsAPI {
 
     static async getAllPets(ownerId: number): Promise<Pet[]> {
         // const response = await axiosClient.get(`/owners/${ownerId}/pets`);
-        // return response?.data;
+        // return response?.data.map(petJson => new Pet(petJson));
         return [
             new Pet({
                 name: "test",
@@ -20,6 +20,7 @@ class PetsAPI {
                 sex: "male",
                 species: "dog",
                 birthdate: "2025-01-01",
+                id: 2,
             }),
         ];
     }
@@ -35,6 +36,7 @@ class PetsAPI {
             sex: "male",
             species: "dog",
             birthdate: "2025-01-01",
+            id: 2,
         });
     }
 
@@ -44,9 +46,8 @@ class PetsAPI {
         ownerId: number,
         petId: number,
         pet: Pet,
-    ): Promise<number> {
+    ): Promise<void> {
         // const changedValues = this.removeNull(pet);
-
         // const response = await axiosClient.put(
         //     `/owners/${ownerId}`,
         //     changedValues,
@@ -55,22 +56,19 @@ class PetsAPI {
         //     },
         // );
         // return response?.status;
-        return 200;
     }
 
-    static async deletePet(ownerId: number, petId: number): Promise<number> {
+    static async deletePet(ownerId: number, petId: number): Promise<void> {
         // const response = await axiosClient.delete(
         //     `/owners/${ownerId}/pets/${petId}`,
         // );
         // return response?.status;
-        return 200;
     }
 
     //input: owner object with id field as null
     //returns: status code
-    static async createPet(ownerId: number, pet: Pet): Promise<number> {
+    static async createPet(ownerId: number, pet: Pet): Promise<void> {
         // const response = await axiosClient.post(`/owners/${ownerId}/pets`, pet);
         // return response?.status;
-        return 200;
     }
 }

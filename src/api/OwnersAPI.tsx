@@ -27,27 +27,22 @@ export class OwnersAPI {
 
     //input: updated parameters, with unchanged fields as null
     //output: http status code
-    static async updateOwner(id: number, owner: Owner): Promise<number> {
+    static async updateOwner(id: number, owner: Owner): Promise<void> {
         // const changedValues = this.removeNull(owner);
-
         // const response = await axiosClient.put(`/owners/${id}`, changedValues);
-        // return response?.status;
-        return 200;
     }
 
     //input: owner id
-    static async deleteOwner(id: number): Promise<number> {
+    static async deleteOwner(id: number): Promise<void> {
         // const response = await axiosClient.delete(`/owners/${id}`);
         // return response?.status;
-        return 200;
     }
 
     //input: owner object with id field as null
     //returns: status code
-    static async ownerSignUp(owner: Owner): Promise<number> {
+    static async ownerSignUp(owner: Owner): Promise<void> {
         // const response = await axiosClient.post(`/owners/create`, owner);
         // console.log(response);
         // return response?.status;
-        return 201;
     }
 }
