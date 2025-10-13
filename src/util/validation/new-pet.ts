@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
-import { defaultDate, todayDate } from "../../data/date.ts";
-import { animalGroupOptions, sexOptions } from "../../data/pet.ts";
-import { basicOptions } from "../../data/general.ts";
+import { defaultDate, todayDate } from "~data/constants";
+import { animalGroupOptions, sexOptions } from "~data/constants";
+import { basicOptions } from "~data/constants";
 import { validateSelectedOption } from "./validation.ts";
 
 /**

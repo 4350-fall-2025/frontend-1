@@ -3,10 +3,10 @@
  * @param password
  * @returns string, cause of why password is invalid. Empty if password is valid.
  */
-export const validatePassword = (password: string): string => {
+export const validatePassword = (password: string): string | null => {
     if (password.length <= 0) {
         return "Password can't be empty.";
     }
 
-    return "";
+    return null;
 };
