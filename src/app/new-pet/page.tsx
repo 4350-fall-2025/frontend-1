@@ -4,9 +4,12 @@ import { Box, Button, Group, Select, TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { DatePickerInput } from "@mantine/dates";
-import { sexOptions, animalGroupOptions } from "~data/constants";
-import { basicOptions } from "~data/constants";
-import { defaultDate } from "~data/constants";
+import {
+    defaultDate,
+    sexOptions,
+    animalGroupOptions,
+    basicOptions,
+} from "~data/constants";
 import {
     validateImage,
     validateDateValue,

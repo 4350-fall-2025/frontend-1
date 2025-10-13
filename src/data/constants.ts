@@ -35,4 +35,9 @@ export const animalGroupOptions: string[] = [
     "Other",
 ];
 
-export const sexOptions: string[] = ["Male", "Female", "Unknown"];
+export const sexOptions: string[] = [
+    "Male",
+    "Female",
+    "Unknown",
+    "Not Applicable",
+];
