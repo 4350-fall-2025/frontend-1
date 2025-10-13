@@ -1,5 +1,5 @@
 /**
- * Province list and validation functions generated with GPT-5 mini
+ * Custom validation functions generated with GPT-5 mini
  */
 
 "use client";
@@ -15,25 +15,10 @@ import {
 import { useState } from "react";
 
 import PasswordRequirements from "~components/signup/passwordRequirements";
+import { provinces } from "~data/constants";
 import { validateName, validatePasswordSignup } from "~util/validation/signup";
 
 import styles from "./page.module.scss";
-
-const provinces = [
-    { value: "AB", label: "AB" },
-    { value: "BC", label: "BC" },
-    { value: "MB", label: "MB" },
-    { value: "NB", label: "NB" },
-    { value: "NL", label: "NL" },
-    { value: "NS", label: "NS" },
-    { value: "NT", label: "NT" },
-    { value: "NU", label: "NU" },
-    { value: "ON", label: "ON" },
-    { value: "PE", label: "PE" },
-    { value: "QC", label: "QC" },
-    { value: "SK", label: "SK" },
-    { value: "YT", label: "YT" },
-];
 
 export default function VetSignup() {
     const [_password, setPassword] = useState<string>("");

@@ -10,11 +10,8 @@ import {
     Button,
 } from "@mantine/core";
 import { useState } from "react";
-import { useForm } from "@mantine/form";
-import {
-    validateEmail,
-    validatePassword,
-} from "../util/validation/validation.ts";
+import { isEmail, useForm } from "@mantine/form";
+import { validatePassword } from "../util/validation/validation.ts";
 import styles from "./page.module.scss";
 import ownerImage from "../../public/login/petOwner.jpg"; // source: https://unsplash.com/photos/woman-hugging-a-dog-FtuJIuBbUhI
 import vetImage from "../../public/login/vet.jpg"; // source: https://www.freepik.com/free-photo/close-up-doctor-checking-cat-s-belly_23442502.htm#fromView=keyword&page=1&position=32&uuid=d7e73635-ac35-41b6-80b1-b544a20a5f68&query=Vet
@@ -29,7 +26,7 @@ export default function Home() {
         initialValues: { email: "", password: "" },
 
         validate: {
-            email: validateEmail,
+            email: isEmail("Invalid email format"),
             password: validatePassword,
         },
     });
