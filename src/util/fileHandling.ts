@@ -7,7 +7,7 @@
  * @param mimeType The MIME type of the file.
  * @returns A Promise that resolves to a File object or null if an error occurs.
  */
-async function urlToFile(
+export async function urlToFile(
     url: string,
     filename: string,
     mimeType: string,
