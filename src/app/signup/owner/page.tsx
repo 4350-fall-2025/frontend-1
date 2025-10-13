@@ -2,10 +2,11 @@
 
 import { Button, Group, PasswordInput, Text, TextInput } from "@mantine/core";
 import { isEmail, useForm } from "@mantine/form";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { validateName, validatePasswordSignup } from "~util/validation/signup";
 import PasswordRequirements from "~components/signup/passwordRequirements";
+import { validateName, validatePasswordSignup } from "~util/validation/signup";
 
 import styles from "./page.module.scss";
 
@@ -26,6 +27,7 @@ export default function PatientSignup() {
             password: validatePasswordSignup,
         },
     });
+    const router = useRouter();
 
     form.watch("password", ({ value }) => {
         setPassword(value);
@@ -35,10 +37,9 @@ export default function PatientSignup() {
         <>
             <h1>Sign Up to Track Your Pet's Needs!</h1>
             <form
-                onSubmit={() => {
-                    console.log(form.getValues());
-                    alert("Form submitted!");
-                }}
+                onSubmit={form.onSubmit(() => {
+                    router.push("/");
+                })}
             >
                 <div className={styles.name_fields}>
                     <TextInput

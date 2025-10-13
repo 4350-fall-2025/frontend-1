@@ -1,5 +1,5 @@
 /**
- * Custom validation functions generated with GPT-5 mini
+ * Custom validation functions partially generated with GPT-5 mini
  */
 
 "use client";
@@ -12,16 +12,21 @@ import {
     matches,
     useForm,
 } from "@mantine/form";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import PasswordRequirements from "~components/signup/passwordRequirements";
 import { provinces } from "~data/constants";
-import { validateName, validatePasswordSignup } from "~util/validation/signup";
+import {
+    validateLicenseId,
+    validateName,
+    validatePasswordSignup,
+} from "~util/validation/signup";
 
 import styles from "./page.module.scss";
 
 export default function VetSignup() {
-    const [_password, setPassword] = useState<string>("");
+    const [_validatedPassword, setValidatedPassword] = useState<string>("");
     const form = useForm({
         mode: "uncontrolled",
         initialValues: {
@@ -36,37 +41,24 @@ export default function VetSignup() {
             firstName: validateName,
             lastName: validateName,
             province: isNotEmpty("Please select a province"),
-            licenseId: (value) => {
-                isNotEmpty("License ID is required");
-
-                const trimmed = value.trim();
-                matches(
-                    /^[A-Za-z0-9]+$/,
-                    "License ID may only contain letters and numbers",
-                );
-                isInRange(
-                    { min: 5, max: 20 },
-                    "License ID must be between 5 and 20 characters",
-                );
-                return "";
-            },
+            licenseId: validateLicenseId,
             email: isEmail("Invalid email format"),
             password: validatePasswordSignup,
         },
     });
+    const router = useRouter();
 
     form.watch("password", ({ value }) => {
-        setPassword(value);
+        setValidatedPassword(value);
     });
 
     return (
         <>
             <h1>Sign Up to Start Treating Patients!</h1>
             <form
-                onSubmit={() => {
-                    console.log(form.getValues());
-                    alert("Form submitted!");
-                }}
+                onSubmit={form.onSubmit(() => {
+                    router.push("/");
+                })}
             >
                 <div className={styles.name_fields}>
                     <TextInput
@@ -111,7 +103,7 @@ export default function VetSignup() {
                         label='Password'
                         required
                     />
-                    <PasswordRequirements password={_password} />
+                    <PasswordRequirements password={_validatedPassword} />
                 </div>
                 <Group>
                     <Button type='submit'>I'm ready!</Button>
