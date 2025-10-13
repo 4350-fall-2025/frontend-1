@@ -48,6 +48,16 @@
 
         background-color: var(--mantine-color-gray-3);
     }
+
+    .birthdate {
+        display: grid;
+        gap: 8px;
+    }
+
+    .estimated {
+        --switch-color: #{$color-rose};
+        justify-items: end;
+    }
 }
 
 @media (min-width: $size-mobile) {

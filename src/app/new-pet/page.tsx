@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Group, Select, TextInput } from "@mantine/core";
+import { Box, Button, Group, Select, Switch, TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { DatePickerInput } from "@mantine/dates";
@@ -12,13 +12,16 @@ import {
 } from "~data/constants";
 import {
     validateImage,
-    validateDateValue,
     validateSelectedAnimalGroup,
     validateSelectedSex,
     validateSelectedSpayedOrNeutered,
 } from "~util/validation/newPet";
 import { urlToFile } from "~util/fileHandling.ts";
-import { validateStringValue } from "~util/validation/validation.ts";
+import {
+    validateOptionalDateValue,
+    validateRequiredDateValue,
+    validateRequiredStringValue,
+} from "~util/validation/validation.ts";
 import styles from "./page.module.scss";
 import placeholderImage from "../../../public/placeholder.jpg"; // https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=
 import { useFileDialog } from "@mantine/hooks";
@@ -54,14 +57,14 @@ export default function NewPet() {
 
         validate: {
             petImage: validateImage,
-            name: validateStringValue,
+            name: validateRequiredStringValue,
             sex: validateSelectedSex,
             spayedOrNeutered: validateSelectedSpayedOrNeutered,
             animalGroup: validateSelectedAnimalGroup,
-            species: validateStringValue,
-            breedOrVariety: validateStringValue,
-            birthDate: validateDateValue,
-            adoptionDate: validateDateValue,
+            species: validateRequiredStringValue,
+            breedOrVariety: validateRequiredStringValue,
+            birthDate: validateRequiredDateValue,
+            adoptionDate: validateOptionalDateValue,
         },
     });
 
@@ -117,11 +120,22 @@ export default function NewPet() {
         };
     }, [fileDialog.files]);
 
+    const [estimatedBirthDate, setEstimatedBirthDate] = useState(false);
+
+    const handleSubmit = (values: typeof form.values) => {
+        const newBirthDate: Date = estimatedBirthDate
+            ? defaultDate
+            : values.birthDate;
+        const estimatedDate: Date = estimatedBirthDate
+            ? values.birthDate
+            : defaultDate;
+    };
+
     return (
         <div className={styles.page}>
             <main>
                 <h1>Add a New Pet</h1>
-                <form onSubmit={form.onSubmit(console.log)}>
+                <form onSubmit={form.onSubmit(handleSubmit)}>
                     <div className={styles.form_content}>
                         <div className={styles.left_content}>
                             <div className={styles.image_section}>
@@ -200,17 +214,26 @@ export default function NewPet() {
                                 key={form.key("breedOrVariety")}
                                 {...form.getInputProps("breedOrVariety")}
                             />
-
-                            <DatePickerInput
-                                label='Date of Birth'
-                                required
-                                key={form.key("birthDate")}
-                                {...form.getInputProps("birthDate")}
-                            ></DatePickerInput>
-
+                            <div className={styles.birthdate}>
+                                <DatePickerInput
+                                    label='Date of Birth'
+                                    required
+                                    key={form.key("birthDate")}
+                                    {...form.getInputProps("birthDate")}
+                                ></DatePickerInput>
+                                <Switch
+                                    checked={estimatedBirthDate}
+                                    onChange={(event) =>
+                                        setEstimatedBirthDate(
+                                            event.currentTarget.checked,
+                                        )
+                                    }
+                                    className={styles.estimated}
+                                    label='Estimated'
+                                />
+                            </div>
                             <DatePickerInput
                                 label='Date of Adoption'
-                                required
                                 key={form.key("adoptionDate")}
                                 {...form.getInputProps("adoptionDate")}
                             ></DatePickerInput>

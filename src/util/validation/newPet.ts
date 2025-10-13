@@ -1,29 +1,22 @@
-import dayjs from "dayjs";
-import {
-    defaultDate,
-    todayDate,
-    basicOptions,
-    animalGroupOptions,
-    sexOptions,
-} from "~data/constants";
-import { validateSelectedOption } from "./validation.ts";
+import { basicOptions, animalGroupOptions, sexOptions } from "~data/constants";
+import { validateRequiredSelectedOption } from "./validation.ts";
 
 /**
  * Used Google AI Mode to generate validation for image
  */
 
 export const validateSelectedAnimalGroup = (value: string): string | null => {
-    return validateSelectedOption(value, animalGroupOptions);
+    return validateRequiredSelectedOption(value, animalGroupOptions);
 };
 
 export const validateSelectedSex = (value: string): string => {
-    return validateSelectedOption(value, sexOptions);
+    return validateRequiredSelectedOption(value, sexOptions);
 };
 
 export const validateSelectedSpayedOrNeutered = (
     value: string,
 ): string | null => {
-    return validateSelectedOption(value, basicOptions);
+    return validateRequiredSelectedOption(value, basicOptions);
 };
 
 export const validateImage = (value: File): string | null => {
@@ -34,28 +27,6 @@ export const validateImage = (value: File): string | null => {
     const allowedTypes = ["image/jpeg", "image/png"];
     if (!allowedTypes.includes(value.type)) {
         return "Only JPEG and PNG images are allowed.";
-    }
-
-    return null;
-};
-
-export const validateDateValue = (date: Date): string | null => {
-    if (!date) {
-        return "This field is required.";
-    }
-
-    const selectedDate = dayjs(date); // dayjs is better for comparison
-
-    if (selectedDate.isBefore(defaultDate, "day")) {
-        return (
-            "This date can't be before " +
-            dayjs(defaultDate).format("MMM D, YYYY") +
-            "."
-        );
-    }
-
-    if (selectedDate.isAfter(todayDate, "day")) {
-        return "Date must be in the past.";
     }
 
     return null;

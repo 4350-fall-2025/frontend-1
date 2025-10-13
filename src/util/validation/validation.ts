@@ -1,5 +1,8 @@
+import dayjs from "dayjs";
+import { defaultDate, todayDate } from "~data/constants";
+
 // Based on validateName in sign up page
-export const validateStringValue = (value: string): string | null => {
+export const validateRequiredStringValue = (value: string): string | null => {
     if (!value || value.trim().length === 0) return "This field is required";
     const trimmed = value.trim();
     if (trimmed.length < 2) return "This field must be at least 2 characters";
@@ -9,7 +12,7 @@ export const validateStringValue = (value: string): string | null => {
     return null;
 };
 
-export const validateSelectedOption = (
+export const validateRequiredSelectedOption = (
     value: string,
     options: string[],
 ): string | null => {
@@ -22,4 +25,39 @@ export const validateSelectedOption = (
     }
 
     return null;
+};
+
+// NOTE: helper function, ensure date is not null before calling this
+const validateDate = (date: Date): string | null => {
+    const selectedDate = dayjs(date); // dayjs is better for comparison
+
+    if (selectedDate.isBefore(defaultDate, "day")) {
+        return (
+            "This date can't be before " +
+            dayjs(defaultDate).format("MMM D, YYYY") +
+            "."
+        );
+    }
+
+    if (selectedDate.isAfter(todayDate, "day")) {
+        return "Date must be in the past.";
+    }
+
+    return null;
+};
+
+export const validateRequiredDateValue = (date: Date): string | null => {
+    if (!date) {
+        return "This field is required.";
+    }
+
+    return validateDate(date);
+};
+
+export const validateOptionalDateValue = (date: Date): string | null => {
+    if (!date) {
+        return null;
+    }
+
+    return validateDate(date);
 };
