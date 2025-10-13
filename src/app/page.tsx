@@ -13,7 +13,7 @@ import { useState } from "react";
 import { isEmail, useForm } from "@mantine/form";
 import { validatePassword } from "~util/validation/signin.ts";
 import styles from "./page.module.scss";
-import ownerImage from "../../public/login/pet-owner.jpg"; // source: https://unsplash.com/photos/woman-hugging-a-dog-FtuJIuBbUhI
+import ownerImage from "../../public/login/petOwner.jpg"; // source: https://unsplash.com/photos/woman-hugging-a-dog-FtuJIuBbUhI
 import vetImage from "../../public/login/vet.jpg"; // source: https://www.freepik.com/free-photo/close-up-doctor-checking-cat-s-belly_23442502.htm#fromView=keyword&page=1&position=32&uuid=d7e73635-ac35-41b6-80b1-b544a20a5f68&query=Vet
 import Link from "next/link";
 

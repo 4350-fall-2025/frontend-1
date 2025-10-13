@@ -27,16 +27,18 @@ import { useFileDialog } from "@mantine/hooks";
  * https://legacy.reactjs.org/docs/hooks-effect.html
  * https://developer.mozilla.org/en-US/docs/Web/API/URL
  * Google AI Mode
+ * ChatGPT 4.1 (for turning placeholder image URL into a File and its comments)
  */
 
 export default function NewPet() {
-    const petFile: File = null; // TODO make placeholder file?
+    const [placeholderFile, setPlaceholderFile] = useState<File>();
+    const [previewUrl, setPreviewUrl] = useState<string>(placeholderImage.src);
 
     const form = useForm({
         mode: "uncontrolled",
         initialValues: {
             name: "",
-            petImage: petFile,
+            petImage: placeholderFile,
             animalGroup: "",
             species: "",
             breedOrVariety: "",
@@ -63,12 +65,33 @@ export default function NewPet() {
         multiple: false,
     });
 
-    const resetImage = () => {
-        fileDialog.reset();
+    const setImageToPlaceholderFile = () => {
         setPreviewUrl(placeholderImage.src);
+
+        if (placeholderFile) {
+            form.setFieldValue("petImage", placeholderFile);
+        }
     };
 
-    const [previewUrl, setPreviewUrl] = useState<string>(placeholderImage.src);
+    // clears file dialog and resets image preview and form value to placeholder
+    const resetImage = () => {
+        fileDialog.reset();
+        setImageToPlaceholderFile();
+    };
+
+    // so petFile is initialized to the placeholder image, not a null value
+    useEffect(() => {
+        async function setInitialPlaceholderFile() {
+            const file = await urlToFile(
+                placeholderImage.src,
+                "placeholder.jpg",
+                "image/jpeg",
+            );
+            setPlaceholderFile(file);
+            form.setFieldValue("petImage", file);
+        }
+        setInitialPlaceholderFile();
+    }, []);
 
     useEffect(() => {
         // If a new file is selected, create a new object URL and store the image in the form
@@ -79,7 +102,7 @@ export default function NewPet() {
             setPreviewUrl(newUrl);
             form.setFieldValue("petImage", petFile);
         } else {
-            setPreviewUrl(placeholderImage.src);
+            setImageToPlaceholderFile();
         }
 
         // Revoke the URL when component unmounts
