@@ -1,21 +1,18 @@
-// This file was developed with the help of ChatGPT
+/**
+ * Under Construction Route Layout
+ *
+ * Developed with assistance from Claude AI and ChatGPT for:
+ * - Responsive grid system
+ * - Sidebar integration
+ * - Font variable configuration
+ */
 
 import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import Sidebar from "../../components/sidebar";
+import styles from "./layout.module.scss";
 
-import { DM_Sans, Tsukimi_Rounded } from "next/font/google";
-
-const dmSans = DM_Sans({
-    variable: "--font-dm_sans",
-    subsets: ["latin"],
-});
-
-const tsukimiRounded = Tsukimi_Rounded({
-    variable: "--font-tsukimi_rounded",
-    weight: ["300", "500", "700"],
-    subsets: ["latin"],
-});
+import { dmSans, tsukimiRounded } from "../../lib/fonts";
 
 /**
  * Local layout for /under-construction route
@@ -30,15 +27,9 @@ export default function UnderConstructionLayout({
         <html lang='en'>
             <body className={`${dmSans.variable} ${tsukimiRounded.variable}`}>
                 <MantineProvider>
-                    <div
-                        style={{
-                            display: "grid",
-                            gridTemplateColumns: "220px 1fr",
-                            minHeight: "100vh",
-                        }}
-                    >
+                    <div className={styles.layoutGrid}>
                         <Sidebar />
-                        <main style={{ padding: 16 }}>{children}</main>
+                        <main className={styles.main}>{children}</main>
                     </div>
                 </MantineProvider>
             </body>
