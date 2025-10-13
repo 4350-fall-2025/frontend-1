@@ -6,7 +6,6 @@ import { validateSelectedOption } from "./validation.ts";
 
 /**
  * Used Google AI Mode to generate validation for image
- * Reused validation for name in sign up page, with some modifications
  */
 
 export const validateSelectedAnimalGroup = (value: string): string | null => {
