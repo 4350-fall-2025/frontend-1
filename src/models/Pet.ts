@@ -1,10 +1,10 @@
 export class Pet {
-    name: string;
-    breed: string;
-    sex: string;
-    species: string;
-    id: number;
-    birthdate: string;
+    public readonly name: string;
+    public readonly breed: string;
+    public readonly sex: string;
+    public readonly species: string;
+    public readonly id: number;
+    public readonly birthdate: string;
 
     constructor(JSON) {
         Object.assign(this, JSON);

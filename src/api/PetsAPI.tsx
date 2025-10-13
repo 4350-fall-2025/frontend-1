@@ -1,6 +1,7 @@
 import axiosClient from "./axiosClient";
 import { Pet } from "src/models/Pet";
 
+//Note: currently all functions returns mock info, with the actual api code is commented out
 class PetsAPI {
     //filters out null values from the owner object
     //ChatGPT-5 was used to make this function
@@ -41,7 +42,6 @@ class PetsAPI {
     }
 
     //input: updated parameters for pets, with unchanged fields as null
-    //output: http status code
     static async updatePet(
         ownerId: number,
         petId: number,
@@ -65,8 +65,6 @@ class PetsAPI {
         // return response?.status;
     }
 
-    //input: owner object with id field as null
-    //returns: status code
     static async createPet(ownerId: number, pet: Pet): Promise<void> {
         // const response = await axiosClient.post(`/owners/${ownerId}/pets`, pet);
         // return response?.status;

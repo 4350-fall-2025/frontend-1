@@ -1,9 +1,9 @@
 export class Owner {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    id: number;
+    public readonly firstName: string;
+    public readonly lastName: string;
+    public readonly email: string;
+    public readonly password: string;
+    public readonly id: number;
 
     constructor(ownerJSON) {
         Object.assign(this, ownerJSON);
