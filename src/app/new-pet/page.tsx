@@ -13,7 +13,7 @@ import {
     validateSelectedAnimalGroup,
     validateSelectedSex,
     validateSelectedSpayedOrNeutered,
-} from "~util/validation/new-pet.ts";
+} from "~util/validation/newPet";
 import { urlToFile } from "~util/fileHandling.ts";
 import { validateStringValue } from "~util/validation/validation.ts";
 import styles from "./page.module.scss";
