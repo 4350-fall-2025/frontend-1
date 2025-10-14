@@ -55,18 +55,15 @@ class PetsAPI {
         //         params: { petid: petId },
         //     },
         // );
-        // return response?.status;
     }
 
     static async deletePet(ownerId: number, petId: number): Promise<void> {
         // const response = await axiosClient.delete(
         //     `/owners/${ownerId}/pets/${petId}`,
         // );
-        // return response?.status;
     }
 
     static async createPet(ownerId: number, pet: Pet): Promise<void> {
         // const response = await axiosClient.post(`/owners/${ownerId}/pets`, pet);
-        // return response?.status;
     }
 }

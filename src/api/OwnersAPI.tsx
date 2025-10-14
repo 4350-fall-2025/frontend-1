@@ -32,12 +32,9 @@ export class OwnersAPI {
 
     static async deleteOwner(id: number): Promise<void> {
         // const response = await axiosClient.delete(`/owners/${id}`);
-        // return response?.status;
     }
 
     static async ownerSignUp(owner: Owner): Promise<void> {
         // const response = await axiosClient.post(`/owners/create`, owner);
-        // console.log(response);
-        // return response?.status;
     }
 }

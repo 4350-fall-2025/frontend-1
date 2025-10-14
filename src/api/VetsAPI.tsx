@@ -28,16 +28,13 @@ export class VetsAPI {
     static async updateVet(id: number, vet: Vet): Promise<void> {
         // const changedValues = this.removeNull(vet);
         // const response = await axiosClient.put(`/vets/${id}`, changedValues);
-        // return response?.status;
     }
 
     static async deleteVet(id: number): Promise<void> {
         // const response = await axiosClient.delete(`/vets/${id}`);
-        // return response?.data;
     }
 
     static async vetSignUp(vet: Vet): Promise<void> {
         // const response = await axiosClient.post(`/vets/create`, vet);
-        // return response?.status;
     }
 }
