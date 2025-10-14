@@ -7,12 +7,13 @@ import { CheckIcon, Cross1Icon } from "@radix-ui/react-icons";
  */
 export const requirements = [
     { re: /.{8,}/, label: "At least 8 characters" },
+    { re: /.{0,120}$/, label: "At most 120 characters" },
     { re: /[0-9]/, label: "Includes number" },
     { re: /[a-z]/, label: "Includes lowercase letter" },
     { re: /[A-Z]/, label: "Includes uppercase letter" },
     {
-        re: /[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]/,
-        label: "Includes special symbol",
+        re: /[!#$%&()*+,-.:;<=>?@^_~]/,
+        label: "Includes symbol",
     },
 ];
 

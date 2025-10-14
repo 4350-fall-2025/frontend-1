@@ -5,13 +5,7 @@
 "use client";
 
 import { Button, Group, PasswordInput, Select, TextInput } from "@mantine/core";
-import {
-    isEmail,
-    isInRange,
-    isNotEmpty,
-    matches,
-    useForm,
-} from "@mantine/form";
+import { isEmail, isNotEmpty, useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -21,7 +15,7 @@ import {
     validateLicenseId,
     validateName,
     validatePasswordSignup,
-} from "~util/validation/signup";
+} from "~util/validation/validate-signup";
 
 import styles from "./page.module.scss";
 
@@ -56,6 +50,7 @@ export default function VetSignup() {
         <>
             <h1>Sign Up to Start Treating Patients!</h1>
             <form
+                noValidate
                 onSubmit={form.onSubmit(() => {
                     router.push("/");
                 })}

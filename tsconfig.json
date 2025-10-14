@@ -24,7 +24,8 @@
             "~app/*": ["src/app/*"],
             "~components/*": ["src/components/*"],
             "~data/*": ["src/data/*"],
-            "~util/*": ["src/util/*"]
+            "~util/*": ["src/util/*"],
+            "~tests/*": ["src/tests/*"]
         }
     },
     "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"],
