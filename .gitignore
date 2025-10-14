@@ -37,5 +37,9 @@ npm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# IDE and editor settings
+.idea/
+.vscode/
+.DS_Store
 # vscode
 .vscode/*
