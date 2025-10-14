@@ -1,32 +1,63 @@
-/**
- * Validates email input of user
- * 
- * @param email 
- * @returns string, cause of why email is invalid. Empty if email is valid.
- */
-export const validateEmail = (email: string) => {
-    if (email.length <= 0) {
-        return "Email can't be empty.";
+import dayjs from "dayjs";
+import { defaultDate, todayDate } from "~data/constants";
+
+// Based on validateName in sign up page
+export const validateRequiredStringValue = (value: string): string | null => {
+    if (!value || value.trim().length === 0) return "This field is required";
+    const trimmed = value.trim();
+    if (trimmed.length < 2) return "This field must be at least 2 characters";
+    if (trimmed.length > 32) return "This field must be at most 32 characters";
+    if (!/^[A-Za-z\-\s]+$/.test(trimmed))
+        return "This field may only contain letters, spaces and dashes";
+    return null;
+};
+
+export const validateRequiredSelectedOption = (
+    value: string,
+    options: string[],
+): string | null => {
+    if (!value) {
+        return "This field can't be empty.";
     }
 
-    // Used chatgpt to generate regex pattern
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        return "Incorrect email format. Email should be formatted as youremail@email.com";
+    if (!options.includes(value)) {
+        return "Invalid selected value. Please choose from the list.";
     }
 
-    return "";
-}
+    return null;
+};
 
-/**
- * 
- * @param password 
- * @returns string, cause of why password is invalid. Empty if password is valid.
- */
-export const validatePassword = (password: string) => {
+// NOTE: helper function, ensure date is not null before calling this
+const validateDate = (date: Date): string | null => {
+    const selectedDate = dayjs(date); // dayjs is better for comparison
 
-    if (password.length <= 0) {
-        return "Password can't be empty.";
+    if (selectedDate.isBefore(defaultDate, "day")) {
+        return (
+            "This date can't be before " +
+            dayjs(defaultDate).format("MMM D, YYYY") +
+            "."
+        );
     }
 
-    return "";
-}
+    if (selectedDate.isAfter(todayDate, "day")) {
+        return "Date must be in the past.";
+    }
+
+    return null;
+};
+
+export const validateRequiredDateValue = (date: Date): string | null => {
+    if (!date) {
+        return "This field is required.";
+    }
+
+    return validateDate(date);
+};
+
+export const validateOptionalDateValue = (date: Date): string | null => {
+    if (!date) {
+        return null;
+    }
+
+    return validateDate(date);
+};
