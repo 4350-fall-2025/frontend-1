@@ -1,5 +1,6 @@
 import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
 
 import { DM_Sans, Tsukimi_Rounded } from "next/font/google";
 
