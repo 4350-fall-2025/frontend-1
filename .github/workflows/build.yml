@@ -23,11 +23,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+        # version defaults to packageManager version in package.json
+        # required of no packageManager field in package.json
+
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '22'
           cache: 'pnpm'
+          # cache dependencies to reduce install time
 
       - name: Install dependencies
         run: pnpm install
