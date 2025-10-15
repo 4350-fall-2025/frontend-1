@@ -14,7 +14,7 @@ import {
     getSignupElements,
     fillSignupWithDefaults,
     submitSignup,
-} from "~tests/utils/form-helpers";
+} from "~tests/utils/form-helpers/signup-form-helper";
 import OwnerSignup from "./page";
 import { OwnersAPI } from "src/api/ownersAPI";
 
