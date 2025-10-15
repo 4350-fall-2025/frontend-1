@@ -2,7 +2,7 @@
 
 import { Box, Button, Group, Select, Switch, TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { useForm } from "@mantine/form";
+import { isNotEmpty, useForm } from "@mantine/form";
 import { DatePickerInput } from "@mantine/dates";
 import {
     defaultDate,
@@ -10,12 +10,7 @@ import {
     animalGroupOptions,
     basicOptions,
 } from "~data/constants";
-import {
-    validateImage,
-    validateSelectedAnimalGroup,
-    validateSelectedSex,
-    validateSelectedSpayedOrNeutered,
-} from "~util/validation/validate-new-pet";
+import { validateImage } from "~util/validation/validate-new-pet";
 import { urlToFile } from "~util/file-handling";
 import {
     validateOptionalDateValue,
@@ -62,9 +57,11 @@ export default function NewPet() {
         validate: {
             petImage: validateImage,
             name: validateRequiredStringValue,
-            sex: validateSelectedSex,
-            spayedOrNeutered: validateSelectedSpayedOrNeutered,
-            animalGroup: validateSelectedAnimalGroup,
+            sex: isNotEmpty("This sex field can't be empty."),
+            spayedOrNeutered: isNotEmpty(
+                "This spayed/neutered field can't be empty.",
+            ),
+            animalGroup: isNotEmpty("This animal group field can't be empty."),
             species: validateRequiredStringValue,
             breed: validateRequiredStringValue,
             birthdate: validateRequiredDateValue,
