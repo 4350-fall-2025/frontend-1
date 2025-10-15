@@ -6,7 +6,7 @@
  * - Mobile/desktop layout management
  */
 
- @import "../globals.scss";
+ @import "./globals.scss";
 
 /* Main grid layout */
 .layoutGrid {
@@ -18,6 +18,15 @@
 /* Main content area */
 .main {
     padding: 16px;
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1; /* take full width when sidebar is hidden */
 }
 
 /* MOBILE STYLES - screens 768px and below */

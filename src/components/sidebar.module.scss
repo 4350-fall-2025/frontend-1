@@ -46,7 +46,7 @@
     position: fixed;
     left: 0;
     top: 0;
-    background-color: #fff;
+    background-color: rgba($color-green, 0.24);
     border-right: 1px solid #eee;
     transition: transform 0.3s ease;
     transform: translateX(0);
