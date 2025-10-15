@@ -16,7 +16,7 @@ import {
     validateSelectedSex,
     validateSelectedSpayedOrNeutered,
 } from "~util/validation/validate-new-pet";
-import { urlToFile } from "~util/fileHandling.ts";
+import { urlToFile } from "~util/file-handling";
 import {
     validateOptionalDateValue,
     validateRequiredDateValue,

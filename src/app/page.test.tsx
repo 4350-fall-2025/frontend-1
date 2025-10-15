@@ -49,6 +49,11 @@ const setup = () => {
     return render(<Home />);
 };
 
+// Some strange errors caused by scrollIntoView when testing password happy path
+// possibly due to open listboxs in Mantine Select component
+// Debugged with help from copilot
+HTMLElement.prototype.scrollIntoView = jest.fn();
+
 describe("Login page (src/app/page.tsx)", () => {
     beforeEach(() => {
         OwnersAPI.ownerLogin = jest.fn().mockResolvedValue({});
