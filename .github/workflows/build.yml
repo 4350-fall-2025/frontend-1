@@ -1,0 +1,40 @@
+# For references see:
+# - https://dev.to/yousufbasir/automating-nextjs-application-deployment-with-github-actions-38ac
+# - https://medium.com/@ysuwansiri/automate-your-next-js-builds-with-github-actions-a-step-by-step-guide-a2c15d90e760
+
+
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Lint and format
+        run: pnpm lint && pnpm format
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Build project
+        run: pnpm build
