@@ -56,12 +56,10 @@ export default function Home() {
         try {
             if (selectedUser === vet) {
                 const vet = await VetsAPI.vetLogin(values);
-                console.log(vet);
                 localStorage.setItem("currentUser", JSON.stringify(vet));
                 router.push("/dashboard/vet");
             } else {
                 const owner = await OwnersAPI.ownerLogin(values);
-                console.log(owner);
                 localStorage.setItem("currentUser", JSON.stringify(owner));
                 router.push("/dashboard/owner");
             }

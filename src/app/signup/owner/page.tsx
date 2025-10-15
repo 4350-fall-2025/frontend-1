@@ -44,7 +44,6 @@ export default function OwnerSignup() {
             await OwnersAPI.ownerSignUp(owner);
             router.push("/");
         } catch (error) {
-            console.log(error);
             setError(
                 error?.response?.data?.detail?.email ||
                     "Signup failed. Please try again.",

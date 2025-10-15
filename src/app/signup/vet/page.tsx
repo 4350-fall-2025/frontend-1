@@ -54,7 +54,6 @@ export default function VetSignup() {
             await VetsAPI.vetSignUp(vet);
             router.push("/");
         } catch (error) {
-            console.log(error);
             setError(
                 error?.response?.data?.detail?.email ||
                     "Signup failed. Please try again.",
