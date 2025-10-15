@@ -37,6 +37,7 @@ export default function Sidebar() {
             {/* Sidebar overlay for mobile - closes sidebar when clicked */}
             {isOpen && (
                 <div
+                    data-testid='sidebar-overlay'
                     onClick={() => setIsOpen(false)}
                     className={styles.overlay}
                 />
