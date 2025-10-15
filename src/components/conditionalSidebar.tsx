@@ -9,20 +9,22 @@
 
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Sidebar from "./sidebar";
 
 /** Show Sidebar on every route except /signup (and /signup/...) */
 export default function ConditionalSidebar() {
     const pathname = usePathname() || "/";
+    const searchParams = useSearchParams();
 
     // hide on /signup or /signup/anything
-    const hideSidebar =
-        pathname === "/signup" || pathname.startsWith("/signup/");
+    const isSignInOrUp = pathname === "/" || pathname.startsWith("/signup");
 
-    // DEBUG (leave for a minute to confirm)
-    console.log("[ConditionalSidebar]", { pathname, hideSidebar });
+    // Hide sidebar on under-construction ONLY if hideNav=true
+    const isForgotPassword =
+        pathname === "/under-construction" &&
+        searchParams.get("hideNav") === "true";
 
-    if (hideSidebar) return null;
+    if (isSignInOrUp || isForgotPassword) return null;
     return <Sidebar />;
 }

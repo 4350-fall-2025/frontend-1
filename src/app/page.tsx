@@ -98,7 +98,9 @@ export default function Home() {
                         </form>
 
                         <div className={styles.login_footer}>
-                            <a href='\under-construction'>Forgot password</a>
+                            <a href='/under-construction?hideNav=true'>
+                                Forgot password
+                            </a>
                             <p>
                                 Don't have an account yet?{" "}
                                 <Link href={`/signup/${selectedUser}`}>

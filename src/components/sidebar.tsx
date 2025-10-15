@@ -45,7 +45,7 @@ export default function Sidebar() {
 
             {/* Main sidebar */}
             <aside className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
-                <Link href='/' className={styles.logoLink}>
+                <div className={styles.logoLink}>
                     <Image
                         src={logo}
                         alt='QDog Logo'
@@ -54,7 +54,7 @@ export default function Sidebar() {
                             height: "auto",
                         }}
                     />
-                </Link>
+                </div>
 
                 <Stack gap='xs'>
                     <NavLink

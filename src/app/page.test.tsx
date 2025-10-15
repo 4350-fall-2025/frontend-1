@@ -3,9 +3,10 @@
  *
  * Developed with assistance from Claude AI and ChatGPT for:
  * - Renders tabs with Pet Owner (default) and Veterinarian
- * - “Sign up” link targets /signup/owner by default and /signup/vet after switching tab
+ * - "Sign up" link targets /signup/owner by default and /signup/vet after switching tab
  * - Submitting the form routes to /dashboard/owner (owner tab) and /dashboard/vet (vet tab)
  * - Backdrop image alt text updates with the selected tab
+ * - Forgot password link routes to /under-construction?hideNav=true
  */
 
 import "@testing-library/jest-dom";
@@ -112,12 +113,12 @@ describe("Login page (src/app/page.tsx)", () => {
         setup();
         const user = userEvent.setup();
 
-        // Owner by default — should show dog/owner alt
+        // Owner by default – should show dog/owner alt
         expect(
             screen.getByRole("img", { name: /dog with the pet owner/i }),
         ).toBeInTheDocument();
 
-        // Switch to vet — alt should change to cat/vets
+        // Switch to vet – alt should change to cat/vets
         await user.click(screen.getByRole("tab", { name: /veterinarian/i }));
         expect(
             screen.getByRole("img", { name: /cat with vets/i }),
@@ -147,5 +148,14 @@ describe("Login page (src/app/page.tsx)", () => {
 
         expect(screen.getByText(/invalid password/i)).toBeInTheDocument();
         expect(push).not.toHaveBeenCalled();
+    });
+
+    it("forgot password link should route to /under-construction with hideNav=true", () => {
+        setup();
+        const forgotPasswordLink = screen.getByText(/forgot password/i);
+        expect(forgotPasswordLink).toHaveAttribute(
+            "href",
+            "/under-construction?hideNav=true",
+        );
     });
 });
