@@ -18,7 +18,7 @@ import {
     submitSignup,
 } from "~tests/utils/form-helpers";
 import VetSignup from "./page";
-import { VetsAPI } from "src/api/vets-api";
+import { VetsAPI } from "src/api/vetsAPI";
 /**
  * Test suites and mock functions generated with GPT-5 mini and help from:
  * https://stackoverflow.com/questions/76858797/error-invariant-expected-app-router-to-be-mounted-why-this-happened-when-using

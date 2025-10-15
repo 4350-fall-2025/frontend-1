@@ -1,5 +1,5 @@
 import axiosClient from "./axiosClient";
-import { Vet } from "src/models/vet-obj";
+import { Vet } from "src/models/vet";
 
 //Note: currently all functions returns mock info, with the actual api code is commented out
 export class VetsAPI {
