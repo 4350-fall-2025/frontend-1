@@ -1,7 +1,7 @@
 "use client";
 import styles from "./page.module.scss";
 import { useEffect, useState } from "react";
-import { Vet } from "src/models/vet";
+import { Vet } from "src/models/vet-obj";
 
 export default function VetDashboard() {
     const [vet, setVet] = useState<Vet>(null);

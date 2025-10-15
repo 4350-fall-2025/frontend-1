@@ -1,5 +1,5 @@
 import axiosClient from "./axiosClient";
-import { Owner } from "src/models/owner";
+import { Owner } from "src/models/owner-obj";
 
 export class OwnersAPI {
     //This function filters out null values from the owner object

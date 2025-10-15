@@ -17,8 +17,8 @@ import ownerImage from "../../public/login/petOwner.jpg"; // source: https://uns
 import vetImage from "../../public/login/vet.jpg"; // source: https://www.freepik.com/free-photo/close-up-doctor-checking-cat-s-belly_23442502.htm#fromView=keyword&page=1&position=32&uuid=d7e73635-ac35-41b6-80b1-b544a20a5f68&query=Vet
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { VetsAPI } from "src/api/vetsAPI";
-import { OwnersAPI } from "src/api/ownersAPI";
+import { VetsAPI } from "src/api/vets-api";
+import { OwnersAPI } from "src/api/owners-api";
 
 export default function Home() {
     const owner: string = "owner";
