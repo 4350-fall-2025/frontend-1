@@ -5,6 +5,7 @@ export class Pet {
     public readonly species: string;
     public readonly id: number;
     public readonly birthdate: string;
+    public readonly sterileStatus: string;
 
     constructor(JSON) {
         Object.assign(this, JSON);
