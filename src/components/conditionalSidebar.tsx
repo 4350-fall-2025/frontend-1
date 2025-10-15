@@ -4,6 +4,7 @@
  * Developed with assistance from Claude AI and ChatGPT for:
  * - Conditional rendering based on route
  * - Hiding sidebar on signup pages
+ * Reference: https://www.reddit.com/r/reactjs/comments/u05yhi/have_navbar_component_on_every_route_except_one/
  */
 
 "use client";
