@@ -6,12 +6,12 @@
  * - Mobile/desktop layout management
  */
 
- @import "./globals.scss";
+@import "./globals.scss";
 
 /* Main grid layout */
 .layoutGrid {
     display: grid;
-    gridTemplateColumns: 220px 1fr;
+    //grid-template-columns: 220px 1fr;
     min-height: 100vh;
 }
 
@@ -21,12 +21,12 @@
 }
 
 .layout {
-  display: flex;
-  min-height: 100vh;
+    display: flex;
+    min-height: 100vh;
 }
 
 .main {
-  flex: 1; /* take full width when sidebar is hidden */
+    flex: 1; /* take full width when sidebar is hidden */
 }
 
 /* MOBILE STYLES - screens 768px and below */

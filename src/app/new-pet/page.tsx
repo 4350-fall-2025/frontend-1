@@ -25,6 +25,9 @@ import {
 import styles from "./page.module.scss";
 import placeholderImage from "../../../public/placeholder.jpg"; // https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=
 import { useFileDialog } from "@mantine/hooks";
+import { PetsAPI } from "src/api/petsAPI";
+import { Pet } from "src/models/pet";
+import { useRouter } from "next/navigation";
 
 /**
  * CREDITS
@@ -40,6 +43,7 @@ import { useFileDialog } from "@mantine/hooks";
 export default function NewPet() {
     const [placeholderFile, setPlaceholderFile] = useState<File>();
     const [previewUrl, setPreviewUrl] = useState<string>(placeholderImage.src);
+    const router = useRouter();
 
     const form = useForm({
         mode: "uncontrolled",
@@ -48,8 +52,8 @@ export default function NewPet() {
             petImage: placeholderFile,
             animalGroup: "",
             species: "",
-            breedOrVariety: "",
-            birthDate: defaultDate,
+            breed: "",
+            birthdate: defaultDate,
             adoptionDate: defaultDate,
             sex: "",
             spayedOrNeutered: "",
@@ -62,8 +66,8 @@ export default function NewPet() {
             spayedOrNeutered: validateSelectedSpayedOrNeutered,
             animalGroup: validateSelectedAnimalGroup,
             species: validateRequiredStringValue,
-            breedOrVariety: validateRequiredStringValue,
-            birthDate: validateRequiredDateValue,
+            breed: validateRequiredStringValue,
+            birthdate: validateRequiredDateValue,
             adoptionDate: validateOptionalDateValue,
         },
     });
@@ -122,13 +126,26 @@ export default function NewPet() {
 
     const [estimatedBirthDate, setEstimatedBirthDate] = useState(false);
 
-    const handleSubmit = (values: typeof form.values) => {
-        const newBirthDate: Date = estimatedBirthDate
-            ? defaultDate
-            : values.birthDate;
-        const estimatedDate: Date = estimatedBirthDate
-            ? values.birthDate
-            : defaultDate;
+    const handleSubmit = async (values: typeof form.values) => {
+        try {
+            let sterileStatus;
+            if (values.spayedOrNeutered == "Yes") {
+                sterileStatus = "STERILE";
+            } else if (values.spayedOrNeutered == "No") {
+                sterileStatus = "NOT_STERILE";
+            } else {
+                sterileStatus = "UNKNOWN";
+            }
+            const user = JSON.parse(localStorage.getItem("currentUser"));
+            const petJSON = { ...values, sterileStatus: sterileStatus };
+            const pet = new Pet(petJSON);
+            if (user.id != null) {
+                await PetsAPI.createPet(user.id, pet);
+                router.push("/dashboard/owner");
+            }
+        } catch (error) {
+            //TODO: add error message
+        }
     };
 
     return (
@@ -211,15 +228,15 @@ export default function NewPet() {
                             <TextInput
                                 label='Breed or Variety'
                                 required
-                                key={form.key("breedOrVariety")}
-                                {...form.getInputProps("breedOrVariety")}
+                                key={form.key("breed")}
+                                {...form.getInputProps("breed")}
                             />
                             <div className={styles.birthdate}>
                                 <DatePickerInput
                                     label='Date of Birth'
                                     required
-                                    key={form.key("birthDate")}
-                                    {...form.getInputProps("birthDate")}
+                                    key={form.key("birthdate")}
+                                    {...form.getInputProps("birthdate")}
                                 ></DatePickerInput>
                                 <Switch
                                     checked={estimatedBirthDate}

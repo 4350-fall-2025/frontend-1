@@ -18,16 +18,19 @@ import {
 } from "~util/validation/validate-signup";
 
 import styles from "./page.module.scss";
+import { Vet } from "src/models/vet";
+import { VetsAPI } from "src/api/vetsAPI";
 
 export default function VetSignup() {
     const [_validatedPassword, setValidatedPassword] = useState<string>("");
+    const [error, setError] = useState<string>("");
     const form = useForm({
         mode: "uncontrolled",
         initialValues: {
             firstName: "",
             lastName: "",
             province: "",
-            licenseId: "",
+            certification: "",
             email: "",
             password: "",
         },
@@ -35,7 +38,7 @@ export default function VetSignup() {
             firstName: validateName,
             lastName: validateName,
             province: isNotEmpty("Please select a province"),
-            licenseId: validateLicenseId,
+            certification: validateLicenseId,
             email: isEmail("Invalid email format"),
             password: validatePasswordSignup,
         },
@@ -46,13 +49,26 @@ export default function VetSignup() {
         setValidatedPassword(value);
     });
 
+    const signUp = async (vet: Vet) => {
+        try {
+            await VetsAPI.vetSignUp(vet);
+            router.push("/");
+        } catch (error) {
+            setError(
+                error?.response?.data?.detail?.email ||
+                    "Signup failed. Please try again.",
+            );
+        }
+    };
+
     return (
         <>
             <h1>Sign Up to Start Treating Patients!</h1>
             <form
                 noValidate
-                onSubmit={form.onSubmit(() => {
-                    router.push("/");
+                onSubmit={form.onSubmit((values) => {
+                    const vet = new Vet(values);
+                    signUp(vet);
                 })}
             >
                 <div className={styles.name_fields}>
@@ -79,8 +95,8 @@ export default function VetSignup() {
                         required
                     />
                     <TextInput
-                        {...form.getInputProps("licenseId")}
-                        key={form.key("licenseId")}
+                        {...form.getInputProps("certification")}
+                        key={form.key("certification")}
                         label='License ID'
                         required
                     />
@@ -104,6 +120,7 @@ export default function VetSignup() {
                     <Button type='submit'>I'm ready!</Button>
                 </Group>
             </form>
+            {error != "" && <h3 className={styles.red_text}>{error}</h3>}
         </>
     );
 }

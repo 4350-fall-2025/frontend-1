@@ -11,7 +11,14 @@
 
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
-import { render, screen, within } from "~tests/utils/custom-testing-library";
+import {
+    render,
+    screen,
+    waitFor,
+    within,
+} from "~tests/utils/custom-testing-library";
+import { OwnersAPI } from "src/api/ownersAPI";
+import { VetsAPI } from "src/api/vetsAPI";
 
 // ---- Mocks ----
 
@@ -43,6 +50,11 @@ const setup = () => {
 };
 
 describe("Login page (src/app/page.tsx)", () => {
+    beforeEach(() => {
+        OwnersAPI.ownerLogin = jest.fn().mockResolvedValue({});
+        VetsAPI.vetLogin = jest.fn().mockResolvedValue({});
+    });
+
     it("renders tabs and defaults to Pet Owner", () => {
         setup();
 
@@ -89,7 +101,9 @@ describe("Login page (src/app/page.tsx)", () => {
         // Submit
         await user.click(screen.getByRole("button", { name: /login/i }));
 
-        expect(push).toHaveBeenCalledWith("/dashboard/owner");
+        await waitFor(() => {
+            expect(push).toHaveBeenCalledWith("/dashboard/owner");
+        });
     });
 
     it("submits and routes to /dashboard/vet when Veterinarian is selected", async () => {
@@ -106,7 +120,9 @@ describe("Login page (src/app/page.tsx)", () => {
         // Submit
         await user.click(screen.getByRole("button", { name: /login/i }));
 
-        expect(push).toHaveBeenCalledWith("/dashboard/vet");
+        await waitFor(() => {
+            expect(push).toHaveBeenCalledWith("/dashboard/vet");
+        });
     });
 
     it("updates backdrop image alt text when switching tabs", async () => {

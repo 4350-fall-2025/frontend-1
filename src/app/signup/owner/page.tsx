@@ -12,9 +12,12 @@ import {
 } from "~util/validation/validate-signup";
 
 import styles from "./page.module.scss";
+import { OwnersAPI } from "src/api/ownersAPI";
+import { Owner } from "src/models/owner";
 
 export default function OwnerSignup() {
     const [_password, setPassword] = useState<string>("");
+    const [error, setError] = useState<string>("");
     const form = useForm({
         mode: "uncontrolled",
         initialValues: {
@@ -36,13 +39,27 @@ export default function OwnerSignup() {
         setPassword(value);
     });
 
+    const signUp = async (owner: Owner) => {
+        try {
+            await OwnersAPI.ownerSignUp(owner);
+            router.push("/");
+        } catch (error) {
+            setError(
+                error?.response?.data?.detail?.email ||
+                    "Signup failed. Please try again.",
+            );
+        }
+    };
+
     return (
         <>
             <h1>Sign Up to Track Your Pet's Needs!</h1>
+
             <form
                 noValidate
-                onSubmit={form.onSubmit(() => {
-                    router.push("/");
+                onSubmit={form.onSubmit((values) => {
+                    const owner = new Owner(values);
+                    signUp(owner);
                 })}
             >
                 <div className={styles.name_fields}>
@@ -78,6 +95,7 @@ export default function OwnerSignup() {
                     <Button type='submit'>I'm ready!</Button>
                 </Group>
             </form>
+            {error != "" && <h3 className={styles.red_text}>{error}</h3>}
         </>
     );
 }
