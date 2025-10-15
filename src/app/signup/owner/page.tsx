@@ -6,13 +6,16 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import PasswordRequirements from "~components/signup/passwordRequirements";
-import { validateName, validatePasswordSignup } from "~util/validation/signup";
+import {
+    validateName,
+    validatePasswordSignup,
+} from "~util/validation/validate-signup";
 
 import styles from "./page.module.scss";
 import { OwnersAPI } from "src/api/OwnersAPI";
 import { Owner } from "src/models/Owner";
 
-export default function PatientSignup() {
+export default function OwnerSignup() {
     const [_password, setPassword] = useState<string>("");
     const form = useForm({
         mode: "uncontrolled",
@@ -39,6 +42,7 @@ export default function PatientSignup() {
         <>
             <h1>Sign Up to Track Your Pet's Needs!</h1>
             <form
+                noValidate
                 onSubmit={form.onSubmit((values) => {
                     const owner = new Owner(values);
                     OwnersAPI.ownerSignUp(owner);

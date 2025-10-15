@@ -1,0 +1,100 @@
+@import "../globals.scss";
+
+.page {
+    width: 100%;
+    height: 100%;
+
+    padding: 3% 8%;
+
+    h1 {
+        font-family: var(--font-tsukimi_rounded), var(--font-dm_sans), Arial;
+        font-size: 2.5rem;
+    }
+
+    p {
+        font-family: var(--font-dm_sans), Arial;
+        font-size: $font-small;
+    }
+
+    // each children element of these classes will have this style
+    .left_content > *,
+    .right_content > * {
+        padding-top: 1rem;
+    }
+
+    .image_section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .pet_image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .button {
+        background-color: $color-rose;
+    }
+
+    .image_box {
+        width: 300px;
+        height: 300px;
+        display: flex;
+        position: relative;
+        overflow: hidden;
+
+        background-color: var(--mantine-color-gray-3);
+    }
+
+    .birthdate {
+        display: grid;
+        gap: 8px;
+    }
+
+    .estimated {
+        --switch-color: #{$color-rose};
+        justify-items: end;
+    }
+}
+
+@media (min-width: $size-mobile) {
+    .page {
+        h1 {
+            font-size: 2rem;
+        }
+    }
+}
+
+@media (min-width: $size-tablet) {
+    .page {
+        h1 {
+            font-size: 2.5rem;
+        }
+    }
+}
+
+@media (min-width: $size-desktop) {
+    .form_content {
+        display: grid;
+        gap: 2.5rem;
+        grid-template-columns: 2fr 3fr;
+    }
+}
+
+.bottom_content {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    padding-left: 2rem;
+}
+
+.right_content {
+    justify-content: flex-end;
+    flex-grow: inherit;
+}
