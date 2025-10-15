@@ -60,7 +60,7 @@ export default function Sidebar() {
                 <Stack gap='xs'>
                     <NavLink
                         component={Link}
-                        href='/under-construction'
+                        href='/dashboard'
                         label='Dashboard'
                         className={styles.navLink}
                     />

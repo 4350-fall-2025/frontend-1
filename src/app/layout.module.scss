@@ -6,12 +6,12 @@
  * - Mobile/desktop layout management
  */
 
- @import "../globals.scss";
+@import "./globals.scss";
 
 /* Main grid layout */
 .layoutGrid {
     display: grid;
-    gridTemplateColumns: 220px 1fr;
+    gridtemplatecolumns: 220px 1fr;
     min-height: 100vh;
 }
 
