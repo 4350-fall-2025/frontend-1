@@ -169,4 +169,20 @@ describe("Sidebar Component", () => {
             expect(screen.getByRole("complementary")).toHaveClass("open");
         });
     });
-});
+
+    // sidebar.test.tsx
+    it("should close sidebar when overlay is clicked", async () => {
+        const toggleBtn = screen.getByRole("button");
+
+        // open sidebar
+        await user.click(toggleBtn);
+        expect(screen.getByRole("complementary")).toHaveClass("open");
+
+        // click overlay (now guaranteed to exist)
+        const overlay = screen.getByTestId("sidebar-overlay");
+        await user.click(overlay);
+
+        // sidebar should be closed
+        expect(screen.getByRole("complementary")).not.toHaveClass("open");
+    });
+}); //end main describe (Sidebar)
