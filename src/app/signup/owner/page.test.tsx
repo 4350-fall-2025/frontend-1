@@ -29,12 +29,6 @@ jest.mock("next/navigation", () => ({
     }),
 }));
 
-// jest.mock("src/api/OwnersAPI", () => ({
-//     OwnersAPI: {
-//         ownerSignUp: jest.fn(),
-//     },
-// }));
-
 describe("Owner signup page", () => {
     let firstName: HTMLElement;
     let lastName: HTMLElement;

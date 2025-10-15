@@ -41,7 +41,7 @@ export default function OwnerSignup() {
 
     const signUp = async (owner: Owner) => {
         try {
-            const response = await OwnersAPI.ownerSignUp(owner);
+            await OwnersAPI.ownerSignUp(owner);
             router.push("/");
         } catch (error) {
             console.log(error);
@@ -96,7 +96,7 @@ export default function OwnerSignup() {
                     <Button type='submit'>I'm ready!</Button>
                 </Group>
             </form>
-            <h3 className={styles.red_text}>{error}</h3>
+            {error != "" && <h3 className={styles.red_text}>{error}</h3>}
         </>
     );
 }

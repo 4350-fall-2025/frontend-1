@@ -30,12 +30,6 @@ jest.mock("next/navigation", () => ({
     }),
 }));
 
-// jest.mock("src/api/VetsAPI", () => ({
-//     VetsAPI: {
-//         vetSignUp: jest.fn(),
-//     },
-// }));
-
 // Some strange errors caused by scrollIntoView when testing password happy path
 // possibly due to open listboxs in Mantine Select component
 // Debugged with help from copilot

@@ -51,7 +51,7 @@ export default function VetSignup() {
 
     const signUp = async (vet: Vet) => {
         try {
-            const response = await VetsAPI.vetSignUp(vet);
+            await VetsAPI.vetSignUp(vet);
             router.push("/");
         } catch (error) {
             console.log(error);
@@ -121,7 +121,7 @@ export default function VetSignup() {
                     <Button type='submit'>I'm ready!</Button>
                 </Group>
             </form>
-            <h3 className={styles.red_text}>{error}</h3>
+            {error != "" && <h3 className={styles.red_text}>{error}</h3>}
         </>
     );
 }
