@@ -15,15 +15,15 @@
 
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
-import { fireEvent, render, screen } from "~tests/utils/custom-testing-library";
+import { render, screen } from "~tests/utils/custom-testing-library";
 import Sidebar from "./sidebar";
 
 describe("Sidebar Component", () => {
     let user: ReturnType<typeof userEvent.setup>;
 
     beforeEach(() => {
-        user = userEvent.setup(); // create fresh event simulator
-        render(<Sidebar />); // render the Sidebar component to the virtual DOM
+        user = userEvent.setup();
+        render(<Sidebar />);
     });
 
     describe("Rendering Side NavBar", () => {
@@ -47,21 +47,29 @@ describe("Sidebar Component", () => {
     });
 
     describe("Navigation Links", () => {
-        it("all nav links should link to under-construction page", () => {
-            const navLinks = screen.getAllByText(
-                /Dashboard|My Pets|Appointments|Pet Diary|Messages/,
-            );
-            navLinks.forEach((link) => {
-                expect(link.closest("a")).toHaveAttribute(
-                    "href",
-                    "/under-construction",
-                );
-            });
+        it("Dashboard link should navigate to /dashboard/owner", () => {
+            const dashboardLink = screen.getByText("Dashboard").closest("a");
+            expect(dashboardLink).toHaveAttribute("href", "/dashboard/owner");
         });
 
-        it("logo link should navigate to home", () => {
-            const logoLink = screen.getByAltText("QDog Logo").closest("a");
-            expect(logoLink).toHaveAttribute("href", "/");
+        it("My Pets link should navigate to /new-pet", () => {
+            const myPetsLink = screen.getByText("My Pets").closest("a");
+            expect(myPetsLink).toHaveAttribute("href", "/new-pet");
+        });
+
+        it("other nav links should link to under-construction page", () => {
+            const appointmentsLink = screen
+                .getByText("Appointments")
+                .closest("a");
+            const petDiaryLink = screen.getByText("Pet Diary").closest("a");
+            const messagesLink = screen.getByText("Messages").closest("a");
+
+            expect(appointmentsLink).toHaveAttribute(
+                "href",
+                "/under-construction",
+            );
+            expect(petDiaryLink).toHaveAttribute("href", "/under-construction");
+            expect(messagesLink).toHaveAttribute("href", "/under-construction");
         });
 
         it("nav links should have navLink class styling", () => {
@@ -70,18 +78,16 @@ describe("Sidebar Component", () => {
         });
     });
 
-    // Desktop Tests
     describe("Desktop View", () => {
         it("logo should be visible on desktop", () => {
             const logo = screen.getByAltText("QDog Logo");
             expect(logo).toBeVisible();
         });
 
-        it("toggle button should not be visible on desktop", () => {
-            const toggleBtn = screen.queryByRole("button");
-            if (toggleBtn) {
-                expect(toggleBtn).toHaveClass("toggleBtn");
-            }
+        it("toggle button should be present", () => {
+            const toggleBtn = screen.getByRole("button");
+            expect(toggleBtn).toBeInTheDocument();
+            expect(toggleBtn).toHaveClass("toggleBtn");
         });
 
         it("all nav links should be visible on desktop", () => {
@@ -93,14 +99,17 @@ describe("Sidebar Component", () => {
         });
     });
 
-    // Mobile Tests
     describe("Mobile View - Toggle Functionality", () => {
         it("toggle button should open and close sidebar", async () => {
             const toggleBtn = screen.getByRole("button");
 
+            // sidebar should be closed initially
+            let sidebar = screen.getByRole("complementary");
+            expect(sidebar).not.toHaveClass("open");
+
             // open sidebar
             await user.click(toggleBtn);
-            let sidebar = screen.getByRole("complementary");
+            sidebar = screen.getByRole("complementary");
             expect(sidebar).toHaveClass("open");
 
             // close sidebar
@@ -109,7 +118,7 @@ describe("Sidebar Component", () => {
             expect(sidebar).not.toHaveClass("open");
         });
 
-        it("logo should be hidden on mobile", () => {
+        it("logo should be in the document on mobile", () => {
             const logo = screen.getByAltText("QDog Logo");
             expect(logo).toBeInTheDocument();
         });
@@ -117,20 +126,35 @@ describe("Sidebar Component", () => {
         it("should close sidebar when overlay is clicked", async () => {
             const toggleBtn = screen.getByRole("button");
 
-            // open sidebar
+            // open sidebar first
             await user.click(toggleBtn);
             expect(screen.getByRole("complementary")).toHaveClass("open");
 
-            // find and click overlay
-            const overlay = document.querySelector(
-                "[data-testid='sidebar-overlay']",
-            );
-            if (overlay) {
-                await user.click(overlay);
-                expect(screen.getByRole("complementary")).not.toHaveClass(
-                    "open",
-                );
-            }
+            // click overlay to close
+            const overlay = screen.getByTestId("sidebar-overlay");
+            await user.click(overlay);
+
+            // sidebar should be closed
+            expect(screen.getByRole("complementary")).not.toHaveClass("open");
+        });
+
+        it("overlay should only appear when sidebar is open", async () => {
+            const toggleBtn = screen.getByRole("button");
+
+            // overlay should not exist initially
+            expect(
+                screen.queryByTestId("sidebar-overlay"),
+            ).not.toBeInTheDocument();
+
+            // open sidebar
+            await user.click(toggleBtn);
+            expect(screen.getByTestId("sidebar-overlay")).toBeInTheDocument();
+
+            // close sidebar
+            await user.click(toggleBtn);
+            expect(
+                screen.queryByTestId("sidebar-overlay"),
+            ).not.toBeInTheDocument();
         });
 
         it("should display navigation links when sidebar is open", async () => {
@@ -146,7 +170,6 @@ describe("Sidebar Component", () => {
         });
     });
 
-    // Accessibility Tests
     describe("Accessibility", () => {
         it("sidebar should be a complementary landmark", () => {
             const sidebar = screen.getByRole("complementary");
@@ -168,21 +191,10 @@ describe("Sidebar Component", () => {
             await user.keyboard("{Enter}");
             expect(screen.getByRole("complementary")).toHaveClass("open");
         });
+
+        it("toggle button should have descriptive text", () => {
+            const toggleBtn = screen.getByRole("button");
+            expect(toggleBtn).toHaveTextContent("Menu");
+        });
     });
-
-    // sidebar.test.tsx
-    it("should close sidebar when overlay is clicked", async () => {
-        const toggleBtn = screen.getByRole("button");
-
-        // open sidebar
-        await user.click(toggleBtn);
-        expect(screen.getByRole("complementary")).toHaveClass("open");
-
-        // click overlay (now guaranteed to exist)
-        const overlay = screen.getByTestId("sidebar-overlay");
-        await user.click(overlay);
-
-        // sidebar should be closed
-        expect(screen.getByRole("complementary")).not.toHaveClass("open");
-    });
-}); //end main describe (Sidebar)
+});
