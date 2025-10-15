@@ -7,6 +7,10 @@ This is a student project for COMP 4350 (Software Engineering 2) at the Universi
 This is an educational prototype, not a substitute for in-person veterinary care. Please do not submit real medical information.
 The project documentation live on our Confluence space (see Quick Links below)
 
+## Development Environment Setup Instructions
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) on instructions on how to set up your development tools and environment.
+
 ## PNPM Commands
 
 ### Install the dependencies
@@ -27,12 +31,6 @@ pnpm build
 
 ```bash
 pnpm dev
-```
-
-### Start the web app locally
-
-```bash
-pnpm start
 ```
 
 ### Run the tests
