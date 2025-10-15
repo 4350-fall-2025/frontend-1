@@ -46,8 +46,14 @@ You can also format the entire repo by running:
 pnpm format
 ```
 
-### 6: Setup back end repository:
+### 6: Setup back end repository
 
 As our server is not currently hosted on the cloud in order to run the app locally you need to set up the [back end](https://github.com/4350-fall-2025/backend).
 
 The instructions are located [here](https://github.com/4350-fall-2025/backend/blob/develop/README.md).
+
+### 5: Run the Front End Server In Development Mode
+
+```bash
+pnpm dev
+```

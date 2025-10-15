@@ -11,6 +11,48 @@ The project documentation live on our Confluence space (see Quick Links below)
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) on instructions on how to set up your development tools and environment.
 
+## Instructions on how to run locally:
+
+### 1: Clone the repository
+
+git clone https://github.com/4350-fall-2025/frontend-1
+
+### 2: Install pnpm
+
+pnpm requires Node.js, so if that is not installed maybe go ahead and install that first.
+
+Using homebrew (if you use mac):
+
+```bash
+brew install pnpm
+```
+
+Using npm:
+
+```bash
+npm install -g pnpm@latest-10
+```
+
+### 3: Install dev dependecies
+
+```bash
+pnpm install
+```
+
+### 4: Setup and Run Back End Server
+
+As our server is not currently hosted on the cloud in order to run the app locally you need to set up the [back end](https://github.com/4350-fall-2025/backend).
+
+The instructions are located [here](https://github.com/4350-fall-2025/backend/blob/develop/README.md).
+
+Once done please run the back end server.
+
+### 5: Run the Front End Server
+
+```bash
+pnpm dev
+```
+
 ## PNPM Commands
 
 ### Install the dependencies
