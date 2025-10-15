@@ -5,50 +5,53 @@
  * - Testing layout structure and component rendering
  * - Verifying sidebar and main content placement
  * - Ensuring font variables and HTML attributes are applied correctly
- * - Mocking external dependencies (fonts and Sidebar)
+ * - Mocking external dependencies (fonts and sidebar)
  */
 
-// app/under-construction/layout.test.tsx
 import "@testing-library/jest-dom";
 import { render, screen } from "~tests/utils/custom-testing-library";
 import type { ReactNode } from "react";
+import UnderConstructionLayout from "./layout";
 
-// Mock fonts so the body className concatenation is predictable
+// mock fonts so the body className concatenation is predictable
 jest.mock("../../lib/fonts", () => ({
     dmSans: { variable: "dmSansVar" },
     tsukimiRounded: { variable: "tsukimiRoundedVar" },
 }));
 
-// Mock Sidebar to a simple test double
+// mock Sidebar to a simple test double
 jest.mock("../../components/sidebar", () => () => (
     <aside data-testid='sidebar-mock' />
 ));
-
-import UnderConstructionLayout from "./layout";
 
 const renderLayout = (children: ReactNode) =>
     render(<UnderConstructionLayout>{children}</UnderConstructionLayout>);
 
 describe("UnderConstructionLayout", () => {
+    // HTML and body attributes
     it("renders html/body with lang and font variables", () => {
         renderLayout(<div>child</div>);
         const html = document.querySelector("html");
         const body = document.querySelector("body");
 
+        // ensure the language attribute & font variables are applied
         expect(html).toHaveAttribute("lang", "en");
         expect(body?.className).toContain("dmSansVar");
         expect(body?.className).toContain("tsukimiRoundedVar");
     });
 
+    // Layout structure and child rendering
     it("renders grid with Sidebar and puts children inside <main>", () => {
         renderLayout(<div data-testid='child' />);
 
-        // CSS modules are identity-mapped in tests, so these class names exist
+        //check that the grid container exists (css module class)
         const grid = document.querySelector(".layoutGrid");
         expect(grid).toBeInTheDocument();
 
+        // sidebar mock should be rendered inside the grid
         expect(screen.getByTestId("sidebar-mock")).toBeInTheDocument();
 
+        // verify main content container & check that it holds the children
         const main = document.querySelector("main.main");
         expect(main).toBeInTheDocument();
         expect(main).toContainElement(screen.getByTestId("child"));
