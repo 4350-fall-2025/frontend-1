@@ -4,13 +4,19 @@ import {
     DEFAULT_FIRST_NAME,
     DEFAULT_LAST_NAME,
 } from "~tests/utils/defaults";
-import { fireEvent, render, screen } from "~tests/utils/custom-testing-library";
+import {
+    fireEvent,
+    render,
+    screen,
+    waitFor,
+} from "~tests/utils/custom-testing-library";
 import {
     getSignupElements,
     fillSignupWithDefaults,
     submitSignup,
 } from "~tests/utils/form-helpers";
 import OwnerSignup from "./page";
+import { OwnersAPI } from "src/api/OwnersAPI";
 
 /**
  * Test suites and mock functions generated with GPT-5 mini and help from:
@@ -23,6 +29,12 @@ jest.mock("next/navigation", () => ({
     }),
 }));
 
+// jest.mock("src/api/OwnersAPI", () => ({
+//     OwnersAPI: {
+//         ownerSignUp: jest.fn(),
+//     },
+// }));
+
 describe("Owner signup page", () => {
     let firstName: HTMLElement;
     let lastName: HTMLElement;
@@ -31,6 +43,7 @@ describe("Owner signup page", () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        OwnersAPI.ownerSignUp = jest.fn().mockResolvedValue({});
         render(<OwnerSignup />);
         ({ firstName, lastName, email, password } = getSignupElements());
     });
@@ -105,13 +118,15 @@ describe("Owner signup page", () => {
             ).resolves.toBeInTheDocument();
         });
 
-        it("submits when valid and navigates home", () => {
+        it("submits when valid and navigates home", async () => {
             fireEvent.change(firstName, {
                 target: { value: DEFAULT_FIRST_NAME },
             });
             submitSignup();
 
-            expect(pushMock).toHaveBeenCalledWith("/");
+            await waitFor(() => {
+                expect(pushMock).toHaveBeenCalledWith("/");
+            });
         });
     });
 
@@ -162,13 +177,15 @@ describe("Owner signup page", () => {
             ).resolves.toBeInTheDocument();
         });
 
-        it("submits when valid and navigates home", () => {
+        it("submits when valid and navigates home", async () => {
             fireEvent.change(lastName, {
                 target: { value: DEFAULT_LAST_NAME },
             });
             submitSignup();
 
-            expect(pushMock).toHaveBeenCalledWith("/");
+            await waitFor(() => {
+                expect(pushMock).toHaveBeenCalledWith("/");
+            });
         });
     });
 
@@ -198,11 +215,13 @@ describe("Owner signup page", () => {
             ).resolves.toBeInTheDocument();
         });
 
-        it("submits when valid and navigates home", () => {
+        it("submits when valid and navigates home", async () => {
             fireEvent.change(email, { target: { value: DEFAULT_EMAIL } });
             submitSignup();
 
-            expect(pushMock).toHaveBeenCalledWith("/");
+            await waitFor(() => {
+                expect(pushMock).toHaveBeenCalledWith("/");
+            });
         });
     });
 
@@ -290,12 +309,14 @@ describe("Owner signup page", () => {
             ).resolves.toBeInTheDocument();
         });
 
-        it("submits when valid and navigates home", () => {
+        it("submits when valid and navigates home", async () => {
             fillSignupWithDefaults();
 
             submitSignup();
 
-            expect(pushMock).toHaveBeenCalledWith("/");
+            await waitFor(() => {
+                expect(pushMock).toHaveBeenCalledWith("/");
+            });
         });
     });
 });

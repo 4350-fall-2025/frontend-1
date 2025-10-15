@@ -35,6 +35,11 @@ export class VetsAPI {
     }
 
     static async vetSignUp(vet: Vet): Promise<void> {
-        // const response = await axiosClient.post(`/vets/create`, vet);
+        const response = await axiosClient.post(`/vets/signup`, vet);
+    }
+
+    static async vetLogin(loginJSON): Promise<Vet> {
+        const response = await axiosClient.post(`/auth/login`, loginJSON);
+        return new Vet(response?.data);
     }
 }

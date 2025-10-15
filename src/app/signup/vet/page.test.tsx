@@ -6,14 +6,19 @@ import {
     DEFAULT_LAST_NAME,
     DEFAULT_PASSWORD,
 } from "~tests/utils/defaults";
-import { fireEvent, render, screen } from "~tests/utils/custom-testing-library";
+import {
+    fireEvent,
+    render,
+    screen,
+    waitFor,
+} from "~tests/utils/custom-testing-library";
 import {
     getSignupElements,
     fillSignupWithDefaults,
     submitSignup,
 } from "~tests/utils/form-helpers";
 import VetSignup from "./page";
-
+import { VetsAPI } from "src/api/VetsAPI";
 /**
  * Test suites and mock functions generated with GPT-5 mini and help from:
  * https://stackoverflow.com/questions/76858797/error-invariant-expected-app-router-to-be-mounted-why-this-happened-when-using
@@ -24,6 +29,12 @@ jest.mock("next/navigation", () => ({
         push: pushMock,
     }),
 }));
+
+// jest.mock("src/api/VetsAPI", () => ({
+//     VetsAPI: {
+//         vetSignUp: jest.fn(),
+//     },
+// }));
 
 // Some strange errors caused by scrollIntoView when testing password happy path
 // possibly due to open listboxs in Mantine Select component
@@ -46,6 +57,7 @@ describe("Vet signup page", () => {
         jest.clearAllMocks();
         user = userEvent.setup();
         render(<VetSignup />);
+        VetsAPI.vetSignUp = jest.fn().mockResolvedValue({});
 
         ({ firstName, lastName, email, password } = getSignupElements());
 
@@ -131,13 +143,15 @@ describe("Vet signup page", () => {
             ).resolves.toBeInTheDocument();
         });
 
-        it("submits when valid and navigates home", () => {
+        it("submits when valid and navigates home", async () => {
             fireEvent.change(firstName, {
                 target: { value: DEFAULT_FIRST_NAME },
             });
             submitSignup();
 
-            expect(pushMock).toHaveBeenCalledWith("/");
+            await waitFor(() => {
+                expect(pushMock).toHaveBeenCalledWith("/");
+            });
         });
     });
 
@@ -193,13 +207,15 @@ describe("Vet signup page", () => {
             ).resolves.toBeInTheDocument();
         });
 
-        it("submits when valid and navigates home", () => {
+        it("submits when valid and navigates home", async () => {
             fireEvent.change(lastName, {
                 target: { value: DEFAULT_LAST_NAME },
             });
             submitSignup();
 
-            expect(pushMock).toHaveBeenCalledWith("/");
+            await waitFor(() => {
+                expect(pushMock).toHaveBeenCalledWith("/");
+            });
         });
     });
 
@@ -234,11 +250,13 @@ describe("Vet signup page", () => {
             ).resolves.toBeInTheDocument();
         });
 
-        it("submits when valid and navigates home", () => {
+        it("submits when valid and navigates home", async () => {
             fireEvent.change(email, { target: { value: DEFAULT_EMAIL } });
             submitSignup();
 
-            expect(pushMock).toHaveBeenCalledWith("/");
+            await waitFor(() => {
+                expect(pushMock).toHaveBeenCalledWith("/");
+            });
         });
     });
 
@@ -337,7 +355,9 @@ describe("Vet signup page", () => {
 
             submitSignup();
 
-            expect(pushMock).toHaveBeenCalledWith("/");
+            await waitFor(() => {
+                expect(pushMock).toHaveBeenCalledWith("/");
+            });
         });
     });
 
@@ -404,7 +424,9 @@ describe("Vet signup page", () => {
             });
             submitSignup();
 
-            expect(pushMock).toHaveBeenCalledWith("/");
+            await waitFor(() => {
+                expect(pushMock).toHaveBeenCalledWith("/");
+            });
         });
     });
 
@@ -433,7 +455,9 @@ describe("Vet signup page", () => {
             await user.click(await screen.findByText(DEFAULT_PROVINCE));
             submitSignup();
 
-            expect(pushMock).toHaveBeenCalledWith("/");
+            await waitFor(() => {
+                expect(pushMock).toHaveBeenCalledWith("/");
+            });
         });
     });
 });

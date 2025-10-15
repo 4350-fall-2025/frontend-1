@@ -17,6 +17,8 @@ import ownerImage from "../../public/login/petOwner.jpg"; // source: https://uns
 import vetImage from "../../public/login/vet.jpg"; // source: https://www.freepik.com/free-photo/close-up-doctor-checking-cat-s-belly_23442502.htm#fromView=keyword&page=1&position=32&uuid=d7e73635-ac35-41b6-80b1-b544a20a5f68&query=Vet
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { VetsAPI } from "src/api/VetsAPI";
+import { OwnersAPI } from "src/api/OwnersAPI";
 
 export default function Home() {
     const owner: string = "owner";
@@ -34,6 +36,7 @@ export default function Home() {
 
     // sets selected tab/user to be owner by default
     const [selectedUser, setSelectedUser] = useState(owner);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const emailPlaceholder: string = "youremail@email.com";
 
@@ -47,13 +50,23 @@ export default function Home() {
 
     const router = useRouter();
 
-    const handleLogin = (values: { email: string; password: string }) => {
+    const handleLogin = async (values: { email: string; password: string }) => {
         // TODO: check credentials with backend
 
-        if (selectedUser === vet) {
-            router.push("/dashboard/vet");
-        } else {
-            router.push("/dashboard/owner");
+        try {
+            if (selectedUser === vet) {
+                const vet = await VetsAPI.vetLogin(values);
+                console.log(vet);
+                localStorage.setItem("currentUser", JSON.stringify(owner));
+                router.push("/dashboard/vet");
+            } else {
+                const owner = await OwnersAPI.ownerLogin(values);
+                console.log(owner);
+                localStorage.setItem("currentUser", JSON.stringify(owner));
+                router.push("/dashboard/owner");
+            }
+        } catch (error) {
+            setErrorMessage("Invalid Login. Please try again.");
         }
     };
 
@@ -98,6 +111,9 @@ export default function Home() {
                         </form>
 
                         <div className={styles.login_footer}>
+                            {errorMessage != null && (
+                                <p style={{ color: "red" }}> {errorMessage} </p>
+                            )}
                             <a href=''>Forgot password</a>
                             <p>
                                 Don't have an account yet?{" "}

@@ -34,7 +34,13 @@ export class OwnersAPI {
         // const response = await axiosClient.delete(`/owners/${id}`);
     }
 
-    static async ownerSignUp(owner: Owner): Promise<void> {
-        // const response = await axiosClient.post(`/owners/create`, owner);
+    static async ownerSignUp(owner: Owner): Promise<Owner> {
+        const response = await axiosClient.post(`/owners/signup`, owner);
+        return new Owner(response?.data);
+    }
+
+    static async ownerLogin(loginJSON): Promise<Owner> {
+        const response = await axiosClient.post(`/auth/login`, loginJSON);
+        return new Owner(response?.data);
     }
 }
