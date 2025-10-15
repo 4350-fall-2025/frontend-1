@@ -112,7 +112,9 @@ export default function Home() {
                             {errorMessage != null && (
                                 <p style={{ color: "red" }}> {errorMessage} </p>
                             )}
-                            <a href=''>Forgot password</a>
+                            <a href='/under-construction?hideNav=true'>
+                                Forgot password
+                            </a>
                             <p>
                                 Don't have an account yet?{" "}
                                 <Link href={`/signup/${selectedUser}`}>

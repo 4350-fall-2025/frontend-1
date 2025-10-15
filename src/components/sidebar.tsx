@@ -12,7 +12,7 @@ import Link from "next/link";
 import { NavLink, Stack } from "@mantine/core";
 import Image, { StaticImageData } from "next/image";
 import { useState } from "react";
-import testLogo from "../../public/logo/testLogo.avif";
+import logo from "../../public/logo/tennisLogo.png";
 import styles from "./sidebar.module.scss";
 
 /**
@@ -45,29 +45,27 @@ export default function Sidebar() {
 
             {/* Main sidebar */}
             <aside className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
-                <Link href='/' className={styles.logoLink}>
+                <div className={styles.logoLink}>
                     <Image
-                        src={testLogo}
+                        src={logo}
                         alt='QDog Logo'
-                        width={150}
-                        height={150}
                         style={{
-                            width: "100%",
+                            width: "60%",
                             height: "auto",
                         }}
                     />
-                </Link>
+                </div>
 
                 <Stack gap='xs'>
                     <NavLink
                         component={Link}
-                        href='/under-construction'
+                        href='/dashboard/owner'
                         label='Dashboard'
                         className={styles.navLink}
                     />
                     <NavLink
                         component={Link}
-                        href='/under-construction'
+                        href='/new-pet'
                         label='My Pets'
                         className={styles.navLink}
                     />
