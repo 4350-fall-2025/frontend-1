@@ -72,13 +72,6 @@ describe("Sidebar Component", () => {
             expect(messagesLink).toHaveAttribute("href", "/under-construction");
         });
 
-        //COMMENTED OUT BECAUSE WAS GIVING ERRORS AND NO TIME TO FIX
-
-        //         it("logo link should navigate to home", () => {
-        //             const logoLink = screen.getByAltText("QDog Logo").closest("a");
-        //             expect(logoLink).toHaveAttribute("href", "/");
-        //         });
-
         it("nav links should have navLink class styling", () => {
             const dashboardLink = screen.getByText("Dashboard");
             expect(dashboardLink.closest("a")?.className).toContain("navLink");

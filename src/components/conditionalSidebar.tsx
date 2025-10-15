@@ -9,11 +9,12 @@
 
 "use client";
 
+import { Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Sidebar from "./sidebar";
 
-/** Show Sidebar on every route except /signup (and /signup/...) */
-export default function ConditionalSidebar() {
+/** Inner component that uses useSearchParams */
+function SidebarContent() {
     const pathname = usePathname() || "/";
     const searchParams = useSearchParams();
 
@@ -27,4 +28,13 @@ export default function ConditionalSidebar() {
 
     if (isSignInOrUp || isForgotPassword) return null;
     return <Sidebar />;
+}
+
+/** Show Sidebar on every route except /signup (and /signup/...) */
+export default function ConditionalSidebar() {
+    return (
+        <Suspense fallback={null}>
+            <SidebarContent />
+        </Suspense>
+    );
 }

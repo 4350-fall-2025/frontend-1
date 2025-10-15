@@ -98,12 +98,13 @@ describe("ConditionalSidebar Component", () => {
     });
 
     describe("Edge cases", () => {
-        //COMMENTED OUT BECAUSE WAS GIVING ERRORS AND NO TIME TO FIX
-        //         it("should handle null pathname gracefully", () => {
-        //             usePathname.mockReturnValue(null);
-        //             render(<ConditionalSidebar />);
-        //             expect(screen.getByTestId("sidebar-mock")).toBeInTheDocument();
-        //         });
+        it("should handle null pathname gracefully (defaults to / and hides sidebar)", () => {
+            usePathname.mockReturnValue(null);
+            render(<ConditionalSidebar />);
+            expect(
+                screen.queryByTestId("sidebar-mock"),
+            ).not.toBeInTheDocument();
+        });
 
         it("should render sidebar on routes that contain 'signup' but don't start with it", () => {
             usePathname.mockReturnValue("/admin/signup-management");
