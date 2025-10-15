@@ -1,6 +1,6 @@
 "use client";
 import styles from "./page.module.scss";
-import { Owner } from "src/models/Owner";
+import { Owner } from "src/models/owner";
 import { useEffect, useState } from "react";
 export default function OwnerDashboard() {
     const [owner, setOwner] = useState<Owner>(null);

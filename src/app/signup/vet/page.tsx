@@ -18,8 +18,8 @@ import {
 } from "~util/validation/validate-signup";
 
 import styles from "./page.module.scss";
-import { Vet } from "src/models/Vet";
-import { VetsAPI } from "src/api/VetsAPI";
+import { Vet } from "src/models/vet";
+import { VetsAPI } from "src/api/vetsAPI";
 
 export default function VetSignup() {
     const [_validatedPassword, setValidatedPassword] = useState<string>("");

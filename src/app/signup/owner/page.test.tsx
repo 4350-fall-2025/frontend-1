@@ -16,7 +16,7 @@ import {
     submitSignup,
 } from "~tests/utils/form-helpers";
 import OwnerSignup from "./page";
-import { OwnersAPI } from "src/api/OwnersAPI";
+import { OwnersAPI } from "src/api/ownersAPI";
 
 /**
  * Test suites and mock functions generated with GPT-5 mini and help from:

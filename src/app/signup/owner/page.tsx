@@ -12,8 +12,8 @@ import {
 } from "~util/validation/validate-signup";
 
 import styles from "./page.module.scss";
-import { OwnersAPI } from "src/api/OwnersAPI";
-import { Owner } from "src/models/Owner";
+import { OwnersAPI } from "src/api/ownersAPI";
+import { Owner } from "src/models/owner";
 
 export default function OwnerSignup() {
     const [_password, setPassword] = useState<string>("");

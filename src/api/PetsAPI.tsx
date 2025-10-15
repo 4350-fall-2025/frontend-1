@@ -1,5 +1,5 @@
 import axiosClient from "./axiosClient";
-import { Pet } from "src/models/Pet";
+import { Pet } from "src/models/pet";
 
 //Note: currently all functions returns mock info, with the actual api code is commented out
 class PetsAPI {
