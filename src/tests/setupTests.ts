@@ -19,21 +19,33 @@ class MockResizeObserver {
 // @ts-ignore
 global.ResizeObserver = MockResizeObserver;
 
-// Stub missing DOM/browser APIs that Mantine or our code uses during mount
+// Mock URL constructor and its static methods for tests generated with Claude Sonnet 4.5
 // @ts-ignore
-if (!globalThis.URL?.createObjectURL) {
-    // @ts-ignore
-    globalThis.URL = Object.create(globalThis.URL || {});
-}
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+global.URL = class URL {
+    constructor(url: string, base?: string) {
+        return {
+            href: url,
+            protocol: "http:",
+            host: "localhost",
+            hostname: "localhost",
+            port: "",
+            pathname: url,
+            search: "",
+            hash: "",
+            origin: "http://localhost",
+        };
+    }
+    static createObjectURL = jest.fn(() => "blob:mock-placeholder");
+    static revokeObjectURL = jest.fn();
+};
+
+// Also set static methods on globalThis.URL for compatibility
 // @ts-ignore
 globalThis.URL.createObjectURL = jest.fn(() => "blob:mock-placeholder");
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 globalThis.URL.revokeObjectURL = jest.fn();
 
-// Mantine's combobox/select code calls scrollIntoView on items. jsdom doesn't
-// implement this; provide a no-op so it won't throw.
+// Prevent TypeScript errors about missing scrollIntoView, which is called by some Mantine components.
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 Element.prototype.scrollIntoView = function () {
@@ -41,7 +53,7 @@ Element.prototype.scrollIntoView = function () {
 };
 
 // Mock Mantine's useFileDialog hook so tests don't open native dialogs or leave event listeners
-// This mock keeps the real implementation for everything except useFileDialog
+// This mock keeps the real implementation for everything except useFileDialog. Generated with Claude Sonnet 4.5
 jest.mock("@mantine/hooks", () => {
     const actual = jest.requireActual("@mantine/hooks");
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -67,5 +79,5 @@ afterEach(() => {
     jest.clearAllMocks();
 });
 
-// Optional: increase default timeout for async tests if needed
+// Increase default timeout for async tests if needed
 jest.setTimeout(10000);
