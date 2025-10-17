@@ -4,7 +4,7 @@ import {
     DEFAULT_LAST_NAME,
     DEFAULT_EMAIL,
     DEFAULT_PASSWORD,
-} from "./defaults";
+} from "../defaults";
 
 type SignupFields = {
     email?: string;

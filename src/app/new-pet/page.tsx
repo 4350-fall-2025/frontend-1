@@ -2,7 +2,7 @@
 
 import { Box, Button, Group, Select, Switch, TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { useForm } from "@mantine/form";
+import { isNotEmpty, useForm } from "@mantine/form";
 import { DatePickerInput } from "@mantine/dates";
 import {
     defaultDate,
@@ -10,13 +10,8 @@ import {
     animalGroupOptions,
     basicOptions,
 } from "~data/constants";
-import {
-    validateImage,
-    validateSelectedAnimalGroup,
-    validateSelectedSex,
-    validateSelectedSpayedOrNeutered,
-} from "~util/validation/validate-new-pet";
-import { urlToFile } from "~util/fileHandling.ts";
+import { validateImage } from "~util/validation/validate-new-pet";
+import { urlToFile } from "~util/file-handling";
 import {
     validateOptionalDateValue,
     validateRequiredDateValue,
@@ -62,9 +57,11 @@ export default function NewPet() {
         validate: {
             petImage: validateImage,
             name: validateRequiredStringValue,
-            sex: validateSelectedSex,
-            spayedOrNeutered: validateSelectedSpayedOrNeutered,
-            animalGroup: validateSelectedAnimalGroup,
+            sex: isNotEmpty("This sex field can't be empty."),
+            spayedOrNeutered: isNotEmpty(
+                "This spayed/neutered field can't be empty.",
+            ),
+            animalGroup: isNotEmpty("This animal group field can't be empty."),
             species: validateRequiredStringValue,
             breed: validateRequiredStringValue,
             birthdate: validateRequiredDateValue,
@@ -128,6 +125,13 @@ export default function NewPet() {
 
     const handleSubmit = async (values: typeof form.values) => {
         try {
+            const newBirthDate: Date = estimatedBirthDate
+            ? defaultDate
+            : values.birthdate;
+            const estimatedDate: Date = estimatedBirthDate
+                ? values.birthdate
+                : defaultDate;
+
             let sterileStatus;
             if (values.spayedOrNeutered == "Yes") {
                 sterileStatus = "STERILE";
@@ -152,7 +156,7 @@ export default function NewPet() {
         <div className={styles.page}>
             <main>
                 <h1>Add a New Pet</h1>
-                <form onSubmit={form.onSubmit(handleSubmit)}>
+                <form noValidate onSubmit={form.onSubmit(handleSubmit)}>
                     <div className={styles.form_content}>
                         <div className={styles.left_content}>
                             <div className={styles.image_section}>
@@ -170,14 +174,14 @@ export default function NewPet() {
                                             variant='default'
                                             onClick={resetImage}
                                         >
-                                            Reset
+                                            Reset image
                                         </Button>
                                         <Button
                                             onClick={fileDialog.open}
                                             variant='filled'
                                             className={styles.button}
                                         >
-                                            Pick files
+                                            Pick image
                                         </Button>
                                     </Group>
                                 </div>
@@ -195,7 +199,7 @@ export default function NewPet() {
                                 {...form.getInputProps("sex")}
                                 key={form.key("sex")}
                                 label='Sex'
-                                placeholder='Please make a selection'
+                                placeholder='Please select a sex'
                                 required
                             />
                         </div>
@@ -205,7 +209,7 @@ export default function NewPet() {
                                 {...form.getInputProps("spayedOrNeutered")}
                                 key={form.key("spayedOrNeutered")}
                                 label='Spayed/Neutered'
-                                placeholder='Please make a selection'
+                                placeholder='Please select an option for spayed/neutered'
                                 required
                             />
 
@@ -214,7 +218,7 @@ export default function NewPet() {
                                 {...form.getInputProps("animalGroup")}
                                 key={form.key("animalGroup")}
                                 label='Animal Group'
-                                placeholder='Please make a selection'
+                                placeholder='Please select an animal group'
                                 required
                             />
 
@@ -236,6 +240,7 @@ export default function NewPet() {
                                     label='Date of Birth'
                                     required
                                     key={form.key("birthdate")}
+                                    error={form.errors.birthdate}
                                     {...form.getInputProps("birthdate")}
                                 ></DatePickerInput>
                                 <Switch
@@ -252,6 +257,7 @@ export default function NewPet() {
                             <DatePickerInput
                                 label='Date of Adoption'
                                 key={form.key("adoptionDate")}
+                                error={form.errors.adoptionDate}
                                 {...form.getInputProps("adoptionDate")}
                             ></DatePickerInput>
                         </div>

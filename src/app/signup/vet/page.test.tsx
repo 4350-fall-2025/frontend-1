@@ -16,7 +16,7 @@ import {
     getSignupElements,
     fillSignupWithDefaults,
     submitSignup,
-} from "~tests/utils/form-helpers";
+} from "~tests/utils/form-helpers/signup-form-helper";
 import VetSignup from "./page";
 import { VetsAPI } from "src/api/vetsAPI";
 /**
@@ -29,11 +29,6 @@ jest.mock("next/navigation", () => ({
         push: pushMock,
     }),
 }));
-
-// Some strange errors caused by scrollIntoView when testing password happy path
-// possibly due to open listboxs in Mantine Select component
-// Debugged with help from copilot
-HTMLElement.prototype.scrollIntoView = jest.fn();
 
 describe("Vet signup page", () => {
     const DEFAULT_PROVINCE = "MB";
