@@ -1,0 +1,129 @@
+/**
+ * Sidebar Styling Module
+ *
+ * Developed with assistance from Claude AI and ChatGPT for:
+ * - Responsive layout structure
+ * - Mobile/desktop breakpoints
+ * - Interactive state styling (hover, active)
+ */
+
+@import "../app/globals.scss";
+
+/* Toggle button - hidden on desktop, visible on mobile */
+.toggleBtn {
+    display: none;
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 1000;
+    padding: 8px 12px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Overlay backdrop for mobile */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+}
+
+/* Main sidebar */
+.sidebar {
+    width: 220px;
+    padding: 12px;
+    height: 100vh;
+    overflow-y: auto;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: $color-green;
+    border-right: 1px solid #eee;
+    transition: transform 0.3s ease;
+    transform: translateX(0);
+    z-index: 1001;
+}
+
+/* NavLink font styling */
+.navLink {
+    font-family: var(--font-dm_sans, "DM Sans", sans-serif);
+    font-size: $font-medium;
+
+    &:hover {
+        background-color: rgba($color-green-dark, 0.5);
+    }
+
+    &.active {
+        background-color: $color-green-dark;
+        color: $color-white;
+    }
+}
+
+/* Logo link */
+.logoLink {
+    margin-bottom: 16px;
+    display: block;
+}
+
+/* Logo image */
+.logo {
+    width: 100%;
+    height: auto;
+}
+
+/* Hide logo on mobile */
+@media (max-width: $size-tablet) {
+    .logo {
+        display: none !important;
+    }
+}
+
+/* Spacer for desktop - prevents content from hiding behind fixed sidebar */
+.spacer {
+    display: block;
+    width: 220px;
+    flex-shrink: 0;
+}
+
+/* MOBILE STYLES - screens 768px and below */
+@media (max-width: $size-tablet) {
+    /* Show toggle button on mobile */
+    .toggleBtn {
+        display: block;
+    }
+
+    /* Show overlay when needed */
+    .overlay {
+        display: block;
+    }
+
+    /* Sidebar slides in from left on mobile */
+    .sidebar {
+        width: 200px;
+        left: auto;
+        right: 0;
+        transform: translateX(100%);
+        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+        border-left: 1px solid #eee;
+        border-right: none;
+    }
+
+    /* When sidebar is open, slide it in */
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    /* Hide spacer on mobile */
+    .spacer {
+        display: none;
+    }
+}
