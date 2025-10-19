@@ -40,6 +40,8 @@ export default function NewPet() {
     const [previewUrl, setPreviewUrl] = useState<string>(placeholderImage.src);
     const router = useRouter();
 
+    const [error, setError] = useState("");
+
     const form = useForm({
         mode: "uncontrolled",
         initialValues: {
@@ -125,13 +127,7 @@ export default function NewPet() {
 
     const handleSubmit = async (values: typeof form.values) => {
         try {
-            const newBirthDate: Date = estimatedBirthDate
-                ? defaultDate
-                : values.birthdate;
-            const estimatedDate: Date = estimatedBirthDate
-                ? values.birthdate
-                : defaultDate;
-
+            setError("");
             let sterileStatus;
             if (values.spayedOrNeutered == "Yes") {
                 sterileStatus = "STERILE";
@@ -143,12 +139,14 @@ export default function NewPet() {
             const user = JSON.parse(localStorage.getItem("currentUser"));
             const petJSON = { ...values, sterileStatus: sterileStatus };
             const pet = new Pet(petJSON);
-            if (user.id != null) {
+            if (user?.id != null) {
                 await PetsAPI.createPet(user.id, pet);
                 router.push("/dashboard/owner");
+            } else {
+                setError("You cannot make a pet without being logged in.");
             }
         } catch (error) {
-            //TODO: add error message
+            setError("You cannot make a pet without being logged in.");
         }
     };
 
@@ -272,6 +270,7 @@ export default function NewPet() {
                             Save
                         </Button>
                     </div>
+                    <p className={styles.error_message}>{error}</p>
                 </form>
             </main>
         </div>
