@@ -76,7 +76,7 @@ describe("Login page (src/app/page.tsx)", () => {
     it("sign up link points to /signup/owner by default", () => {
         setup();
         const link = screen.getByRole("link", { name: /sign up!/i });
-        expect(link).toHaveAttribute("href", "/signup/owner");
+        expect(link).toHaveAttribute("href", "/auth/sign-up/owner");
     });
 
     it("switching to Veterinarian updates the sign up link to /signup/vet", async () => {
@@ -87,10 +87,10 @@ describe("Login page (src/app/page.tsx)", () => {
         await user.click(vetTab);
 
         const link = screen.getByRole("link", { name: /sign up!/i });
-        expect(link).toHaveAttribute("href", "/signup/vet");
+        expect(link).toHaveAttribute("href", "/auth/sign-up/vet");
     });
 
-    it("submits and routes to /dashboard/owner when Pet Owner is selected", async () => {
+    it("submits and routes to /owner/dashboard when Pet Owner is selected", async () => {
         setup();
         const user = userEvent.setup();
 
@@ -102,11 +102,11 @@ describe("Login page (src/app/page.tsx)", () => {
         await user.click(screen.getByRole("button", { name: /login/i }));
 
         await waitFor(() => {
-            expect(push).toHaveBeenCalledWith("/dashboard/owner");
+            expect(push).toHaveBeenCalledWith("/owner/dashboard");
         });
     });
 
-    it("submits and routes to /dashboard/vet when Veterinarian is selected", async () => {
+    it("submits and routes to /vet/dashboard when Veterinarian is selected", async () => {
         setup();
         const user = userEvent.setup();
 
@@ -121,7 +121,7 @@ describe("Login page (src/app/page.tsx)", () => {
         await user.click(screen.getByRole("button", { name: /login/i }));
 
         await waitFor(() => {
-            expect(push).toHaveBeenCalledWith("/dashboard/vet");
+            expect(push).toHaveBeenCalledWith("/vet/dashboard");
         });
     });
 
