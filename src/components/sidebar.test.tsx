@@ -47,14 +47,14 @@ describe("Sidebar Component", () => {
     });
 
     describe("Navigation Links", () => {
-        it("Dashboard link should navigate to /dashboard/owner", () => {
+        it("Dashboard link should navigate to /owner/dashboard", () => {
             const dashboardLink = screen.getByText("Dashboard").closest("a");
-            expect(dashboardLink).toHaveAttribute("href", "/dashboard/owner");
+            expect(dashboardLink).toHaveAttribute("href", "/owner/dashboard");
         });
 
-        it("My Pets link should navigate to /new-pet", () => {
+        it("My Pets link should navigate to /owner/pets/create", () => {
             const myPetsLink = screen.getByText("My Pets").closest("a");
-            expect(myPetsLink).toHaveAttribute("href", "/new-pet");
+            expect(myPetsLink).toHaveAttribute("href", "/owner/pets/create");
         });
 
         it("other nav links should link to under-construction page", () => {

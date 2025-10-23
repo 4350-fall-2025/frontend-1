@@ -42,11 +42,11 @@ jest.mock("~util/validation/validate-signin", () => ({
 }));
 
 // ---- SUT ----
-import Home from "./page";
+import LoginPage from "./page";
 
 const setup = () => {
     push.mockClear();
-    return render(<Home />);
+    return render(<LoginPage />);
 };
 
 describe("Login page (src/app/page.tsx)", () => {

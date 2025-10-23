@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Group, PasswordInput, Text, TextInput } from "@mantine/core";
+import { Button, Group, PasswordInput, TextInput } from "@mantine/core";
 import { isEmail, useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

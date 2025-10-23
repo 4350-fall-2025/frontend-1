@@ -1,6 +1,5 @@
 "use client"; // doesn't use server
 
-import Image, { StaticImageData } from "next/image";
 import {
     Tabs,
     TabsList,
@@ -9,18 +8,20 @@ import {
     PasswordInput,
     Button,
 } from "@mantine/core";
-import { useState } from "react";
 import { isEmail, useForm } from "@mantine/form";
-import { validatePassword } from "~util/validation/validate-signin";
-import styles from "./page.module.scss";
-import ownerImage from "../../public/login/petOwner.jpg"; // source: https://unsplash.com/photos/woman-hugging-a-dog-FtuJIuBbUhI
-import vetImage from "../../public/login/vet.jpg"; // source: https://www.freepik.com/free-photo/close-up-doctor-checking-cat-s-belly_23442502.htm#fromView=keyword&page=1&position=32&uuid=d7e73635-ac35-41b6-80b1-b544a20a5f68&query=Vet
+import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { VetsAPI } from "src/api/vetsAPI";
-import { OwnersAPI } from "src/api/ownersAPI";
+import { useState } from "react";
 
-export default function Home() {
+import { VetsAPI } from "~api/vetsAPI";
+import { OwnersAPI } from "~api/ownersAPI";
+import { validatePassword } from "~util/validation/validate-signin";
+import ownerImage from "~public/login/petOwner.jpg"; // source: https://unsplash.com/photos/woman-hugging-a-dog-FtuJIuBbUhI
+import vetImage from "~public/login/vet.jpg"; // source: https://www.freepik.com/free-photo/close-up-doctor-checking-cat-s-belly_23442502.htm#fromView=keyword&page=1&position=32&uuid=d7e73635-ac35-41b6-80b1-b544a20a5f68&query=Vet
+import styles from "./page.module.scss";
+
+export default function LoginPage() {
     const owner: string = "owner";
     const vet: string = "vet";
 
@@ -70,7 +71,7 @@ export default function Home() {
 
     return (
         <div className={styles.page}>
-            <main>
+            <main className={styles.main}>
                 <div className={styles.grid}>
                     <div className={styles.login_section}>
                         <h1> Welcome to QDog!</h1>
@@ -126,8 +127,8 @@ export default function Home() {
 
                     <div className={styles.image_grid}>
                         <Image
-                            src={backdropImage}
                             alt={backdropImageAltText}
+                            src={backdropImage}
                         ></Image>
                     </div>
                 </div>
