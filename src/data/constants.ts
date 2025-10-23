@@ -24,7 +24,7 @@ export const basicOptions: string[] = [
     "Not Applicable",
 ];
 
-export const defaultDate: Date = new Date(0);
+export const defaultDate: Date = new Date();
 
 export const todayDate: Date = new Date();
 

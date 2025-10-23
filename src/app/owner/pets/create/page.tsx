@@ -21,7 +21,7 @@ import styles from "./page.module.scss";
 import placeholderImage from "~public/placeholder.jpg"; // https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=
 import { useFileDialog } from "@mantine/hooks";
 import { PetsAPI } from "src/api/petsAPI";
-import { Pet } from "src/models/pet";
+import { Pet, SterileStatus } from "src/models/pet";
 import { useRouter } from "next/navigation";
 
 /**
@@ -128,13 +128,20 @@ export default function NewPet() {
     const handleSubmit = async (values: typeof form.values) => {
         try {
             setError("");
-            let sterileStatus;
+            const newBirthDate: Date = estimatedBirthDate
+                ? defaultDate
+                : values.birthdate;
+            const estimatedDate: Date = estimatedBirthDate
+                ? values.birthdate
+                : defaultDate;
+
+            let sterileStatus: SterileStatus;
             if (values.spayedOrNeutered == "Yes") {
-                sterileStatus = "STERILE";
+                sterileStatus = SterileStatus.sterile;
             } else if (values.spayedOrNeutered == "No") {
-                sterileStatus = "NOT_STERILE";
+                sterileStatus = SterileStatus.nonsterile;
             } else {
-                sterileStatus = "UNKNOWN";
+                sterileStatus = SterileStatus.unknown;
             }
             const user = JSON.parse(localStorage.getItem("currentUser"));
             const petJSON = { ...values, sterileStatus: sterileStatus };
