@@ -58,11 +58,11 @@ export default function LoginPage() {
             if (selectedUser === vet) {
                 const vet = await VetsAPI.vetLogin(values);
                 localStorage.setItem("currentUser", JSON.stringify(vet));
-                router.push("/dashboard/vet");
+                router.push("/vet/dashboard");
             } else {
                 const owner = await OwnersAPI.ownerLogin(values);
                 localStorage.setItem("currentUser", JSON.stringify(owner));
-                router.push("/dashboard/owner");
+                router.push("/owner/dashboard");
             }
         } catch (error) {
             setErrorMessage("Invalid Login. Please try again.");
@@ -118,7 +118,7 @@ export default function LoginPage() {
                             </a>
                             <p>
                                 Don't have an account yet?{" "}
-                                <Link href={`/signup/${selectedUser}`}>
+                                <Link href={`/auth/sign-up/${selectedUser}`}>
                                     Sign up!
                                 </Link>
                             </p>
