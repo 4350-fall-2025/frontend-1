@@ -3,8 +3,6 @@ import {
     DEFAULT_NAME,
     DEFAULT_SPECIES,
     DEFAULT_BREED_OR_VARIETY,
-    DEFAULT_BIRTH_DATE,
-    DEFAULT_ADOPTION_DATE,
 } from "../defaults";
 
 /**
@@ -56,8 +54,7 @@ export async function getNewPetElements() {
 
 // Note: this does not fill select inputs; use pickSelectDefaults for those
 export async function fillNewPetDefaults(overrides?: NewPetFields) {
-    const { name, species, breedOrVariety, birthDate, adoptionDate } =
-        await getNewPetElements();
+    const { name, species, breedOrVariety } = await getNewPetElements();
 
     fireEvent.change(name, {
         target: { value: overrides?.name ?? DEFAULT_NAME },

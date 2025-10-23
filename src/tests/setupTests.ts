@@ -22,7 +22,7 @@ global.ResizeObserver = MockResizeObserver;
 // Mock URL constructor and its static methods for tests generated with Claude Sonnet 4.5
 // @ts-ignore
 global.URL = class URL {
-    constructor(url: string, base?: string) {
+    constructor(url: string) {
         return {
             href: url,
             protocol: "http:",

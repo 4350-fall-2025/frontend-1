@@ -10,8 +10,7 @@
 import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
-import { dmSans, tsukimiRounded } from "../lib/fonts";
-import ConditionalSidebar from "../components/conditionalSidebar";
+import { dmSans, tsukimiRounded } from "~lib/fonts";
 import styles from "./layout.module.scss";
 
 /**
@@ -28,10 +27,7 @@ export default function RootLayout({
         <html lang='en'>
             <body className={`${dmSans.variable} ${tsukimiRounded.variable}`}>
                 <MantineProvider>
-                    <div className={styles.layoutGrid}>
-                        <ConditionalSidebar />
-                        <main className={styles.main}>{children}</main>
-                    </div>
+                    <div className={styles.layoutGrid}>{children}</div>
                 </MantineProvider>
             </body>
         </html>

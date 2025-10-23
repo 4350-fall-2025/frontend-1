@@ -10,9 +10,9 @@
 "use client";
 import Link from "next/link";
 import { NavLink, Stack } from "@mantine/core";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import { useState } from "react";
-import logo from "../../public/logo/tennisLogo.png";
+import logo from "~public/logo/tennisLogo.png";
 import styles from "./sidebar.module.scss";
 
 /**
@@ -59,13 +59,13 @@ export default function Sidebar() {
                 <Stack gap='xs'>
                     <NavLink
                         component={Link}
-                        href='/dashboard/owner'
+                        href='/owner/dashboard'
                         label='Dashboard'
                         className={styles.navLink}
                     />
                     <NavLink
                         component={Link}
-                        href='/new-pet'
+                        href='/owner/pets/create'
                         label='My Pets'
                         className={styles.navLink}
                     />

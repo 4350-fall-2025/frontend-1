@@ -1,0 +1,47 @@
+@import "../../globals.scss";
+
+/* Main container — aligns text to the top-left beside the sidebar */
+.page {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* align to top */
+    align-items: flex-start; /* align to left */
+    min-height: 100vh;
+    padding: 40px 20px; /* top + general spacing */
+    background-color: #f9f9f9;
+    text-align: left;
+
+    /* Reserve space for the sidebar on desktop */
+    @media (min-width: 769px) {
+        padding-left: 240px; /* 220 sidebar + small buffer */
+    }
+
+    h1 {
+        font-family: var(--font-tsukimi_rounded), var(--font-dm_sans), Arial;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    p {
+        font-family: var(--font-dm_sans), Arial;
+        font-size: $font-medium;
+        font-weight: 400;
+        color: #333;
+        margin-top: 0;
+    }
+}
+
+/* responsive font sizes */
+@media (max-width: $size-mobile) {
+    .page h1 {
+        font-size: 1.8rem;
+    }
+}
+
+@media (min-width: $size-tablet) {
+    .page h1 {
+        font-size: 2.5rem;
+    }
+}
