@@ -9,10 +9,14 @@
 @import "globals.scss";
 
 /* Main grid layout */
-.layoutGrid {
-    display: grid;
-    //grid-template-columns: 220px 1fr;
-    min-height: 100vh;
+.globalFonts {
+    h1 {
+        font-family: var(--font-tsukimi_rounded), var(--font-dm_sans), Arial;
+    }
+
+    p {
+        font-family: var(--font-dm_sans), Arial;
+    }
 }
 
 .layout {
@@ -20,9 +24,7 @@
     min-height: 100vh;
 }
 
-/* MOBILE STYLES - screens 768px and below */
-@media (max-width: $size-tablet) {
-    .layoutGrid {
-        grid-template-columns: 1fr;
-    }
+/* so that sidebar doesn't cover the main page when the screen is resized */
+.content {
+    flex: 1 1 auto;
 }

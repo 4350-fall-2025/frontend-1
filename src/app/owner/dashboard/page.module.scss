@@ -7,17 +7,11 @@
     justify-content: flex-start; /* align to top */
     align-items: flex-start; /* align to left */
     min-height: 100vh;
-    padding: 40px 20px; /* top + general spacing */
+    padding: 40px; /* top + general spacing */
     background-color: #f9f9f9;
     text-align: left;
 
-    /* Reserve space for the sidebar on desktop */
-    @media (min-width: 769px) {
-        padding-left: 240px; /* 220 sidebar + small buffer */
-    }
-
     h1 {
-        font-family: var(--font-tsukimi_rounded), var(--font-dm_sans), Arial;
         font-size: 2.5rem;
         font-weight: 700;
         margin-bottom: 10px;
@@ -25,7 +19,6 @@
     }
 
     p {
-        font-family: var(--font-dm_sans), Arial;
         font-size: $font-medium;
         font-weight: 400;
         color: #333;
