@@ -10,7 +10,9 @@ export class Pet {
     public readonly species: string;
     public readonly id: number;
     public readonly birthdate: string;
+    public readonly estimatedBirthdate: boolean;
     public readonly sterileStatus: SterileStatus;
+    public readonly animalGroup: string;
 
     constructor(JSON) {
         Object.assign(this, JSON);

@@ -126,22 +126,24 @@ export default function NewPet() {
     const handleSubmit = async (values: typeof form.values) => {
         try {
             setError("");
-            const estimatedDate: Date = estimatedBirthDate
-                ? values.birthdate
-                : todayDate;
-
-            let sterileStatus: SterileStatus;
-            if (values.spayedOrNeutered == "Yes") {
-                sterileStatus = SterileStatus.sterile;
-            } else if (values.spayedOrNeutered == "No") {
-                sterileStatus = SterileStatus.nonsterile;
-            } else {
-                sterileStatus = SterileStatus.unknown;
-            }
             const user = JSON.parse(localStorage.getItem("currentUser"));
-            const petJSON = { ...values, sterileStatus: sterileStatus };
-            const pet = new Pet(petJSON);
+
             if (user?.id != null) {
+                let sterileStatus: SterileStatus;
+                if (values.spayedOrNeutered == "Yes") {
+                    sterileStatus = SterileStatus.sterile;
+                } else if (values.spayedOrNeutered == "No") {
+                    sterileStatus = SterileStatus.nonsterile;
+                } else {
+                    sterileStatus = SterileStatus.unknown;
+                }
+
+                const petJSON = {
+                    ...values,
+                    sterileStatus: sterileStatus,
+                    estimatedBirthdate: estimatedBirthDate,
+                };
+                const pet = new Pet(petJSON);
                 await PetsAPI.createPet(user.id, pet);
                 router.push("/owner/dashboard");
             } else {

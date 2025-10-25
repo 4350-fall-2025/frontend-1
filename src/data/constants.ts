@@ -29,7 +29,7 @@ export const defaultDate: Date = new Date(0);
 export const todayDate: Date = new Date();
 
 export const animalGroupOptions: string[] = [
-    "Small animal (e.g. cat, rabbit, and mouse)",
+    "Small mammal (e.g. cat, rabbit, and mouse)",
     "Farm (e.g. chicken, pig, and cow)",
     "Equine (e.g. horse)",
     "Bird",
