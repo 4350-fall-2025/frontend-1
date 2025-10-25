@@ -89,7 +89,10 @@ export default function OwnerSignup() {
                         label='Password'
                         required
                     />
-                    <PasswordRequirements password={_password} />
+                    <PasswordRequirements
+                        password={_password}
+                        isDirty={form.isDirty("password")}
+                    />
                 </div>
                 <Group>
                     <Button type='submit'>I'm ready!</Button>

@@ -47,8 +47,10 @@ function PasswordRequirement({
 
 export default function PasswordRequirements({
     password,
+    isDirty,
 }: {
     password: string;
+    isDirty: boolean;
 }) {
     return (
         <div>
@@ -56,7 +58,7 @@ export default function PasswordRequirements({
                 <PasswordRequirement
                     key={index}
                     label={requirement.label}
-                    meets={requirement.re.test(password)}
+                    meets={requirement.re.test(password) && isDirty}
                 />
             ))}
         </div>
