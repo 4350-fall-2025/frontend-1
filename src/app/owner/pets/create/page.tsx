@@ -9,7 +9,6 @@ import { animalGroupOptions, sexOptions } from "~data/pets/constants";
 import { validateImage } from "~util/validation/validate-new-pet";
 import { urlToFile } from "~util/file-handling";
 import {
-    validateOptionalDateValue,
     validateRequiredDateValue,
     validateRequiredStringValue,
 } from "~util/validation/validation.ts";
