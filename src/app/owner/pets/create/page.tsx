@@ -143,7 +143,7 @@ export default function NewPet() {
             const pet = new Pet(petJSON);
             if (user?.id != null) {
                 await PetsAPI.createPet(user.id, pet);
-                router.push("/dashboard/owner");
+                router.push("/owner/dashboard");
             } else {
                 setError("You cannot make a pet without being logged in.");
             }

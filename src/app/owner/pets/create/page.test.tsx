@@ -187,7 +187,7 @@ describe("New Pet page", () => {
             await user.click(screen.getByRole("button", { name: /save/i }));
 
             async () =>
-                expect(pushMock).toHaveBeenCalledWith("/dashboard/owner");
+                expect(pushMock).toHaveBeenCalledWith("/owner/dashboard");
         });
     });
 
@@ -278,7 +278,7 @@ describe("New Pet page", () => {
             await user.click(screen.getByRole("button", { name: /save/i }));
 
             async () =>
-                expect(pushMock).toHaveBeenCalledWith("/dashboard/owner");
+                expect(pushMock).toHaveBeenCalledWith("/owner/dashboard");
         });
     });
 
@@ -329,7 +329,7 @@ describe("New Pet page", () => {
             await user.click(screen.getByRole("button", { name: /save/i }));
 
             async () =>
-                expect(pushMock).toHaveBeenCalledWith("/dashboard/owner");
+                expect(pushMock).toHaveBeenCalledWith("/owner/dashboard");
         });
     });
 
@@ -386,7 +386,7 @@ describe("New Pet page", () => {
             await user.click(screen.getByRole("button", { name: /save/i }));
 
             async () =>
-                expect(pushMock).toHaveBeenCalledWith("/dashboard/owner");
+                expect(pushMock).toHaveBeenCalledWith("/owner/dashboard");
         });
     });
 
@@ -473,7 +473,7 @@ describe("New Pet page", () => {
             await user.click(screen.getByRole("button", { name: /save/i }));
 
             async () =>
-                expect(pushMock).toHaveBeenCalledWith("/dashboard/owner");
+                expect(pushMock).toHaveBeenCalledWith("/owner/dashboard");
         });
     });
 
@@ -564,7 +564,7 @@ describe("New Pet page", () => {
             await user.click(screen.getByRole("button", { name: /save/i }));
 
             async () =>
-                expect(pushMock).toHaveBeenCalledWith("/dashboard/owner");
+                expect(pushMock).toHaveBeenCalledWith("/owner/dashboard");
         });
     });
 
