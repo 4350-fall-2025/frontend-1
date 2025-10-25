@@ -15,7 +15,6 @@ import {
     DEFAULT_SEX,
     DEFAULT_SPAYED_OR_NEUTERED,
     DEFAULT_BIRTH_DATE,
-    DEFAULT_ADOPTION_DATE,
     DEFAULT_NAME,
 } from "~tests/utils/defaults";
 
@@ -626,47 +625,6 @@ describe("New Pet page", () => {
         it("has dialog role attributes", () => {
             expect(birthDate).toHaveAttribute("aria-haspopup", "dialog");
             expect(birthDate).toHaveAttribute("aria-expanded", "false");
-        });
-    });
-
-    describe("Adoption Date field", () => {
-        beforeEach(async () => {
-            await fillNewPetDefaults();
-            await pickSelectDefaults({
-                user,
-                animalGroupEl: animalGroup,
-                sexEl: sex,
-                spayedEl: spayedOrNeutered,
-                animalGroupText: DEFAULT_ANIMAL_GROUP,
-                sexText: DEFAULT_SEX,
-                spayedText: DEFAULT_SPAYED_OR_NEUTERED,
-            });
-        });
-
-        it("is present", () => {
-            expect(adoptionDate).toBeInTheDocument();
-        });
-
-        it("has correct label", () => {
-            expect(screen.getByText(/date of adoption/i)).toBeInTheDocument();
-        });
-
-        it("does not have required attribute (optional field)", () => {
-            expect(adoptionDate).not.toHaveAttribute("required");
-        });
-
-        it("can be focused and interacted with", async () => {
-            await user.click(adoptionDate);
-            expect(adoptionDate).toHaveFocus();
-        });
-
-        it("displays default date value", () => {
-            expect(adoptionDate).toHaveTextContent(DEFAULT_ADOPTION_DATE);
-        });
-
-        it("has correct dialog role attributes", () => {
-            expect(adoptionDate).toHaveAttribute("aria-haspopup", "dialog");
-            expect(adoptionDate).toHaveAttribute("aria-expanded", "false");
         });
     });
 });

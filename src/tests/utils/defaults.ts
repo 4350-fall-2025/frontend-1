@@ -1,4 +1,4 @@
-import { defaultDate } from "~data/constants";
+import { defaultDate, todayDate } from "~data/constants";
 import dayjs from "dayjs";
 
 /**
@@ -20,5 +20,4 @@ export const DEFAULT_SEX = "Male";
 export const DEFAULT_SPAYED_OR_NEUTERED = "Yes";
 export const DEFAULT_SPECIES = "Parrot";
 export const DEFAULT_BREED_OR_VARIETY = "Macaw";
-export const DEFAULT_BIRTH_DATE = dayjs(defaultDate).format("MMMM D, YYYY");
-export const DEFAULT_ADOPTION_DATE = dayjs(defaultDate).format("MMMM D, YYYY");
+export const DEFAULT_BIRTH_DATE = dayjs(todayDate).format("MMMM D, YYYY");

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { DatePickerInput } from "@mantine/dates";
 import {
-    defaultDate,
+    todayDate,
     sexOptions,
     animalGroupOptions,
     basicOptions,
@@ -50,8 +50,7 @@ export default function NewPet() {
             animalGroup: "",
             species: "",
             breed: "",
-            birthdate: defaultDate,
-            adoptionDate: defaultDate,
+            birthdate: todayDate,
             sex: "",
             spayedOrNeutered: "",
         },
@@ -67,7 +66,6 @@ export default function NewPet() {
             species: validateRequiredStringValue,
             breed: validateRequiredStringValue,
             birthdate: validateRequiredDateValue,
-            adoptionDate: validateOptionalDateValue,
         },
     });
 
@@ -128,12 +126,9 @@ export default function NewPet() {
     const handleSubmit = async (values: typeof form.values) => {
         try {
             setError("");
-            const newBirthDate: Date = estimatedBirthDate
-                ? defaultDate
-                : values.birthdate;
             const estimatedDate: Date = estimatedBirthDate
                 ? values.birthdate
-                : defaultDate;
+                : todayDate;
 
             let sterileStatus: SterileStatus;
             if (values.spayedOrNeutered == "Yes") {
@@ -246,6 +241,7 @@ export default function NewPet() {
                                     required
                                     key={form.key("birthdate")}
                                     error={form.errors.birthdate}
+                                    clearable={true}
                                     {...form.getInputProps("birthdate")}
                                 ></DatePickerInput>
                                 <Switch
@@ -259,12 +255,6 @@ export default function NewPet() {
                                     label='Estimated'
                                 />
                             </div>
-                            <DatePickerInput
-                                label='Date of Adoption'
-                                key={form.key("adoptionDate")}
-                                error={form.errors.adoptionDate}
-                                {...form.getInputProps("adoptionDate")}
-                            ></DatePickerInput>
                         </div>
                     </div>
                     <div className={styles.bottom_content}>
