@@ -74,7 +74,6 @@ describe("New Pet page", () => {
     let breedOrVariety: HTMLElement;
     let birthDate: HTMLElement;
     let estimatedBirthDateToggle: HTMLElement;
-    let adoptionDate: HTMLElement;
     let sex: HTMLElement;
     let spayedOrNeutered: HTMLElement;
     let user: ReturnType<typeof userEvent.setup>;
@@ -95,7 +94,6 @@ describe("New Pet page", () => {
             breedOrVariety,
             birthDate,
             estimatedBirthDateToggle,
-            adoptionDate,
             sex,
             spayedOrNeutered,
         } = await getNewPetElements());

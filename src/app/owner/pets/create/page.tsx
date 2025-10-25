@@ -193,7 +193,8 @@ export default function NewPet() {
                                 key={form.key("name")}
                                 {...form.getInputProps("name")}
                             />
-
+                        </div>
+                        <div className={styles.right_content}>
                             <Select
                                 data={sexOptions}
                                 {...form.getInputProps("sex")}
@@ -202,8 +203,7 @@ export default function NewPet() {
                                 placeholder='Please select a sex'
                                 required
                             />
-                        </div>
-                        <div className={styles.right_content}>
+
                             <Select
                                 data={basicOptions}
                                 {...form.getInputProps("spayedOrNeutered")}

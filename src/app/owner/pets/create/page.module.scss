@@ -9,12 +9,13 @@
     background-color: #f9f9f9;
 
     main {
-        text-align: center;
         max-width: 1000px;
         width: 100%;
     }
 
     h1 {
+        text-align: center;
+        font-family: var(--font-tsukimi_rounded), var(--font-dm_sans), Arial;
         font-size: 2.5rem;
     }
 
@@ -102,7 +103,6 @@
 
 .right_content {
     justify-content: flex-end;
-    flex-grow: inherit;
 }
 
 .error_message {
