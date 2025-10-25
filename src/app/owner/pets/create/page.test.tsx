@@ -15,7 +15,6 @@ import {
     DEFAULT_SEX,
     DEFAULT_SPAYED_OR_NEUTERED,
     DEFAULT_BIRTH_DATE,
-    DEFAULT_ADOPTION_DATE,
     DEFAULT_NAME,
 } from "~tests/utils/defaults";
 
@@ -75,7 +74,6 @@ describe("New Pet page", () => {
     let breedOrVariety: HTMLElement;
     let birthDate: HTMLElement;
     let estimatedBirthDateToggle: HTMLElement;
-    let adoptionDate: HTMLElement;
     let sex: HTMLElement;
     let spayedOrNeutered: HTMLElement;
     let user: ReturnType<typeof userEvent.setup>;
@@ -96,7 +94,6 @@ describe("New Pet page", () => {
             breedOrVariety,
             birthDate,
             estimatedBirthDateToggle,
-            adoptionDate,
             sex,
             spayedOrNeutered,
         } = await getNewPetElements());
@@ -190,7 +187,7 @@ describe("New Pet page", () => {
             await user.click(screen.getByRole("button", { name: /save/i }));
 
             async () =>
-                expect(pushMock).toHaveBeenCalledWith("/dashboard/owner");
+                expect(pushMock).toHaveBeenCalledWith("/owner/dashboard");
         });
     });
 
@@ -281,7 +278,7 @@ describe("New Pet page", () => {
             await user.click(screen.getByRole("button", { name: /save/i }));
 
             async () =>
-                expect(pushMock).toHaveBeenCalledWith("/dashboard/owner");
+                expect(pushMock).toHaveBeenCalledWith("/owner/dashboard");
         });
     });
 
@@ -332,7 +329,7 @@ describe("New Pet page", () => {
             await user.click(screen.getByRole("button", { name: /save/i }));
 
             async () =>
-                expect(pushMock).toHaveBeenCalledWith("/dashboard/owner");
+                expect(pushMock).toHaveBeenCalledWith("/owner/dashboard");
         });
     });
 
@@ -389,7 +386,7 @@ describe("New Pet page", () => {
             await user.click(screen.getByRole("button", { name: /save/i }));
 
             async () =>
-                expect(pushMock).toHaveBeenCalledWith("/dashboard/owner");
+                expect(pushMock).toHaveBeenCalledWith("/owner/dashboard");
         });
     });
 
@@ -476,7 +473,7 @@ describe("New Pet page", () => {
             await user.click(screen.getByRole("button", { name: /save/i }));
 
             async () =>
-                expect(pushMock).toHaveBeenCalledWith("/dashboard/owner");
+                expect(pushMock).toHaveBeenCalledWith("/owner/dashboard");
         });
     });
 
@@ -567,7 +564,7 @@ describe("New Pet page", () => {
             await user.click(screen.getByRole("button", { name: /save/i }));
 
             async () =>
-                expect(pushMock).toHaveBeenCalledWith("/dashboard/owner");
+                expect(pushMock).toHaveBeenCalledWith("/owner/dashboard");
         });
     });
 
@@ -626,47 +623,6 @@ describe("New Pet page", () => {
         it("has dialog role attributes", () => {
             expect(birthDate).toHaveAttribute("aria-haspopup", "dialog");
             expect(birthDate).toHaveAttribute("aria-expanded", "false");
-        });
-    });
-
-    describe("Adoption Date field", () => {
-        beforeEach(async () => {
-            await fillNewPetDefaults();
-            await pickSelectDefaults({
-                user,
-                animalGroupEl: animalGroup,
-                sexEl: sex,
-                spayedEl: spayedOrNeutered,
-                animalGroupText: DEFAULT_ANIMAL_GROUP,
-                sexText: DEFAULT_SEX,
-                spayedText: DEFAULT_SPAYED_OR_NEUTERED,
-            });
-        });
-
-        it("is present", () => {
-            expect(adoptionDate).toBeInTheDocument();
-        });
-
-        it("has correct label", () => {
-            expect(screen.getByText(/date of adoption/i)).toBeInTheDocument();
-        });
-
-        it("does not have required attribute (optional field)", () => {
-            expect(adoptionDate).not.toHaveAttribute("required");
-        });
-
-        it("can be focused and interacted with", async () => {
-            await user.click(adoptionDate);
-            expect(adoptionDate).toHaveFocus();
-        });
-
-        it("displays default date value", () => {
-            expect(adoptionDate).toHaveTextContent(DEFAULT_ADOPTION_DATE);
-        });
-
-        it("has correct dialog role attributes", () => {
-            expect(adoptionDate).toHaveAttribute("aria-haspopup", "dialog");
-            expect(adoptionDate).toHaveAttribute("aria-expanded", "false");
         });
     });
 });

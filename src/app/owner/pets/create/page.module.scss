@@ -9,7 +9,6 @@
     background-color: #f9f9f9;
 
     main {
-        text-align: center;
         max-width: 1000px;
         width: 100%;
     }
@@ -51,7 +50,6 @@
         display: flex;
         position: relative;
         overflow: hidden;
-
         background-color: var(--mantine-color-gray-3);
     }
 
@@ -96,11 +94,16 @@
     justify-content: flex-end;
 
     padding-top: 2rem;
-    padding-bottom: 2rem;
+
     padding-left: 2rem;
 }
 
 .right_content {
     justify-content: flex-end;
-    flex-grow: inherit;
+}
+
+.error_message {
+    color: red;
+    justify-self: end;
+    padding-bottom: 2rem;
 }

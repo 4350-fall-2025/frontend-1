@@ -4,12 +4,8 @@ import { Box, Button, Group, Select, Switch, TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { DatePickerInput } from "@mantine/dates";
-import {
-    defaultDate,
-    sexOptions,
-    animalGroupOptions,
-    basicOptions,
-} from "~data/constants";
+import { todayDate, basicOptions } from "~data/constants";
+import { animalGroupOptions, sexOptions } from "~data/pets/constants";
 import { validateImage } from "~util/validation/validate-new-pet";
 import { urlToFile } from "~util/file-handling";
 import {
@@ -21,7 +17,7 @@ import styles from "./page.module.scss";
 import placeholderImage from "~public/placeholder.jpg"; // https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=
 import { useFileDialog } from "@mantine/hooks";
 import { PetsAPI } from "src/api/petsAPI";
-import { Pet } from "src/models/pet";
+import { Pet, SterileStatus } from "src/models/pet";
 import { useRouter } from "next/navigation";
 
 /**
@@ -40,6 +36,8 @@ export default function NewPet() {
     const [previewUrl, setPreviewUrl] = useState<string>(placeholderImage.src);
     const router = useRouter();
 
+    const [error, setError] = useState("");
+
     const form = useForm({
         mode: "uncontrolled",
         initialValues: {
@@ -48,8 +46,7 @@ export default function NewPet() {
             animalGroup: "",
             species: "",
             breed: "",
-            birthdate: defaultDate,
-            adoptionDate: defaultDate,
+            birthdate: todayDate,
             sex: "",
             spayedOrNeutered: "",
         },
@@ -65,7 +62,6 @@ export default function NewPet() {
             species: validateRequiredStringValue,
             breed: validateRequiredStringValue,
             birthdate: validateRequiredDateValue,
-            adoptionDate: validateOptionalDateValue,
         },
     });
 
@@ -125,30 +121,32 @@ export default function NewPet() {
 
     const handleSubmit = async (values: typeof form.values) => {
         try {
-            const newBirthDate: Date = estimatedBirthDate
-                ? defaultDate
-                : values.birthdate;
-            const estimatedDate: Date = estimatedBirthDate
-                ? values.birthdate
-                : defaultDate;
-
-            let sterileStatus;
-            if (values.spayedOrNeutered == "Yes") {
-                sterileStatus = "STERILE";
-            } else if (values.spayedOrNeutered == "No") {
-                sterileStatus = "NOT_STERILE";
-            } else {
-                sterileStatus = "UNKNOWN";
-            }
+            setError("");
             const user = JSON.parse(localStorage.getItem("currentUser"));
-            const petJSON = { ...values, sterileStatus: sterileStatus };
-            const pet = new Pet(petJSON);
-            if (user.id != null) {
+
+            if (user?.id != null) {
+                let sterileStatus: SterileStatus;
+                if (values.spayedOrNeutered == "Yes") {
+                    sterileStatus = SterileStatus.sterile;
+                } else if (values.spayedOrNeutered == "No") {
+                    sterileStatus = SterileStatus.nonsterile;
+                } else {
+                    sterileStatus = SterileStatus.unknown;
+                }
+
+                const petJSON = {
+                    ...values,
+                    sterileStatus: sterileStatus,
+                    estimatedBirthdate: estimatedBirthDate,
+                };
+                const pet = new Pet(petJSON);
                 await PetsAPI.createPet(user.id, pet);
-                router.push("/dashboard/owner");
+                router.push("/owner/dashboard");
+            } else {
+                setError("You cannot make a pet without being logged in.");
             }
         } catch (error) {
-            //TODO: add error message
+            setError("You cannot make a pet without being logged in.");
         }
     };
 
@@ -193,7 +191,8 @@ export default function NewPet() {
                                 key={form.key("name")}
                                 {...form.getInputProps("name")}
                             />
-
+                        </div>
+                        <div className={styles.right_content}>
                             <Select
                                 data={sexOptions}
                                 {...form.getInputProps("sex")}
@@ -202,8 +201,7 @@ export default function NewPet() {
                                 placeholder='Please select a sex'
                                 required
                             />
-                        </div>
-                        <div className={styles.right_content}>
+
                             <Select
                                 data={basicOptions}
                                 {...form.getInputProps("spayedOrNeutered")}
@@ -241,6 +239,7 @@ export default function NewPet() {
                                     required
                                     key={form.key("birthdate")}
                                     error={form.errors.birthdate}
+                                    clearable={true}
                                     {...form.getInputProps("birthdate")}
                                 ></DatePickerInput>
                                 <Switch
@@ -254,12 +253,6 @@ export default function NewPet() {
                                     label='Estimated'
                                 />
                             </div>
-                            <DatePickerInput
-                                label='Date of Adoption'
-                                key={form.key("adoptionDate")}
-                                error={form.errors.adoptionDate}
-                                {...form.getInputProps("adoptionDate")}
-                            ></DatePickerInput>
                         </div>
                     </div>
                     <div className={styles.bottom_content}>
@@ -272,6 +265,7 @@ export default function NewPet() {
                             Save
                         </Button>
                     </div>
+                    <p className={styles.error_message}>{error}</p>
                 </form>
             </main>
         </div>
