@@ -25,9 +25,11 @@ export default function RootLayout({
 }) {
     return (
         <html lang='en'>
-            <body className={`${dmSans.variable} ${tsukimiRounded.variable}`}>
+            <body
+                className={`${dmSans.variable} ${tsukimiRounded.variable} ${styles.globalFonts}`}
+            >
                 <MantineProvider>
-                    <div className={styles.layoutGrid}>{children}</div>
+                    <div>{children}</div>
                 </MantineProvider>
             </body>
         </html>
