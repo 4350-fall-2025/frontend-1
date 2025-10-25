@@ -114,7 +114,10 @@ export default function VetSignup() {
                         label='Password'
                         required
                     />
-                    <PasswordRequirements password={_validatedPassword} />
+                    <PasswordRequirements
+                        password={_validatedPassword}
+                        isDirty={form.isDirty("password")}
+                    />
                 </div>
                 <Group>
                     <Button type='submit'>I'm ready!</Button>
