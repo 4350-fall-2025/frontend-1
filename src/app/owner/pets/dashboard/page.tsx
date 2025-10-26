@@ -15,6 +15,16 @@ import {
     Title,
 } from "@mantine/core";
 
+/**
+ * CREDITS
+ *
+ * Used Claude AI (Anthropic) and ChatGPT-5 to assist with:
+ * - Converting inline styles to SCSS module classes with proper structure
+ * - Restructuring component to match project patterns (removing layout components,
+ *   converting helpers to arrow functions, organizing className references)
+ * - Ensuring Next.js "use client" directive patterns are followed
+ */
+
 const InfoRow = ({ label, value }: { label: string; value: string }) => {
     return (
         <div className={styles.info_row}>
@@ -40,7 +50,7 @@ export default function PetDashboard() {
                     {mockPets.map((pet) => (
                         <div key={pet.id} className={styles.pet_card}>
                             <div className={styles.pet_image}>
-                                <span className={styles.image_icon}>🖼</span>
+                                <span className={styles.image_icon}></span>
                             </div>
 
                             <div className={styles.pet_content}>
