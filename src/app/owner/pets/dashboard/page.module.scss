@@ -1,0 +1,133 @@
+// Main page container
+.page {
+  background-color: #ffffff;
+  min-height: 100vh;
+  padding: 40px;
+}
+
+// HEADER SECTION
+.header {
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  color: #000000;
+}
+
+.add_button {
+  background-color: #ef9a9a;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #e57373;
+  }
+}
+
+// PET CARD GRID
+.pet_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 32px;
+}
+
+.pet_card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.pet_image {
+  background-color: #d1d5db;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image_icon {
+  font-size: 64px;
+  opacity: 0.5;
+}
+
+.pet_content {
+  padding: 20px;
+}
+
+.pet_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.pet_name {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+  color: #000000;
+}
+
+.edit_badge {
+  background-color: transparent;
+  color: #3b82f6;
+  border: none;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #eff6ff;
+  }
+}
+
+// INFO ROW
+.info_row {
+  font-size: 14px;
+  line-height: 1.8;
+  margin-bottom: 4px;
+  color: #6b7280;
+}
+
+.info_label {
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.info_value {
+  color: #6b7280;
+}
+
+// VIEW DETAILS BUTTON
+.view_details_button {
+  width: 100%;
+  margin-top: 20px;
+  background-color: #dbeafe;
+  border: none;
+  color: #1e40af;
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #bfdbfe;
+  }
+}
