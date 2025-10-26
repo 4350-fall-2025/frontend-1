@@ -40,7 +40,12 @@ export default function PetDashboard() {
             <main>
                 <div className={styles.header}>
                     <h1 className={styles.title}>My Pets</h1>
-                    <button className={styles.add_button}>
+                    <button
+                        className={styles.add_button}
+                        onClick={() =>
+                            (window.location.href = "/owner/pets/create")
+                        }
+                    >
                         + Add a new pet
                     </button>
                 </div>
