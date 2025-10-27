@@ -10,4 +10,11 @@ export const animalGroupOptions: string[] = [
     "Other",
 ];
 
+export const sterileStatus: string[] = [
+    "Yes",
+    "No",
+    "Unknown",
+    "Not Applicable",
+];
+
 export const sexOptions: string[] = ["Male", "Female", "Unknown"];
