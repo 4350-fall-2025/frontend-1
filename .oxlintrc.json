@@ -1,0 +1,7 @@
+{
+    "rules": {
+        "no-explicit-any": "warn",
+        "no-unused-vars": ["warn", { "allowTernary": true }],
+        "expect-expect": "error"
+    }
+}
