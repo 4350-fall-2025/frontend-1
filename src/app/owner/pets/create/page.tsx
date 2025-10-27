@@ -4,8 +4,12 @@ import { Box, Button, Group, Select, Switch, TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { DatePickerInput } from "@mantine/dates";
-import { todayDate, basicOptions } from "~data/constants";
-import { animalGroupOptions, sexOptions } from "~data/pets/constants";
+import { todayDate } from "~data/constants";
+import {
+    animalGroupOptions,
+    sexOptions,
+    sterileStatus,
+} from "~data/pets/constants";
 import { validateImage } from "~util/validation/validate-new-pet";
 import { urlToFile } from "~util/file-handling";
 import {
@@ -203,7 +207,7 @@ export default function NewPet() {
                             />
 
                             <Select
-                                data={basicOptions}
+                                data={sterileStatus}
                                 {...form.getInputProps("spayedOrNeutered")}
                                 key={form.key("spayedOrNeutered")}
                                 label='Spayed/Neutered'
