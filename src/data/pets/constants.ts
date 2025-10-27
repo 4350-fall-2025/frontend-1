@@ -1,4 +1,4 @@
-import { AnimalGroup } from "src/models/pet";
+import { AnimalGroup, SterileStatus } from "src/models/pet";
 
 export const animalGroupOptions = [
     {
@@ -25,7 +25,6 @@ export const animalGroupOptions = [
         value: AnimalGroup.amphibian,
         label: "Amphibian",
     },
-
     {
         value: AnimalGroup.fish,
         label: "Fish",
@@ -37,6 +36,21 @@ export const animalGroupOptions = [
     {
         value: AnimalGroup.other,
         label: "Other",
+    },
+];
+
+export const sterileOptions = [
+    {
+        value: SterileStatus.sterile,
+        label: "Yes",
+    },
+    {
+        value: SterileStatus.nonsterile,
+        label: "No",
+    },
+    {
+        value: SterileStatus.unknown,
+        label: "Unknown",
     },
 ];
 

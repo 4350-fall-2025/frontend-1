@@ -17,13 +17,6 @@ export const provinces = [
     { value: "YT", label: "YT" },
 ];
 
-export const basicOptions: string[] = [
-    "Yes",
-    "No",
-    "Unknown",
-    "Not Applicable",
-];
-
 export const defaultDate: Date = new Date(0);
 
 export const todayDate: Date = new Date();

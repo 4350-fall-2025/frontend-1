@@ -4,8 +4,12 @@ import { Box, Button, Group, Select, Switch, TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { DatePickerInput } from "@mantine/dates";
-import { todayDate, basicOptions } from "~data/constants";
-import { animalGroupOptions, sexOptions } from "~data/pets/constants";
+import { todayDate } from "~data/constants";
+import {
+    animalGroupOptions,
+    sexOptions,
+    sterileOptions,
+} from "~data/pets/constants";
 import { validateImage } from "~util/validation/validate-new-pet";
 import { urlToFile } from "~util/file-handling";
 import {
@@ -48,14 +52,14 @@ export default function NewPet() {
             breed: "",
             birthdate: todayDate,
             sex: "",
-            spayedOrNeutered: "",
+            sterileStatus: "",
         },
 
         validate: {
             petImage: validateImage,
             name: validateRequiredStringValue,
             sex: isNotEmpty("This sex field can't be empty."),
-            spayedOrNeutered: isNotEmpty(
+            sterileStatus: isNotEmpty(
                 "This spayed/neutered field can't be empty.",
             ),
             animalGroup: isNotEmpty("This animal group field can't be empty."),
@@ -125,18 +129,8 @@ export default function NewPet() {
             const user = JSON.parse(localStorage.getItem("currentUser"));
 
             if (user?.id != null) {
-                let sterileStatus: SterileStatus;
-                if (values.spayedOrNeutered == "Yes") {
-                    sterileStatus = SterileStatus.sterile;
-                } else if (values.spayedOrNeutered == "No") {
-                    sterileStatus = SterileStatus.nonsterile;
-                } else {
-                    sterileStatus = SterileStatus.unknown;
-                }
-
                 const petJSON = {
                     ...values,
-                    sterileStatus: sterileStatus,
                     estimatedBirthdate: estimatedBirthDate,
                 };
                 const pet = new Pet(petJSON);
@@ -203,9 +197,9 @@ export default function NewPet() {
                             />
 
                             <Select
-                                data={basicOptions}
-                                {...form.getInputProps("spayedOrNeutered")}
-                                key={form.key("spayedOrNeutered")}
+                                data={sterileOptions}
+                                {...form.getInputProps("sterileStatus")}
+                                key={form.key("sterileStatus")}
                                 label='Spayed/Neutered'
                                 placeholder='Please select an option for spayed/neutered'
                                 required
