@@ -174,7 +174,7 @@ export default function NewDiary() {
                             )}
                         </div>
 
-                        <div className={globalStyles.save_or_cancel}>
+                        <div className={globalStyles.cancel_or_save}>
                             <Button variant='default' onClick={handleCancel}>
                                 Cancel
                             </Button>
