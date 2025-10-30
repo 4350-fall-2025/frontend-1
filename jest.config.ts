@@ -22,6 +22,7 @@ const config: Config = {
     ],
     coverageProvider: "babel",
     moduleNameMapper: {
+        "^\\~api/(.*)$": "<rootDir>/src/api/$1",
         "^\\~app/(.*)$": "<rootDir>/src/app/$1",
         "^\\~components/(.*)$": "<rootDir>/src/components/$1",
         "^\\~data/(.*)$": "<rootDir>/src/data/$1",
@@ -30,6 +31,9 @@ const config: Config = {
         "^\\~util/(.*)$": "<rootDir>/src/util/$1",
     },
     testEnvironment: "jest-environment-jsdom",
+    testEnvironmentOptions: {
+        url: "http://localhost",
+    },
     setupFilesAfterEnv: ["<rootDir>/src/tests/setupTests.ts"],
     testPathIgnorePatterns: ["<rootDir>/node_modules/", "<rootDir>/.next/"],
 };
