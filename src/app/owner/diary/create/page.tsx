@@ -141,7 +141,7 @@ export default function NewDiary() {
 
                         <Textarea
                             label='Notes'
-                            placeholder='Add your contentBody here'
+                            placeholder='Add your notes here'
                             key={form.key("contentBody")}
                             {...form.getInputProps("contentBody")}
                             required
