@@ -14,7 +14,7 @@ $font-xlarge: 48px;
 // colors
 $color-white: #ffffff;
 $color-black: #000000;
-$color-gray: #212121;
+$color-gray: #4a4949;
 $color-orange: #ffc078;
 $color-orange-dark: #d9480f;
 $color-green: #aad576;
@@ -25,7 +25,3 @@ $color-rose: #e8878c;
 // buttons
 $color-green-button-hovered: $color-green-dark;
 $color-orange-button-hovered: $color-orange-dark;
-
-// tabs
-$color-green-tabs-selected: lighten($color-green, 0.3);
-$color-orange-tabs-selected: lighten($color-orange, 0.3);

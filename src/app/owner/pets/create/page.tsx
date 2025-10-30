@@ -10,17 +10,18 @@ import {
     sexOptions,
     sterileOptions,
 } from "~data/pets/constants";
-import { validateImage } from "~util/validation/validate-new-pet";
 import { urlToFile } from "~util/file-handling";
 import {
     validateRequiredDateValue,
     validateRequiredStringValue,
+    validateRequiredImage,
 } from "~util/validation/validation.ts";
 import styles from "./page.module.scss";
+import globalStyles from "~app/layout.module.scss";
 import placeholderImage from "~public/placeholder.jpg"; // https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=
 import { useFileDialog } from "@mantine/hooks";
 import { PetsAPI } from "src/api/petsAPI";
-import { Pet, SterileStatus } from "src/models/pet";
+import { Pet } from "src/models/pet";
 import { useRouter } from "next/navigation";
 
 /**
@@ -55,7 +56,7 @@ export default function NewPet() {
         },
 
         validate: {
-            petImage: validateImage,
+            petImage: validateRequiredImage,
             name: validateRequiredStringValue,
             sex: isNotEmpty("This sex field can't be empty."),
             sterileStatus: isNotEmpty(
@@ -70,6 +71,7 @@ export default function NewPet() {
 
     const fileDialog = useFileDialog({
         multiple: false,
+        accept: "image/*", // narrows file explorer contents to just images, but validate will determine what is actually a valid image type we accept
     });
 
     const setImageToPlaceholderFile = () => {
@@ -141,6 +143,10 @@ export default function NewPet() {
         } catch (error) {
             setError("You cannot make a pet without being logged in.");
         }
+    };
+
+    const handleCancel = () => {
+        router.push("/owner/dashboard");
     };
 
     return (
@@ -232,7 +238,7 @@ export default function NewPet() {
                                     required
                                     key={form.key("birthdate")}
                                     error={form.errors.birthdate}
-                                    clearable={true}
+                                    clearable
                                     {...form.getInputProps("birthdate")}
                                 ></DatePickerInput>
                                 <Switch
@@ -248,8 +254,10 @@ export default function NewPet() {
                             </div>
                         </div>
                     </div>
-                    <div className={styles.bottom_content}>
-                        <Button variant='default'>Cancel</Button>
+                    <div className={globalStyles.save_or_cancel}>
+                        <Button variant='default' onClick={handleCancel}>
+                            Cancel
+                        </Button>
                         <Button
                             variant='filled'
                             className={styles.button}
@@ -258,7 +266,7 @@ export default function NewPet() {
                             Save
                         </Button>
                     </div>
-                    <p className={styles.error_message}>{error}</p>
+                    <p className={globalStyles.error_message}>{error}</p>
                 </form>
             </main>
         </div>
