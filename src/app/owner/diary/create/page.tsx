@@ -71,7 +71,8 @@ export default function NewDiary() {
         accept: "image/*",
     });
 
-    const pickedMedia = Array.from(fileDialog.files || []).map((file) => (
+    const pickedMedia = Array.from(fileDialog.files || []);
+    const pickedMediaList = pickedMedia.map((file) => (
         <List.Item key={file.name}>{file.name}</List.Item>
     ));
 
@@ -88,7 +89,7 @@ export default function NewDiary() {
             if (owner?.id != null) {
                 const diaryEntryJSON = {
                     ...values,
-                    media: Array.from(fileDialog.files),
+                    media: pickedMedia,
                 };
 
                 const diaryEntry = new PetDiary(diaryEntryJSON);
@@ -166,9 +167,9 @@ export default function NewDiary() {
                                     Upload
                                 </Button>
                             </Group>
-                            {pickedMedia.length > 0 && (
+                            {pickedMediaList.length > 0 && (
                                 <List mt='sm' size='sm'>
-                                    {pickedMedia}
+                                    {pickedMediaList}
                                 </List>
                             )}
                         </div>
