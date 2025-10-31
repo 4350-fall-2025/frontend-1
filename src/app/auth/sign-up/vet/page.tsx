@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import PasswordRequirements from "~components/signup/passwordRequirements";
-import { provinces } from "~data/constants";
+import { provinces } from "~data/vets/constants";
 import {
     validateLicenseId,
     validateName,

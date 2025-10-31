@@ -1,11 +1,3 @@
-/**
- * Layout Styling Module
- *
- * Developed with assistance from Claude AI and ChatGPT for:
- * - Responsive grid breakpoints
- * - Mobile/desktop layout management
- */
-
 @import "globals.scss";
 
 /* Main grid layout */
@@ -27,4 +19,27 @@
 /* so that sidebar doesn't cover the main page when the screen is resized */
 .content {
     flex: 1 1 auto;
+}
+
+.error_message {
+    color: red;
+    justify-self: end;
+    padding-bottom: 2rem;
+}
+
+.cancel_or_save {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding-top: 2rem;
+    padding-left: 2rem;
+
+    button {
+        width: fit-content;
+    }
+
+    // makes the save button (which is 2nd button) color rose
+    button:nth-child(2) {
+        background-color: $color-rose;
+    }
 }

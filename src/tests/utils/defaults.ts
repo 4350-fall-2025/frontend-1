@@ -1,4 +1,4 @@
-import { defaultDate, todayDate } from "~data/constants";
+import { todayDate } from "~data/constants";
 import dayjs from "dayjs";
 
 /**

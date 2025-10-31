@@ -6,7 +6,7 @@ export class OwnersAPI {
     //ChatGPT-5 was used to make this function
     static removeNull(owner: Owner) {
         return Object.fromEntries(
-            Object.entries(owner).filter(([key, value]) => value != null),
+            Object.entries(owner).filter((value) => value != null),
         );
     }
 

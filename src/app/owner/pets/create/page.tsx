@@ -4,20 +4,24 @@ import { Box, Button, Group, Select, Switch, TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { DatePickerInput } from "@mantine/dates";
-import { todayDate, basicOptions } from "~data/constants";
-import { animalGroupOptions, sexOptions } from "~data/pets/constants";
-import { validateImage } from "~util/validation/validate-new-pet";
+import { todayDate } from "~data/constants";
+import {
+    animalGroupOptions,
+    sexOptions,
+    sterileOptions,
+} from "~data/pets/constants";
 import { urlToFile } from "~util/file-handling";
 import {
-    validateOptionalDateValue,
     validateRequiredDateValue,
     validateRequiredStringValue,
+    validateRequiredImage,
 } from "~util/validation/validation.ts";
 import styles from "./page.module.scss";
+import globalStyles from "~app/layout.module.scss";
 import placeholderImage from "~public/placeholder.jpg"; // https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=
 import { useFileDialog } from "@mantine/hooks";
 import { PetsAPI } from "src/api/petsAPI";
-import { Pet, SterileStatus } from "src/models/pet";
+import { Pet } from "src/models/pet";
 import { useRouter } from "next/navigation";
 
 /**
@@ -48,14 +52,14 @@ export default function NewPet() {
             breed: "",
             birthdate: todayDate,
             sex: "",
-            spayedOrNeutered: "",
+            sterileStatus: "",
         },
 
         validate: {
-            petImage: validateImage,
+            petImage: validateRequiredImage,
             name: validateRequiredStringValue,
             sex: isNotEmpty("This sex field can't be empty."),
-            spayedOrNeutered: isNotEmpty(
+            sterileStatus: isNotEmpty(
                 "This spayed/neutered field can't be empty.",
             ),
             animalGroup: isNotEmpty("This animal group field can't be empty."),
@@ -67,6 +71,7 @@ export default function NewPet() {
 
     const fileDialog = useFileDialog({
         multiple: false,
+        accept: "image/*", // narrows file explorer contents to just images, but validate will determine what is actually a valid image type we accept
     });
 
     const setImageToPlaceholderFile = () => {
@@ -125,18 +130,8 @@ export default function NewPet() {
             const user = JSON.parse(localStorage.getItem("currentUser"));
 
             if (user?.id != null) {
-                let sterileStatus: SterileStatus;
-                if (values.spayedOrNeutered == "Yes") {
-                    sterileStatus = SterileStatus.sterile;
-                } else if (values.spayedOrNeutered == "No") {
-                    sterileStatus = SterileStatus.nonsterile;
-                } else {
-                    sterileStatus = SterileStatus.unknown;
-                }
-
                 const petJSON = {
                     ...values,
-                    sterileStatus: sterileStatus,
                     estimatedBirthdate: estimatedBirthDate,
                 };
                 const pet = new Pet(petJSON);
@@ -148,6 +143,10 @@ export default function NewPet() {
         } catch (error) {
             setError("You cannot make a pet without being logged in.");
         }
+    };
+
+    const handleCancel = () => {
+        router.push("/owner/dashboard");
     };
 
     return (
@@ -203,9 +202,9 @@ export default function NewPet() {
                             />
 
                             <Select
-                                data={basicOptions}
-                                {...form.getInputProps("spayedOrNeutered")}
-                                key={form.key("spayedOrNeutered")}
+                                data={sterileOptions}
+                                {...form.getInputProps("sterileStatus")}
+                                key={form.key("sterileStatus")}
                                 label='Spayed/Neutered'
                                 placeholder='Please select an option for spayed/neutered'
                                 required
@@ -239,7 +238,7 @@ export default function NewPet() {
                                     required
                                     key={form.key("birthdate")}
                                     error={form.errors.birthdate}
-                                    clearable={true}
+                                    clearable
                                     {...form.getInputProps("birthdate")}
                                 ></DatePickerInput>
                                 <Switch
@@ -255,9 +254,10 @@ export default function NewPet() {
                             </div>
                         </div>
                     </div>
-                    <div className={styles.bottom_content}>
-                        {/** TODO: This doesn't work */}
-                        <Button variant='default'>Cancel</Button>
+                    <div className={globalStyles.cancel_or_save}>
+                        <Button variant='default' onClick={handleCancel}>
+                            Cancel
+                        </Button>
                         <Button
                             variant='filled'
                             className={styles.button}
@@ -266,7 +266,7 @@ export default function NewPet() {
                             Save
                         </Button>
                     </div>
-                    <p className={styles.error_message}>{error}</p>
+                    <p className={globalStyles.error_message}>{error}</p>
                 </form>
             </main>
         </div>
