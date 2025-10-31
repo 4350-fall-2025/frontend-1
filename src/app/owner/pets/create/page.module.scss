@@ -1,4 +1,4 @@
-@import "../../../globals.scss";
+@import "~app/globals.scss";
 
 .page {
     display: flex;
@@ -88,22 +88,6 @@
     }
 }
 
-.bottom_content {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-
-    padding-top: 2rem;
-
-    padding-left: 2rem;
-}
-
 .right_content {
     justify-content: flex-end;
-}
-
-.error_message {
-    color: red;
-    justify-self: end;
-    padding-bottom: 2rem;
 }
