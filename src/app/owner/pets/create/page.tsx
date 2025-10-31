@@ -256,6 +256,7 @@ export default function NewPet() {
                         </div>
                     </div>
                     <div className={styles.bottom_content}>
+                        {/** TODO: This doesn't work */}
                         <Button variant='default'>Cancel</Button>
                         <Button
                             variant='filled'

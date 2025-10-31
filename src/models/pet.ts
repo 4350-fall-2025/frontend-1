@@ -3,6 +3,19 @@ export enum SterileStatus {
     nonsterile = "NON_STERILE",
     unknown = "UNKNOWN",
 }
+
+export enum AnimalGroup {
+    small = "Small mammal",
+    farm = "Farm",
+    equine = "Equine",
+    bird = "Bird",
+    reptile = "Reptile",
+    amphibian = "Amphibian",
+    fish = "Fish",
+    invertebrate = "Invertebrate",
+    other = "Other",
+}
+
 export class Pet {
     public readonly name: string;
     public readonly breed: string;

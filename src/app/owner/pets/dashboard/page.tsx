@@ -1,19 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { mockPets } from "~data/pets/constants";
+import { useRouter } from "next/navigation";
+import { mockPets } from "../../../../data/mock";
+import calculateAge from "../../../../util/ageCalculator";
 import styles from "./page.module.scss";
-import {
-    Card,
-    Image,
-    Text,
-    Button,
-    Group,
-    Stack,
-    Badge,
-    Box,
-    Title,
-} from "@mantine/core";
+import placeholderImage from "~public/placeholder.jpg";
+import { Card, Image, Text, Button } from "@mantine/core";
+import Link from "next/link";
 
 /**
  * CREDITS
@@ -35,6 +29,12 @@ const InfoRow = ({ label, value }: { label: string; value: string }) => {
 };
 
 export default function PetDashboard() {
+    const router = useRouter();
+
+    console.log("[PetDashboard render] loaded");
+    console.log("mockPets is", mockPets);
+    console.log("InfoRow is", InfoRow);
+
     return (
         <div className={styles.page}>
             <main>
@@ -42,9 +42,7 @@ export default function PetDashboard() {
                     <h1 className={styles.title}>My Pets</h1>
                     <button
                         className={styles.add_button}
-                        onClick={() =>
-                            (window.location.href = "/owner/pets/create")
-                        }
+                        onClick={() => router.push("/owner/pets/create")}
                     >
                         + Add a new pet
                     </button>
@@ -55,7 +53,11 @@ export default function PetDashboard() {
                     {mockPets.map((pet) => (
                         <div key={pet.id} className={styles.pet_card}>
                             <div className={styles.pet_image}>
-                                <span className={styles.image_icon}></span>
+                                <Image
+                                    src={pet.photoUrl || placeholderImage.src}
+                                    alt={`${pet.name} photo`}
+                                    className={styles.image_icon}
+                                />
                             </div>
 
                             <div className={styles.pet_content}>
@@ -63,16 +65,27 @@ export default function PetDashboard() {
                                     <h3 className={styles.pet_name}>
                                         {pet.name}
                                     </h3>
-                                    <button className={styles.edit_badge}>
-                                        EDIT
+
+                                    {/* TODO: Link to edit page when implemented */}
+                                    <button
+                                        className={styles.edit_badge}
+                                        onClick={() =>
+                                            router.push("/under-construction")
+                                        }
+                                        type='button'
+                                    >
+                                        Edit
                                     </button>
                                 </div>
 
-                                <InfoRow label='Age' value={pet.age} />
+                                <InfoRow
+                                    label='Age'
+                                    value={calculateAge(pet.birthdate)}
+                                />
                                 <InfoRow label='Sex' value={pet.sex} />
                                 <InfoRow
                                     label='Animal group'
-                                    value={pet.group}
+                                    value={pet.animalGroup}
                                 />
                                 <InfoRow label='Species' value={pet.species} />
                                 <InfoRow
@@ -80,7 +93,14 @@ export default function PetDashboard() {
                                     value={pet.breed}
                                 />
 
-                                <button className={styles.view_details_button}>
+                                {/* TODO: Link to pet details page when implemented */}
+                                <button
+                                    className={styles.view_details_button}
+                                    onClick={() =>
+                                        router.push("/under-construction")
+                                    }
+                                    type='button'
+                                >
                                     View Details
                                 </button>
                             </div>

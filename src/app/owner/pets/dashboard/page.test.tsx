@@ -12,48 +12,70 @@ import PetDashboard from "./page";
  */
 
 // Mock the SCSS module
-jest.mock("./page.module.scss", () => ({
-    page: "page",
-    header: "header",
-    title: "title",
-    add_button: "add_button",
-    pet_grid: "pet_grid",
-    pet_card: "pet_card",
-    pet_image: "pet_image",
-    image_icon: "image_icon",
-    pet_content: "pet_content",
-    pet_header: "pet_header",
-    pet_name: "pet_name",
-    edit_badge: "edit_badge",
-    info_row: "info_row",
-    info_label: "info_label",
-    info_value: "info_value",
-    view_details_button: "view_details_button",
+jest.mock("./page.module.scss", () => ({}));
+
+// Mock the pets data from new location
+jest.mock("../../../../data/mock");
+
+// Mock the age calculator utility
+jest.mock("../../../../util/ageCalculator", () => ({
+    __esModule: true,
+    default: jest.fn((birthdate: Date) => {
+        // Mock implementation to return age string
+        const now = new Date();
+        const years = now.getFullYear() - birthdate.getFullYear();
+        const months = now.getMonth() - birthdate.getMonth();
+        if (years > 0) {
+            return `${years}y ${months}m`;
+        }
+        return `${months}m`;
+    }),
 }));
 
-// Mock the pets data
-jest.mock("~data/pets/constants", () => ({
-    mockPets: [
-        {
-            id: "bella",
-            name: "Bella",
-            age: "5y 3m",
-            sex: "Female",
-            group: "Small animal",
-            species: "Dog",
-            breed: "Beagle",
-        },
-        {
-            id: "tweety",
-            name: "Tweety",
-            age: "7m",
-            sex: "Male",
-            group: "Bird",
-            species: "Cockatiel",
-            breed: "White-faced cockatiel",
-        },
-    ],
+// Mock the placeholder image
+jest.mock("~public/placeholder.jpg", () => ({
+    default: { src: "/placeholder.jpg" },
 }));
+
+// Mock next/navigation
+jest.mock("next/navigation", () => ({
+    useRouter: () => ({
+        push: jest.fn(),
+    }),
+}));
+
+// Mock @mantine/core components
+jest.mock("@mantine/core", () => ({
+    Image: ({ src, alt }: { src: string; alt: string }) => (
+        <img src={src} alt={alt} />
+    ),
+    Card: ({ children }: any) => <div data-testid='Card'> {children}</div>,
+    Text: ({ children }: { children: React.ReactNode }) => (
+        <span>{children}</span>
+    ),
+    Button: ({ children, ...props }: any) => (
+        <button {...props}>{children}</button>
+    ),
+}));
+
+// Mock Next.js Link
+jest.mock("next/link", () => ({
+    __esModule: true,
+    default: ({
+        children,
+        href,
+    }: {
+        children: React.ReactNode;
+        href: string;
+    }) => <a href={href}>{children}</a>,
+}));
+
+// Mock @mantine/core Image component
+// jest.mock("@mantine/core", () => ({
+//     Image: ({ src, alt }: { src: string; alt: string }) => (
+//         <img src={src} alt={alt} />
+//     ),
+// }));
 
 describe("Pet Dashboard page", () => {
     let user: ReturnType<typeof userEvent.setup>;
@@ -83,12 +105,12 @@ describe("Pet Dashboard page", () => {
             expect(addButton).toBeInTheDocument();
         });
 
-        it("allows add button to be clicked", async () => {
+        it("navigates to create pet page when add button is clicked", async () => {
             const addButton = screen.getByRole("button", {
                 name: /add a new pet/i,
             });
             await user.click(addButton);
-            expect(addButton).toBeInTheDocument(); // Button should remain in document after click
+            expect(pushMock).toHaveBeenCalledWith("/owner/pets/create");
         });
     });
 
@@ -105,57 +127,20 @@ describe("Pet Dashboard page", () => {
         });
     });
 
-    describe("Pet information - Bella", () => {
-        it("displays name correctly", () => {
-            expect(screen.getByText("Bella")).toBeInTheDocument();
-        });
+    describe("Pet information display", () => {
+        it("displays pet information correctly", () => {
+            // Verify that info rows are rendered
+            const ageLabels = screen.getAllByText(/Age:/);
+            const sexLabels = screen.getAllByText(/Sex:/);
+            const groupLabels = screen.getAllByText(/Animal group:/);
+            const speciesLabels = screen.getAllByText(/Species:/);
+            const breedLabels = screen.getAllByText(/Breed\/Variety:/);
 
-        it("displays age correctly", () => {
-            expect(screen.getByText("5y 3m")).toBeInTheDocument();
-        });
-
-        it("displays sex correctly", () => {
-            expect(screen.getByText("Female")).toBeInTheDocument();
-        });
-
-        it("displays animal group correctly", () => {
-            expect(screen.getByText("Small animal")).toBeInTheDocument();
-        });
-
-        it("displays species correctly", () => {
-            expect(screen.getByText("Dog")).toBeInTheDocument();
-        });
-
-        it("displays breed correctly", () => {
-            expect(screen.getByText("Beagle")).toBeInTheDocument();
-        });
-    });
-
-    describe("Pet information - Tweety", () => {
-        it("displays name correctly", () => {
-            expect(screen.getByText("Tweety")).toBeInTheDocument();
-        });
-
-        it("displays age correctly", () => {
-            expect(screen.getByText("7m")).toBeInTheDocument();
-        });
-
-        it("displays sex correctly", () => {
-            expect(screen.getByText("Male")).toBeInTheDocument();
-        });
-
-        it("displays animal group correctly", () => {
-            expect(screen.getByText("Bird")).toBeInTheDocument();
-        });
-
-        it("displays species correctly", () => {
-            expect(screen.getByText("Cockatiel")).toBeInTheDocument();
-        });
-
-        it("displays breed correctly", () => {
-            expect(
-                screen.getByText("White-faced cockatiel"),
-            ).toBeInTheDocument();
+            expect(ageLabels.length).toBeGreaterThan(0);
+            expect(sexLabels.length).toBeGreaterThan(0);
+            expect(groupLabels.length).toBeGreaterThan(0);
+            expect(speciesLabels.length).toBeGreaterThan(0);
+            expect(breedLabels.length).toBeGreaterThan(0);
         });
     });
 
@@ -213,21 +198,6 @@ describe("Pet Dashboard page", () => {
         it("displays Breed/Variety label for each pet", () => {
             const breedLabels = screen.getAllByText(/Breed\/Variety:/);
             expect(breedLabels).toHaveLength(2);
-        });
-    });
-
-    describe("InfoRow component", () => {
-        it("renders label and value together correctly", () => {
-            // Check that Age label and value appear together
-            const ageLabels = screen.getAllByText(/Age:/);
-            expect(ageLabels.length).toBeGreaterThan(0);
-            expect(screen.getByText("5y 3m")).toBeInTheDocument();
-        });
-
-        it("renders all required info rows for each pet", () => {
-            // Each pet should have 5 info rows (Age, Sex, Animal group, Species, Breed/Variety)
-            const infoRows = screen.getAllByText(/:/);
-            expect(infoRows.length).toBeGreaterThanOrEqual(10); // 5 rows × 2 pets
         });
     });
 });

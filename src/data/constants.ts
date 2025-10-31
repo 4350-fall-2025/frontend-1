@@ -1,6 +1,7 @@
 /**
  * Province list generated with GPT-5 mini
  */
+
 export const provinces = [
     { value: "AB", label: "AB" },
     { value: "BC", label: "BC" },
