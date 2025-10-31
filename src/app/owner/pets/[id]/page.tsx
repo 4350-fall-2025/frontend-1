@@ -2,39 +2,30 @@
 
 import { Button } from "@mantine/core";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
+import dayjs from "dayjs";
+import Image from "next/image";
 import Link from "next/link";
-import { use, useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Pet } from "src/models/pet";
 import { PetsAPI } from "~api/petsAPI";
+import { toSentenceCase } from "~util/strings/normalize";
 import Error from "./error";
 import styles from "./page.module.scss";
-import dayjs from "dayjs";
-import { toSentenceCase } from "~util/strings/normalize";
 import {
     formatAgeFromDOB,
     formatAnimalGroup,
     formatSterileStatus,
 } from "~util/strings/format-pet";
 
-export default function PetProfilePage({
-    params,
-}: {
-    params: Promise<{ id: string }>;
-}) {
+export default function PetProfilePage() {
     const [error, setError] = useState(null);
     const [pet, setPet] = useState<Pet | null>(null);
-    const { id } = use(params);
+    const { id } = useParams<{ id: string }>();
 
-    const getOwnerId = (): string => {
-        const currentUser = JSON.parse(
-            localStorage.getItem("currentUser") || "{}",
-        );
-        return currentUser?.id || "";
-    };
-
-    const getPetData = async (ownerId) => {
+    const getPetData = async () => {
         try {
-            const response = await PetsAPI.getPet(ownerId, id);
+            const response = await PetsAPI.getPet(id);
             setPet(response);
         } catch (error) {
             setError(error);
@@ -43,12 +34,11 @@ export default function PetProfilePage({
     };
 
     useEffect(() => {
-        const ownerId = getOwnerId();
-        getPetData(ownerId);
+        getPetData();
     }, []);
 
     if (error) {
-        return <Error error={error} />;
+        return <Error />;
     }
 
     // TODO: back button must direct to /owner/pets/ once page is done
@@ -69,9 +59,12 @@ export default function PetProfilePage({
             </div>
             <h1 className={styles.header}>{pet?.name}</h1>
             <div className={styles.pet_info}>
-                <div
+                <Image
                     className={styles.pet_image}
-                    aria-label='Pet image placeholder'
+                    src='/placeholder.jpg'
+                    width={200}
+                    height={200}
+                    alt='Pet profile picture'
                 />
                 <div className={styles.pet_details_column}>
                     <ul>
@@ -129,7 +122,7 @@ export default function PetProfilePage({
             <div className={styles.pet_notes}>
                 <div className={styles.pet_notes_column}>
                     <h2>Diary Entries</h2>
-                    <p>No notes to show.</p>
+                    <p>No entries yet.</p>
                 </div>
                 <div className={styles.pet_notes_column}>
                     <h2>Vet Notes</h2>

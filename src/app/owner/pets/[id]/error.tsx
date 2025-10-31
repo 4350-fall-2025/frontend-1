@@ -14,8 +14,7 @@ export default function Error({
     error?: Error & { digest?: string };
 }) {
     useEffect(() => {
-        // Log the error to an error reporting service
-        console.error(error);
+        console.log(error);
     }, [error]);
 
     const router = useRouter();
