@@ -1,6 +1,8 @@
 // Main page container
+@import "../../../app/globals.scss";
+
 .page {
-  background-color: #ffffff;
+  background-color: $color-white;
   min-height: 100vh;
   padding: 40px;
 }
@@ -14,12 +16,12 @@
   font-size: 48px;
   font-weight: 700;
   margin: 0 0 20px 0;
-  color: #000000;
+  color: $color-black;
 }
 
 .add_button {
-  background-color: #ef9a9a;
-  color: #ffffff;
+  background-color: $color-rose;
+  color: $color-white;
   border: none;
   border-radius: 8px;
   padding: 12px 24px;
@@ -29,7 +31,7 @@
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #e57373;
+    background-color: $color-rose-hover;
   }
 }
 
@@ -41,15 +43,15 @@
 }
 
 .pet_card {
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  background-color: $color-white;
+  border: 1px solid $color-off-white:;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .pet_image {
-  background-color: #d1d5db;
+  background-color: $color-light-blue-white;
   height: 240px;
   display: flex;
   align-items: center;
@@ -76,12 +78,12 @@
   font-size: 24px;
   font-weight: 700;
   margin: 0;
-  color: #000000;
+  color: $color-black;
 }
 
 .edit_badge {
   background-color: transparent;
-  color: #3b82f6;
+  color: $color-blue;
   border: none;
   font-weight: 600;
   font-size: 13px;
@@ -92,7 +94,7 @@
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #eff6ff;
+    background-color: $color-light-blue-white;
   }
 }
 
@@ -101,25 +103,25 @@
   font-size: 14px;
   line-height: 1.8;
   margin-bottom: 4px;
-  color: #6b7280;
+  color: $color-gray;
 }
 
 .info_label {
   font-weight: 600;
-  color: #6b7280;
+  color: $color-gray;
 }
 
 .info_value {
-  color: #6b7280;
+  color: $color-gray;
 }
 
 // VIEW DETAILS BUTTON
 .view_details_button {
   width: 100%;
   margin-top: 20px;
-  background-color: #dbeafe;
+  background-color: $color-white;
   border: none;
-  color: #1e40af;
+  color: $color-dark-blue;
   font-weight: 500;
   font-size: 14px;
   border-radius: 8px;
@@ -128,6 +130,6 @@
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #bfdbfe;
+    background-color: $color-light-blue-white;
   }
 }
