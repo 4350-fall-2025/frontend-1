@@ -17,11 +17,11 @@ export class PetsAPI {
         return response?.data.map((petJson) => new Pet(petJson));
     }
 
-    static async getPet(ownerId: string, petId: string): Promise<Pet> {
-        const response = await axiosClient.get(`/owners/${ownerId}/pets`, {
+    static async getPet(petId: string): Promise<Pet> {
+        const response = await axiosClient.get(`/pets/${petId}`, {
             params: { petId: petId },
         });
-        return new Pet(response?.data[0]);
+        return new Pet(response?.data);
     }
 
     //input: updated parameters for pets, with unchanged fields as null
