@@ -71,8 +71,7 @@ describe("Sidebar Component", () => {
             expect(myPetsLink).toHaveAttribute("href", "/owner/pets/create");
         });
 
-        it("Sign Out should cause alert to appear", () => {
-            //const signoutButton = screen.getByText("My Pets");
+        it("Sign Out Button should navigate back to log in", () => {
             fireEvent.click(screen.getByText("Sign Out"));
             expect(window.confirm).toHaveBeenCalledWith(
                 "Are you sure you want to sign out?",
