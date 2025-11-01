@@ -17,6 +17,20 @@ import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { render, screen } from "~tests/utils/custom-testing-library";
 import Sidebar from "./sidebar";
+import { fireEvent } from "~tests/utils/custom-testing-library";
+
+/**
+ * Test suites and mock functions generated with GPT-5 mini and help from:
+ * https://stackoverflow.com/questions/76858797/error-invariant-expected-app-router-to-be-mounted-why-this-happened-when-using
+ */
+const pushMock = jest.fn();
+jest.mock("next/navigation", () => ({
+    useRouter: () => ({
+        push: pushMock,
+    }),
+}));
+
+window.confirm = jest.fn(() => true);
 
 describe("Sidebar Component", () => {
     let user: ReturnType<typeof userEvent.setup>;
@@ -57,6 +71,15 @@ describe("Sidebar Component", () => {
             expect(myPetsLink).toHaveAttribute("href", "/owner/pets/create");
         });
 
+        it("Sign Out should cause alert to appear", () => {
+            //const signoutButton = screen.getByText("My Pets");
+            fireEvent.click(screen.getByText("Sign Out"));
+            expect(window.confirm).toHaveBeenCalledWith(
+                "Are you sure you want to sign out?",
+            );
+            expect(pushMock).toHaveBeenCalledWith("/");
+        });
+
         it("other nav links should link to under-construction page", () => {
             const appointmentsLink = screen
                 .getByText("Appointments")
@@ -85,7 +108,7 @@ describe("Sidebar Component", () => {
         });
 
         it("toggle button should be present", () => {
-            const toggleBtn = screen.getByRole("button");
+            const toggleBtn = screen.getByRole("button", { name: /menu/i });
             expect(toggleBtn).toBeInTheDocument();
             expect(toggleBtn).toHaveClass("toggleBtn");
         });
@@ -96,12 +119,13 @@ describe("Sidebar Component", () => {
             expect(screen.getByText("Appointments")).toBeVisible();
             expect(screen.getByText("Pet Diary")).toBeVisible();
             expect(screen.getByText("Messages")).toBeVisible();
+            expect(screen.getByText("Sign Out")).toBeVisible();
         });
     });
 
     describe("Mobile View - Toggle Functionality", () => {
         it("toggle button should open and close sidebar", async () => {
-            const toggleBtn = screen.getByRole("button");
+            const toggleBtn = screen.getByRole("button", { name: /menu/i });
 
             // sidebar should be closed initially
             let sidebar = screen.getByRole("complementary");
@@ -124,7 +148,7 @@ describe("Sidebar Component", () => {
         });
 
         it("should close sidebar when overlay is clicked", async () => {
-            const toggleBtn = screen.getByRole("button");
+            const toggleBtn = screen.getByRole("button", { name: /menu/i });
 
             // open sidebar first
             await user.click(toggleBtn);
@@ -139,7 +163,7 @@ describe("Sidebar Component", () => {
         });
 
         it("overlay should only appear when sidebar is open", async () => {
-            const toggleBtn = screen.getByRole("button");
+            const toggleBtn = screen.getByRole("button", { name: /menu/i });
 
             // overlay should not exist initially
             expect(
@@ -158,7 +182,7 @@ describe("Sidebar Component", () => {
         });
 
         it("should display navigation links when sidebar is open", async () => {
-            const toggleBtn = screen.getByRole("button");
+            const toggleBtn = screen.getByRole("button", { name: /menu/i });
 
             await user.click(toggleBtn);
 
@@ -183,7 +207,7 @@ describe("Sidebar Component", () => {
         });
 
         it("toggle button should be keyboard accessible", async () => {
-            const toggleBtn = screen.getByRole("button");
+            const toggleBtn = screen.getByRole("button", { name: /menu/i });
             toggleBtn.focus();
             expect(toggleBtn).toHaveFocus();
 
@@ -193,7 +217,7 @@ describe("Sidebar Component", () => {
         });
 
         it("toggle button should have descriptive text", () => {
-            const toggleBtn = screen.getByRole("button");
+            const toggleBtn = screen.getByRole("button", { name: /menu/i });
             expect(toggleBtn).toHaveTextContent("Menu");
         });
     });

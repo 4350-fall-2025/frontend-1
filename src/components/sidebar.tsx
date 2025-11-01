@@ -9,11 +9,12 @@
 
 "use client";
 import Link from "next/link";
-import { NavLink, Stack } from "@mantine/core";
+import { Button, NavLink, Stack } from "@mantine/core";
 import Image from "next/image";
 import { useState } from "react";
 import logo from "~public/logo/tennisLogo.png";
 import styles from "./sidebar.module.scss";
+import { useRouter } from "next/navigation";
 
 /**
  * Sidebar component for navigation:
@@ -25,6 +26,15 @@ export default function Sidebar() {
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
+    };
+
+    const router = useRouter();
+
+    const logOut = () => {
+        if (window.confirm("Are you sure you want to sign out?")) {
+            localStorage.clear();
+            router.push("/");
+        }
     };
 
     return (
@@ -88,6 +98,15 @@ export default function Sidebar() {
                         className={styles.navLink}
                     />
                 </Stack>
+                <div className={styles.bottom}>
+                    <Button
+                        variant='filled'
+                        className={styles.button}
+                        onClick={logOut}
+                    >
+                        Sign Out
+                    </Button>
+                </div>
             </aside>
 
             {/* Spacer for desktop - prevents content from hiding behind sidebar */}
