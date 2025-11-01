@@ -15,7 +15,7 @@ import PetDashboard from "./page";
 jest.mock("./page.module.scss", () => ({}));
 
 // Mock the pets data from new location
-jest.mock("../../../../data/mock");
+jest.mock("../../../../data/pets/mock");
 
 // Mock the age calculator utility
 jest.mock("../../../../util/ageCalculator", () => ({
@@ -37,10 +37,11 @@ jest.mock("~public/placeholder.jpg", () => ({
     default: { src: "/placeholder.jpg" },
 }));
 
-// Mock next/navigation
+// Mock router (aka next/navigation)
+const pushMock = jest.fn();
 jest.mock("next/navigation", () => ({
     useRouter: () => ({
-        push: jest.fn(),
+        push: pushMock,
     }),
 }));
 
@@ -55,6 +56,10 @@ jest.mock("@mantine/core", () => ({
     ),
     Button: ({ children, ...props }: any) => (
         <button {...props}>{children}</button>
+    ),
+
+    MantineProvider: ({ children }: { children: React.ReactNode }) => (
+        <>{children}</>
     ),
 }));
 
