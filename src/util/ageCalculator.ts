@@ -8,11 +8,11 @@
  */
 
 export default function calculateAge(dob: string | Date): string {
-    //   const birth = new Date(dob);
+    const birth = new Date(dob); // convert to Date object
     const now = new Date();
 
-    let years = now.getFullYear() - dob.getFullYear();
-    let months = now.getMonth() - dob.getMonth();
+    let years = now.getFullYear() - birth.getFullYear();
+    let months = now.getMonth() - birth.getMonth();
 
     if (months < 0) {
         years--;

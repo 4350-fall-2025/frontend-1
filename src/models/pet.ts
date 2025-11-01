@@ -26,6 +26,7 @@ export class Pet {
     public readonly estimatedBirthdate: boolean;
     public readonly sterileStatus: SterileStatus;
     public readonly animalGroup: AnimalGroup;
+    public readonly photoUrl?: string | null;
 
     constructor(JSON) {
         Object.assign(this, JSON);

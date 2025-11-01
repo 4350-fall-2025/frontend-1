@@ -15,6 +15,7 @@ export const mockPets: Pet[] = [
         sterileStatus: SterileStatus.nonsterile,
         species: "Dog",
         breed: "Beagle",
+        photoUrl: null,
     },
     {
         id: 2,
@@ -27,5 +28,6 @@ export const mockPets: Pet[] = [
         sterileStatus: SterileStatus.sterile,
         species: "Cockatiel",
         breed: "White-faced cockatiel",
+        photoUrl: null,
     },
 ];
