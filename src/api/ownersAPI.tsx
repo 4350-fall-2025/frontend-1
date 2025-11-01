@@ -10,18 +10,18 @@ export class OwnersAPI {
         );
     }
 
-    static async getOwner(id: number): Promise<Owner> {
+    static async getOwner(id: string): Promise<Owner> {
         const response = await axiosClient.get(`/owners/${id}`);
         return new Owner(response?.data);
     }
 
     //input: updated parameters, with unchanged fields as null
-    static async updateOwner(id: number, owner: Owner): Promise<void> {
+    static async updateOwner(id: string, owner: Owner): Promise<void> {
         const changedValues = this.removeNull(owner);
         await axiosClient.put(`/owners/${id}`, changedValues);
     }
 
-    static async deleteOwner(id: number): Promise<void> {
+    static async deleteOwner(id: string): Promise<void> {
         await axiosClient.delete(`/owners/${id}`);
     }
 

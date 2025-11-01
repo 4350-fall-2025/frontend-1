@@ -1,0 +1,75 @@
+@import "../../../globals.scss";
+
+.page {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 3fr 4fr;
+    padding: 32px;
+
+    .top_bar {
+        grid-row: 1 / 2;
+
+        .back_button {
+
+            .back_icon {
+                margin-right: 8px;
+            }
+
+            &:hover > * {
+                text-decoration: underline;
+            }
+        }
+
+    }
+
+    .header {
+        grid-row: 2 / 3;
+        display: flex;
+        justify-content: flex-start;
+        font-size: $font-2xl;
+    }
+
+    .pet_info {
+        display: grid;
+        grid-template-columns:  minmax(200px, 250px) repeat(2, minmax(250px, 300px));
+        grid-template-rows: 1fr;
+        column-gap: 32px;
+        color: $color-gray;
+
+        .pet_image {
+            grid-column: 1 / 2;
+
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            height: auto;
+        }
+
+        .pet_info_label {
+            font-weight: bold;
+        }
+
+        .pet_details_column {
+            -ms-grid-column-span: 1;
+            padding-top: 32px;
+
+            ul {
+                margin: 0;
+                padding-left: 0;
+            }
+
+            li {
+                list-style: none;
+            }
+        }
+    }
+
+    .pet_notes {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 16px;
+
+        .pet_notes_column {
+            -ms-grid-column-span: 1;
+        }
+    }
+}
