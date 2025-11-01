@@ -13,8 +13,8 @@ export const formatAgeFromDOB = (birthdate?: string): string => {
     }
 
     const now = dayjs();
-    const yoa = now.diff(bd, "years");
-    const moa = yoa % 12;
+    const yoa = Math.floor(now.diff(bd, "months") / 12);
+    const moa = now.diff(bd, "months") % 12;
 
     const yoaString = yoa >= 1 ? yoa + " year" + (yoa > 1 ? "s" : "") : "";
     const moaString = moa >= 1 ? moa + " month" + (moa > 1 ? "s" : "") : "";
