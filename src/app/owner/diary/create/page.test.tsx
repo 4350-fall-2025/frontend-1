@@ -13,9 +13,8 @@ import {
     pickSelectDefaults,
     submitNewDiary,
 } from "~tests/utils/form-helpers/new-diary-form-helper";
-import { notesMaxCharacters, notesMinCharacters } from "~data/constants";
+import { notesMaxCharacters, notesMinCharacters } from "~data/pets/constants";
 import { mockPets } from "~data/pets/mock";
-import { CloseButton } from "@mantine/core";
 
 // Mock PetsAPI to return mockPets instead of making real API calls
 // This will work whether the component uses mockPets directly or calls the API

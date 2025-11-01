@@ -1,4 +1,4 @@
-import { notesMaxCharacters, notesMinCharacters } from "~data/constants";
+import { notesMaxCharacters, notesMinCharacters } from "~data/pets/constants";
 
 export const validateDiaryContentBody = (value: string): string | null => {
     if (!value || value.trim().length === 0) return "Notes field is required.";
