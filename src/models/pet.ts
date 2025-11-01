@@ -1,5 +1,3 @@
-import { toSentenceCase } from "~util/strings/normalize";
-
 export enum SterileStatus {
     sterile = "STERILE",
     nonsterile = "NON_STERILE",
@@ -22,7 +20,7 @@ export class Pet {
     public readonly breed: string;
     public readonly sex: string;
     public readonly species: string;
-    public readonly id: number;
+    public readonly id: string;
     public readonly birthdate: string;
     public readonly estimatedBirthdate: boolean;
     public readonly sterileStatus: SterileStatus;

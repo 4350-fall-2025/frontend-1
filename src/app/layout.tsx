@@ -12,7 +12,6 @@ import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import { dmSans, tsukimiRounded } from "~lib/fonts";
 import styles from "./layout.module.scss";
-import Error from "~app/owner/pets/[id]/error";
 
 /**
  * Global layout for /under-construction route
