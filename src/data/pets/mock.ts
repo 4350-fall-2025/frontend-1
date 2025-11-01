@@ -17,7 +17,7 @@ export const mockPets: Pet[] = [
     },
     {
         id: 2,
-        name: "Bella2",
+        name: "Becca",
         birthdate: todayDateString,
         estimatedBirthdate: true,
         sex: "Female",
