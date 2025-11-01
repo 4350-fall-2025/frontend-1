@@ -14,21 +14,20 @@ import PetDashboard from "./page";
 // Mock the SCSS module
 jest.mock("./page.module.scss", () => ({}));
 
-// Mock the pets data from new location
-jest.mock("../../../../data/pets/mock");
+// Mock the pets data - use actual data from the mock file
+jest.mock("../../../../data/pets/mock", () => {
+    const actual = jest.requireActual("../../../../data/pets/mock");
+    return {
+        mockPets: actual.mockPets,
+    };
+});
 
 // Mock the age calculator utility
 jest.mock("../../../../util/ageCalculator", () => ({
     __esModule: true,
-    default: jest.fn((birthdate: Date) => {
-        // Mock implementation to return age string
-        const now = new Date();
-        const years = now.getFullYear() - birthdate.getFullYear();
-        const months = now.getMonth() - birthdate.getMonth();
-        if (years > 0) {
-            return `${years}y ${months}m`;
-        }
-        return `${months}m`;
+    default: jest.fn((birthdate: string) => {
+        // Simple mock that returns a fixed age for testing
+        return "5y 3m";
     }),
 }));
 
@@ -37,7 +36,7 @@ jest.mock("~public/placeholder.jpg", () => ({
     default: { src: "/placeholder.jpg" },
 }));
 
-// Mock router (aka next/navigation)
+// Mock next/navigation
 const pushMock = jest.fn();
 jest.mock("next/navigation", () => ({
     useRouter: () => ({
@@ -50,14 +49,13 @@ jest.mock("@mantine/core", () => ({
     Image: ({ src, alt }: { src: string; alt: string }) => (
         <img src={src} alt={alt} />
     ),
-    Card: ({ children }: any) => <div data-testid='Card'> {children}</div>,
+    Card: ({ children }: any) => <div data-testid='card'>{children}</div>,
     Text: ({ children }: { children: React.ReactNode }) => (
         <span>{children}</span>
     ),
     Button: ({ children, ...props }: any) => (
         <button {...props}>{children}</button>
     ),
-
     MantineProvider: ({ children }: { children: React.ReactNode }) => (
         <>{children}</>
     ),
@@ -75,29 +73,26 @@ jest.mock("next/link", () => ({
     }) => <a href={href}>{children}</a>,
 }));
 
-// Mock @mantine/core Image component
-// jest.mock("@mantine/core", () => ({
-//     Image: ({ src, alt }: { src: string; alt: string }) => (
-//         <img src={src} alt={alt} />
-//     ),
-// }));
-
 describe("Pet Dashboard page", () => {
     let user: ReturnType<typeof userEvent.setup>;
 
-    beforeEach(async () => {
+    beforeEach(() => {
         jest.clearAllMocks();
         user = userEvent.setup();
-        render(<PetDashboard />);
     });
 
     it("renders", () => {
+        render(<PetDashboard />);
         expect(
             screen.getByRole("heading", { name: /my pets/i }),
         ).toBeInTheDocument();
     });
 
     describe("Page header", () => {
+        beforeEach(() => {
+            render(<PetDashboard />);
+        });
+
         it("displays the page title", () => {
             const title = screen.getByRole("heading", { name: /my pets/i });
             expect(title).toBeInTheDocument();
@@ -120,6 +115,10 @@ describe("Pet Dashboard page", () => {
     });
 
     describe("Pet cards display", () => {
+        beforeEach(() => {
+            render(<PetDashboard />);
+        });
+
         it("renders all pet cards from mock data", () => {
             // Check that both pet names appear
             expect(screen.getByText("Bella")).toBeInTheDocument();
@@ -133,6 +132,10 @@ describe("Pet Dashboard page", () => {
     });
 
     describe("Pet information display", () => {
+        beforeEach(() => {
+            render(<PetDashboard />);
+        });
+
         it("displays pet information correctly", () => {
             // Verify that info rows are rendered
             const ageLabels = screen.getAllByText(/Age:/);
@@ -150,6 +153,10 @@ describe("Pet Dashboard page", () => {
     });
 
     describe("Pet card interactions", () => {
+        beforeEach(() => {
+            render(<PetDashboard />);
+        });
+
         it("renders EDIT badge for each pet card", () => {
             const editBadges = screen.getAllByRole("button", { name: /edit/i });
             expect(editBadges).toHaveLength(2);
@@ -180,6 +187,10 @@ describe("Pet Dashboard page", () => {
     });
 
     describe("Info row labels", () => {
+        beforeEach(() => {
+            render(<PetDashboard />);
+        });
+
         it("displays Age label for each pet", () => {
             const ageLabels = screen.getAllByText(/Age:/);
             expect(ageLabels).toHaveLength(2);

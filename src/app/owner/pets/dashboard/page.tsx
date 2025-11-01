@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { mockPets } from "../../../../data/mock";
+import { mockPets } from "../../../../data/pets/mock";
 import calculateAge from "../../../../util/ageCalculator";
 import styles from "./page.module.scss";
 import placeholderImage from "~public/placeholder.jpg";
