@@ -3,16 +3,17 @@ export enum SterileStatus {
     nonsterile = "NON_STERILE",
     unknown = "UNKNOWN",
 }
+
 export enum AnimalGroup {
-    small = "SMALL_MAMMAL",
-    farm = "FARM",
-    equine = "EQUINE",
-    bird = "BIRD",
-    reptile = "REPTILE",
-    amphibian = "AMPHIBIAN",
-    fish = "FISH",
-    invertebrate = "INVERTEBRATE",
-    other = "OTHER",
+    small = "Small mammal",
+    farm = "Farm",
+    equine = "Equine",
+    bird = "Bird",
+    reptile = "Reptile",
+    amphibian = "Amphibian",
+    fish = "Fish",
+    invertebrate = "Invertebrate",
+    other = "Other",
 }
 
 export class Pet {
@@ -25,6 +26,7 @@ export class Pet {
     public readonly estimatedBirthdate: boolean;
     public readonly sterileStatus: SterileStatus;
     public readonly animalGroup: AnimalGroup;
+    public readonly photoUrl?: string | null;
 
     constructor(JSON) {
         Object.assign(this, JSON);
