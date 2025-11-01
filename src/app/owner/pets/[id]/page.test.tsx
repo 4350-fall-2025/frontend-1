@@ -8,7 +8,7 @@ jest.mock("next/navigation", () => ({
     useRouter: () => ({
         back: mockUseRouter,
     }),
-    useParams: () => ({ id: MOCK_PET_ID }),
+    useParams: () => ({ id: 1 }),
 }));
 
 jest.mock("~util/strings/format-pet", () => {
@@ -19,14 +19,18 @@ jest.mock("~util/strings/format-pet", () => {
         formatAgeFromDOB: jest.fn(() => {
             return "2 years";
         }),
+        formatAnimalGroup: jest.fn(() => "amphibian"),
+        formatSterileStatus: jest.fn(() => "Unknown"),
     };
 });
 
 import "@testing-library/jest-dom";
-import { MOCK_PET, MOCK_PET_ID } from "src/models/__mocks__/pet";
+import dayjs from "dayjs";
 import { render, screen } from "~tests/utils/custom-testing-library";
 import PetProfilePage from "./page";
 import { PetsAPI } from "~api/petsAPI";
+import { mockPets } from "~data/pets/mock";
+import { todayDate } from "~data/constants";
 
 describe("Pet Profile Page", () => {
     beforeEach(() => {
@@ -34,17 +38,21 @@ describe("Pet Profile Page", () => {
     });
 
     it("renders the pet info on the page", async () => {
-        jest.spyOn(PetsAPI, "getPet").mockResolvedValue(MOCK_PET);
+        jest.spyOn(PetsAPI, "getPet").mockResolvedValue(mockPets[0]);
         await render(<PetProfilePage />);
 
-        const name = await screen.findByText(/fluffy/i);
+        const formattedDateString = dayjs(todayDate.toISOString()).format(
+            "MMMM D, YYYY",
+        );
+
+        const name = await screen.findByText(/bella/i);
         const age = await screen.findByText(/2 years/i);
-        const animalGroup = await screen.findByText(/Small mammal/i);
-        const sterileStatus = await screen.findByText(/Unknown/i);
-        const breed = await screen.findByText(/Siamese/i);
-        const species = await screen.findByText(/Cat/i);
-        const sex = await screen.findByText(/Female/i);
-        const birthdate = await screen.findByText(/January 1, 2019/i);
+        const animalGroup = await screen.findByText(/amphibian/i);
+        const sterileStatus = await screen.findByText(/unknown/i);
+        const breed = await screen.findByText(/beagle/i);
+        const species = await screen.findByText(/dog/i);
+        const sex = await screen.findByText(/female/i);
+        const birthdate = await screen.findByText(formattedDateString);
 
         expect(name).toBeInTheDocument();
         expect(age).toBeInTheDocument();
@@ -57,7 +65,7 @@ describe("Pet Profile Page", () => {
     });
 
     it("show message when no diary entries present", async () => {
-        jest.spyOn(PetsAPI, "getPet").mockResolvedValue(MOCK_PET);
+        jest.spyOn(PetsAPI, "getPet").mockResolvedValue(mockPets[0]);
         await render(<PetProfilePage />);
 
         const noEntriesMessage = await screen.findByText(/no entries yet/i);
@@ -65,7 +73,7 @@ describe("Pet Profile Page", () => {
     });
 
     it("show message when no vet notes present", async () => {
-        jest.spyOn(PetsAPI, "getPet").mockResolvedValue(MOCK_PET);
+        jest.spyOn(PetsAPI, "getPet").mockResolvedValue(mockPets[0]);
         await render(<PetProfilePage />);
 
         const noEntriesMessage = await screen.findByText(/no notes to show/i);
