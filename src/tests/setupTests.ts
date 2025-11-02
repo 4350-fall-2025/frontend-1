@@ -52,6 +52,37 @@ Element.prototype.scrollIntoView = function () {
     // no-op
 };
 
+// Mock localStorage for all tests
+// This creates a working localStorage implementation that persists within a test but resets between tests
+const localStorageMock = (() => {
+    let store: { [key: string]: string } = {};
+
+    return {
+        getItem: (key: string) => store[key] || null,
+        setItem: (key: string, value: string) => {
+            store[key] = value.toString();
+        },
+        removeItem: (key: string) => {
+            delete store[key];
+        },
+        clear: () => {
+            store = {};
+        },
+        get length() {
+            return Object.keys(store).length;
+        },
+        key: (index: number) => {
+            const keys = Object.keys(store);
+            return keys[index] || null;
+        },
+    };
+})();
+
+Object.defineProperty(global, "localStorage", {
+    value: localStorageMock,
+    writable: true,
+});
+
 // Mock Mantine's useFileDialog hook so tests don't open native dialogs or leave event listeners
 // This mock keeps the real implementation for everything except useFileDialog. Generated with Claude Sonnet 4.5
 jest.mock("@mantine/hooks", () => {
@@ -77,6 +108,8 @@ jest.mock("@mantine/hooks", () => {
 // Clear mocks between tests to keep things deterministic.
 afterEach(() => {
     jest.clearAllMocks();
+    // Clear localStorage between tests
+    localStorage.clear();
 });
 
 // Increase default timeout for async tests if needed

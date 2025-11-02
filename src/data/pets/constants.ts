@@ -64,3 +64,6 @@ export const sterileOptions = [
 ];
 
 export const sexOptions: string[] = ["Male", "Female", "Unknown"];
+
+export const notesMinCharacters = 2;
+export const notesMaxCharacters = 1500;

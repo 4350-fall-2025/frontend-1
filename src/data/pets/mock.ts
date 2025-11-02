@@ -20,7 +20,7 @@ export const mockPets: Pet[] = [
         id: "pet2",
         name: "Tweety",
         birthdate: new Date("2024-03-01").toISOString(),
-        estimatedBirthdate: true, //false,
+        estimatedBirthdate: true,
         sex: "Female",
         animalGroup: AnimalGroup.bird,
         sterileStatus: SterileStatus.sterile,
