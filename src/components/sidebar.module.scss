@@ -51,6 +51,8 @@
     transition: transform 0.3s ease;
     transform: translateX(0);
     z-index: 1001;
+    display: flex;
+    flex-direction: column;
 }
 
 /* NavLink font styling */
@@ -78,6 +80,19 @@
 .logo {
     width: 100%;
     height: auto;
+}
+
+.bottom {
+    margin-top: auto;
+    padding-bottom: 50px;
+}
+
+.button {
+    background-color: $color-green-dark;
+
+    &:hover {
+        background-color: $color-green-dark;
+    }
 }
 
 /* Hide logo on mobile */
@@ -115,6 +130,8 @@
         box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
         border-left: 1px solid #eee;
         border-right: none;
+        justify-content: space-between;
+        flex: 1;
     }
 
     /* When sidebar is open, slide it in */
@@ -127,3 +144,4 @@
         display: none;
     }
 }
+
