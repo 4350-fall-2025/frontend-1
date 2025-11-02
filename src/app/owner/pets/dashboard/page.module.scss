@@ -1,0 +1,147 @@
+// Main page container
+@import "../../../globals.scss";
+
+.page {
+  background-color: $color-white;
+  min-height: 100vh;
+  padding: 40px;
+}
+
+// HEADER SECTION
+.header {
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  color: $color-black;
+}
+
+.add_button {
+  background-color: $color-rose;
+  color: $color-white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $color-rose-hover;
+  }
+}
+
+// PET CARD GRID
+.pet_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    flex-wrap: wrap;
+    gap: 70px;
+    justify-content: center;
+
+
+  h3 {
+      padding-top: 15px
+  }
+}
+
+.pet_card {
+  background-color: $color-white;
+  border: 1px solid $color-off-white;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 400px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.pet_image {
+  position: center;
+  background-color: $color-light-blue-white;
+  width: 100%;
+  aspect-ratio: 10 / 10;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.image_icon {
+  font-size: 30px;
+//   opacity: 0.5;
+}
+
+.pet_content {
+  padding: 20px;
+}
+
+.pet_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.pet_name {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+  color: $color-black;
+}
+
+.edit_badge {
+  background-color: rgba($color-blue, 0.12);
+  color: $color-blue;
+  border: none;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $color-rose;
+    color: $color-white;
+  }
+}
+
+// INFO ROW
+.info_row {
+  font-size: 14px;
+  line-height: 1.8;
+  margin-bottom: 4px;
+  color: $color-rose;
+}
+
+.info_label {
+  font-weight: 600;
+  color: $color-gray;
+}
+
+.info_value {
+  color: $color-gray;
+}
+
+// VIEW DETAILS BUTTON
+.view_details_button {
+  width: 100%;
+  margin-top: 20px;
+  background-color: rgba($color-blue, 0.12);
+  border: none;
+  color: $color-blue;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $color-rose;
+    color: $color-white;
+  }
+}

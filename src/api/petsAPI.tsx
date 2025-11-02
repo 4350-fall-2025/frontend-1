@@ -10,24 +10,24 @@ export class PetsAPI {
         );
     }
 
-    static async getAllPets(ownerId: number): Promise<Pet[]> {
+    static async getAllPets(ownerId: string): Promise<Pet[]> {
         const response = await axiosClient.get(`/owners/${ownerId}/pets`, {
             params: { petId: "" },
         });
         return response?.data.map((petJson) => new Pet(petJson));
     }
 
-    static async getPet(ownerId: number, petId: number): Promise<Pet> {
-        const response = await axiosClient.get(`/owners/${ownerId}/pets`, {
+    static async getPet(petId: string): Promise<Pet> {
+        const response = await axiosClient.get(`/pets/${petId}`, {
             params: { petId: petId },
         });
-        return new Pet(response?.data.pet);
+        return new Pet(response?.data);
     }
 
     //input: updated parameters for pets, with unchanged fields as null
     static async updatePet(
-        ownerId: number,
-        petId: number,
+        ownerId: string,
+        petId: string,
         pet: Pet,
     ): Promise<void> {
         const changedValues = this.removeNull(pet);
@@ -36,11 +36,11 @@ export class PetsAPI {
         });
     }
 
-    static async deletePet(ownerId: number, petId: number): Promise<void> {
+    static async deletePet(ownerId: string, petId: string): Promise<void> {
         await axiosClient.delete(`/owners/${ownerId}/pets/${petId}`);
     }
 
-    static async createPet(ownerId: number, pet: Pet): Promise<void> {
+    static async createPet(ownerId: string, pet: Pet): Promise<void> {
         await axiosClient.post(`/owners/${ownerId}/pets`, pet);
     }
 }
