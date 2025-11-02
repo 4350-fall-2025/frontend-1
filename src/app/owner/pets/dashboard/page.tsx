@@ -8,6 +8,7 @@ import styles from "./page.module.scss";
 import placeholderImage from "~public/placeholder.jpg";
 import { Card, Image, Text, Button } from "@mantine/core";
 import Link from "next/link";
+import { getAnimalGroupDisplayLabel } from "../../../../data/pets/constants";
 
 /**
  * CREDITS
@@ -85,7 +86,9 @@ export default function PetDashboard() {
                                 <InfoRow label='Sex' value={pet.sex} />
                                 <InfoRow
                                     label='Animal group'
-                                    value={pet.animalGroup}
+                                    value={getAnimalGroupDisplayLabel(
+                                        pet.animalGroup,
+                                    )}
                                 />
                                 <InfoRow label='Species' value={pet.species} />
                                 <InfoRow
