@@ -15,7 +15,7 @@ import PetDashboard from "./page";
 jest.mock("./page.module.scss", () => ({}));
 
 // Mock the pets data - use actual data from the mock file
-jest.mock("../../../../data/pets/mock", () => {
+jest.mock("~data/pets/mock", () => {
     const actual = jest.requireActual("../../../../data/pets/mock");
     return {
         mockPets: actual.mockPets,
@@ -23,7 +23,7 @@ jest.mock("../../../../data/pets/mock", () => {
 });
 
 // Mock the age calculator utility
-jest.mock("../../../../util/ageCalculator", () => ({
+jest.mock("~util/ageCalculator", () => ({
     __esModule: true,
     default: jest.fn((birthdate: string) => {
         // Simple mock that returns a fixed age for testing

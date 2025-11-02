@@ -7,7 +7,7 @@ export const mockPets: Pet[] = [
     {
         id: "pet1",
         name: "Bella",
-        birthdate: "2019-08-01", // 5y 3m
+        birthdate: new Date("2019-08-01").toISOString(),
         estimatedBirthdate: true,
         sex: "Female",
         animalGroup: AnimalGroup.amphibian,
@@ -19,7 +19,7 @@ export const mockPets: Pet[] = [
     {
         id: "pet2",
         name: "Tweety",
-        birthdate: "2024-03-01", // 7m
+        birthdate: new Date("2024-03-01").toISOString(),
         estimatedBirthdate: true, //false,
         sex: "Female",
         animalGroup: AnimalGroup.bird,
