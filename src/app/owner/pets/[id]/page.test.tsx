@@ -45,7 +45,7 @@ describe("Pet Profile Page", () => {
         //             "MMMM D, YYYY",
         //         );
 
-        const mockBirthdate = new Date("2024-03-01"); // Match the mock data
+        const mockBirthdate = new Date("2019-08-01"); // Match the mock data
         const formattedDateString = dayjs(mockBirthdate).format("MMMM D, YYYY");
 
         const name = await screen.findByText(/bella/i);
@@ -55,6 +55,11 @@ describe("Pet Profile Page", () => {
         const breed = await screen.findByText(/beagle/i);
         const species = await screen.findByText(/dog/i);
         const sex = await screen.findByText(/female/i);
+
+        // Add these debug lines:
+        screen.debug();
+        console.log("Looking for:", formattedDateString);
+
         const birthdate = await screen.findByText(formattedDateString);
 
         expect(name).toBeInTheDocument();
