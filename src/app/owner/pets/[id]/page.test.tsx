@@ -45,9 +45,7 @@ describe("Pet Profile Page", () => {
         //             "MMMM D, YYYY",
         //         );
 
-        const mockBirthdate = new Date("2019-08-01"); // Match the mock data
-        const formattedDateString = dayjs(mockBirthdate).format("MMMM D, YYYY");
-
+        const formattedDateString = dayjs("2019-08-01").format("MMMM D, YYYY");
         const name = await screen.findByText(/bella/i);
         const age = await screen.findByText(/2 years/i);
         const animalGroup = await screen.findByText(/amphibian/i);
