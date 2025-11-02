@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { mockPets } from "../../../../data/pets/mock";
-import calculateAge from "../../../../util/ageCalculator";
+import { mockPets } from "src/data/pets/mock";
+import calculateAge from "src/util/ageCalculator";
 import styles from "./page.module.scss";
 import placeholderImage from "~public/placeholder.jpg";
 import { Card, Image, Text, Button } from "@mantine/core";
 import Link from "next/link";
-import { getAnimalGroupDisplayLabel } from "../../../../data/pets/constants";
+import { getAnimalGroupDisplayLabel } from "src/util/strings/format-pet";
 
 /**
  * CREDITS

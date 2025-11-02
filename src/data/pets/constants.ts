@@ -64,11 +64,3 @@ export const sterileOptions = [
 ];
 
 export const sexOptions: string[] = ["Male", "Female", "Unknown"];
-
-// For displaying on cards/pages - uses the short label
-export const getAnimalGroupDisplayLabel = (value: string): string => {
-    return (
-        animalGroupOptions.find((option) => option.value === value)
-            ?.displayLabel || value
-    );
-};

@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { toSentenceCase } from "./normalize";
 import { AnimalGroup, SterileStatus } from "src/models/pet";
+import { animalGroupOptions } from "src/data/pets/constants";
 
 export const formatAgeFromDOB = (birthdate?: string): string => {
     if (!birthdate) {
@@ -47,3 +48,13 @@ export function formatSterileStatus(
             return "N/A";
     }
 }
+
+// For displaying on cards/pages - uses the shorter label
+export const getAnimalGroupDisplayLabel = (
+    value: AnimalGroup | string,
+): string => {
+    return (
+        animalGroupOptions.find((option) => option.value === value)
+            ?.displayLabel || value
+    );
+};
