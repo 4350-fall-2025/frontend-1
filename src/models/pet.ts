@@ -5,15 +5,15 @@ export enum SterileStatus {
 }
 
 export enum AnimalGroup {
-    small = "Small mammal",
-    farm = "Farm",
-    equine = "Equine",
-    bird = "Bird",
-    reptile = "Reptile",
-    amphibian = "Amphibian",
-    fish = "Fish",
-    invertebrate = "Invertebrate",
-    other = "Other",
+    small = "SMALL_MAMMAL",
+    farm = "FARM",
+    equine = "EQUINE",
+    bird = "BIRD",
+    reptile = "REPTILE",
+    amphibian = "AMPHIBIAN",
+    fish = "FISH",
+    invertebrate = "INVERTEBRATE",
+    other = "OTHER",
 }
 
 export class Pet {
