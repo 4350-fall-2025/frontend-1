@@ -1,7 +1,4 @@
 import { AnimalGroup, Pet, SterileStatus } from "src/models/pet";
-import { todayDate } from "~data/constants";
-
-const todayDateString: string = todayDate.toISOString();
 
 export const mockPets: Pet[] = [
     {
