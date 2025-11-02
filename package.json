@@ -53,7 +53,7 @@
     },
     "prettier": {
         "tabWidth": 4,
-        "endOfLine": "crlf",
+        "endOfLine": "lf",
         "jsxSingleQuote": true
     },
     "lint-staged": {

@@ -41,9 +41,8 @@ describe("Pet Profile Page", () => {
         jest.spyOn(PetsAPI, "getPet").mockResolvedValue(mockPets[0]);
         await render(<PetProfilePage />);
 
-        const formattedDateString = dayjs(todayDate.toISOString()).format(
-            "MMMM D, YYYY",
-        );
+        const isoDateString = new Date(mockPets[0].birthdate).toISOString();
+        const formattedDateString = dayjs(isoDateString).format("MMMM D, YYYY");
 
         const name = await screen.findByText(/bella/i);
         const age = await screen.findByText(/2 years/i);

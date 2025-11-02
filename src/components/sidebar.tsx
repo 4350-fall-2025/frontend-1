@@ -75,7 +75,7 @@ export default function Sidebar() {
                     />
                     <NavLink
                         component={Link}
-                        href='/owner/pets/create'
+                        href='/owner/pets/dashboard'
                         label='My Pets'
                         className={styles.navLink}
                     />

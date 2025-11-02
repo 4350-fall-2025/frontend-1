@@ -66,9 +66,9 @@ describe("Sidebar Component", () => {
             expect(dashboardLink).toHaveAttribute("href", "/owner/dashboard");
         });
 
-        it("My Pets link should navigate to /owner/pets/create", () => {
+        it("My Pets link should navigate to /owner/pets/dashboard", () => {
             const myPetsLink = screen.getByText("My Pets").closest("a");
-            expect(myPetsLink).toHaveAttribute("href", "/owner/pets/create");
+            expect(myPetsLink).toHaveAttribute("href", "/owner/pets/dashboard");
         });
 
         it("Sign Out Button should navigate back to log in", () => {
