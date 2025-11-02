@@ -28,7 +28,7 @@ export default function RootLayout({
             <body
                 className={`${dmSans.variable} ${tsukimiRounded.variable} ${styles.globalFonts}`}
             >
-                <MantineProvider>
+                <MantineProvider withCssVariables>
                     <div>{children}</div>
                 </MantineProvider>
             </body>

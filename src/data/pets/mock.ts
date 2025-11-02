@@ -5,7 +5,7 @@ const todayDateString: string = todayDate.toISOString();
 
 export const mockPets: Pet[] = [
     {
-        id: 1,
+        id: "pet1",
         name: "Bella",
         birthdate: todayDateString,
         estimatedBirthdate: true,
@@ -16,7 +16,7 @@ export const mockPets: Pet[] = [
         breed: "Beagle",
     },
     {
-        id: 2,
+        id: "pet2",
         name: "Bella2",
         birthdate: todayDateString,
         estimatedBirthdate: true,
