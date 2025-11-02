@@ -50,7 +50,6 @@ export default function PetProfilePage() {
                     component={Link}
                     href='/owner/dashboard'
                     variant='transparent'
-                    color='red'
                     className={styles.back_button}
                 >
                     <ArrowLeftIcon className={styles.back_icon} />
@@ -66,57 +65,66 @@ export default function PetProfilePage() {
                     height={200}
                     alt='Pet profile picture'
                 />
-                <div className={styles.pet_details_column}>
-                    <ul>
-                        <li>
-                            <span className={styles.pet_info_label}>Sex:</span>{" "}
-                            {pet?.sex && toSentenceCase(pet?.sex)}
-                        </li>
-                        <li>
-                            <span className={styles.pet_info_label}>
-                                Animal group:
-                            </span>{" "}
-                            {pet?.animalGroup &&
-                                formatAnimalGroup(pet?.animalGroup)}
-                        </li>
-                        <li>
-                            <span className={styles.pet_info_label}>
-                                Species:
-                            </span>{" "}
-                            {pet?.species && toSentenceCase(pet?.species)}
-                        </li>
-                        <li>
-                            <span className={styles.pet_info_label}>
-                                Breed:
-                            </span>{" "}
-                            {pet?.breed && toSentenceCase(pet?.breed)}
-                        </li>
-                    </ul>
-                </div>
-                <div className={styles.pet_details_column}>
-                    <ul>
-                        <li>
-                            <span className={styles.pet_info_label}>Age: </span>
-                            {pet?.birthdate && formatAgeFromDOB(pet?.birthdate)}
-                        </li>
-                        <li>
-                            <span className={styles.pet_info_label}>
-                                Spayed/Neutered:
-                            </span>{" "}
-                            {pet?.sterileStatus &&
-                                formatSterileStatus(
-                                    pet?.sterileStatus,
-                                    pet?.sex,
-                                )}
-                        </li>
-                        <li>
-                            <span className={styles.pet_info_label}>
-                                Birthdate:
-                            </span>{" "}
-                            {pet?.birthdate &&
-                                dayjs(pet?.birthdate).format("MMMM D, YYYY")}
-                        </li>
-                    </ul>
+                <div className={styles.pet_details}>
+                    <div className={styles.pet_details_column}>
+                        <ul>
+                            <li>
+                                <span className={styles.pet_info_label}>
+                                    Sex:
+                                </span>{" "}
+                                {pet?.sex && toSentenceCase(pet?.sex)}
+                            </li>
+                            <li>
+                                <span className={styles.pet_info_label}>
+                                    Animal group:
+                                </span>{" "}
+                                {pet?.animalGroup &&
+                                    formatAnimalGroup(pet?.animalGroup)}
+                            </li>
+                            <li>
+                                <span className={styles.pet_info_label}>
+                                    Species:
+                                </span>{" "}
+                                {pet?.species && toSentenceCase(pet?.species)}
+                            </li>
+                            <li>
+                                <span className={styles.pet_info_label}>
+                                    Breed:
+                                </span>{" "}
+                                {pet?.breed && toSentenceCase(pet?.breed)}
+                            </li>
+                        </ul>
+                    </div>
+                    <div className={styles.pet_details_column}>
+                        <ul>
+                            <li>
+                                <span className={styles.pet_info_label}>
+                                    Birthdate:
+                                </span>{" "}
+                                {pet?.birthdate &&
+                                    dayjs(pet?.birthdate).format(
+                                        "MMMM D, YYYY",
+                                    )}
+                            </li>
+                            <li>
+                                <span className={styles.pet_info_label}>
+                                    Age:{" "}
+                                </span>
+                                {pet?.birthdate &&
+                                    formatAgeFromDOB(pet?.birthdate)}
+                            </li>
+                            <li>
+                                <span className={styles.pet_info_label}>
+                                    Spayed/Neutered:
+                                </span>{" "}
+                                {pet?.sterileStatus &&
+                                    formatSterileStatus(
+                                        pet?.sterileStatus,
+                                        pet?.sex,
+                                    )}
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div className={styles.pet_notes}>
