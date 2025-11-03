@@ -20,6 +20,7 @@ import { validatePassword } from "~util/validation/validate-signin";
 import ownerImage from "~public/login/petOwner.jpg"; // source: https://unsplash.com/photos/woman-hugging-a-dog-FtuJIuBbUhI
 import vetImage from "~public/login/vet.jpg"; // source: https://www.freepik.com/free-photo/close-up-doctor-checking-cat-s-belly_23442502.htm#fromView=keyword&page=1&position=32&uuid=d7e73635-ac35-41b6-80b1-b544a20a5f68&query=Vet
 import styles from "./page.module.scss";
+import { signInWithBackendToken } from "src/firebase";
 
 export default function LoginPage() {
     const owner: string = "owner";
@@ -51,9 +52,8 @@ export default function LoginPage() {
 
     const router = useRouter();
 
+    // Firebase code copied from ChatGPT, GPT-5 Model
     const handleLogin = async (values: { email: string; password: string }) => {
-        // TODO: check credentials with backend
-
         try {
             if (selectedUser === vet) {
                 const vet = await VetsAPI.vetLogin(values);
@@ -61,14 +61,18 @@ export default function LoginPage() {
                 router.push("/vet/dashboard");
             } else {
                 const owner = await OwnersAPI.ownerLogin(values);
+                // Store user info
                 localStorage.setItem("currentUser", JSON.stringify(owner));
+
+                // Sign in to Firebase emulator with custom token
+                await signInWithBackendToken(owner.token);
+
                 router.push("/owner/dashboard");
             }
         } catch (error) {
             setErrorMessage("Invalid Login. Please try again.");
         }
     };
-
     return (
         <div className={styles.page}>
             <main className={styles.main}>

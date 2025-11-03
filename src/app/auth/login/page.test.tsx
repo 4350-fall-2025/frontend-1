@@ -41,6 +41,12 @@ jest.mock("~util/validation/validate-signin", () => ({
         value === "badpass" ? "Invalid password" : null,
 }));
 
+jest.mock("../../../firebase", () => ({
+    auth: {},
+    storage: {},
+    signInWithBackendToken: jest.fn(() => Promise.resolve()),
+}));
+
 // ---- SUT ----
 import LoginPage from "./page";
 

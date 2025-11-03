@@ -19,6 +19,8 @@ const config: Config = {
         "!src/**/*.d.ts",
         "!src/data/**",
         "!src/tests/**",
+        "!src/app/mock-storage/**",
+        "!src/firebase.ts",
     ],
     coverageProvider: "babel",
     moduleNameMapper: {
