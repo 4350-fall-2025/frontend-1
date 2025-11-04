@@ -14,15 +14,41 @@ import { Pet } from "src/models/pet";
 import { mockPets } from "~data/pets/mock";
 import { Owner } from "src/models/owner";
 
+import { useSearchParams } from "next/navigation";
+
 /**
  * Some sample code came from Mantine use-file-dialog
  */
 
 export default function NewDiary() {
     const router = useRouter();
-    const [error, setError] = useState("");
 
+    //updated for the new diary entry dashboard
+    const searchParams = useSearchParams();
+    const rawNoteType = (searchParams.get("noteType") || "").trim();
+
+    // Normalize options to objects so we can match by value OR label
+    const normalizedNoteTypeOptions = (noteTypeOptions || []).map((opt: any) =>
+      typeof opt === "string" ? { value: opt, label: opt } : opt
+    );
+
+    // Find a match by value OR label (case-insensitive)
+    const preselectedMatch = normalizedNoteTypeOptions.find((opt: any) => {
+      const q = rawNoteType.toLowerCase();
+      return (
+        (opt?.value && String(opt.value).toLowerCase() === q) ||
+        (opt?.label && String(opt.label).toLowerCase() === q)
+      );
+    });
+
+    // what we actually need to put into the Select's "value"
+    const preselectedValue: string | null = preselectedMatch?.value ?? null;
+
+    const [error, setError] = useState("");
     const [owner, setOwner] = useState<Owner>(null);
+
+    const [contentTypeValue, setContentTypeValue] = useState<string | null>(preselectedValue);
+
 
     useEffect(() => {
         let storedUser = localStorage.getItem("currentUser");
@@ -54,7 +80,7 @@ export default function NewDiary() {
         mode: "uncontrolled",
         initialValues: {
             pet: null,
-            contentType: "",
+            contentType: preselectedValue,
             contentBody: "",
             media: null,
         },
@@ -66,6 +92,17 @@ export default function NewDiary() {
             media: validateOptionalImage,
         },
     });
+
+    // For setting Note type via query param
+    useEffect(() => {
+        // If a preselected value exists, mirror it into the form and the local state
+        if (preselectedValue) {
+            form.setFieldValue("contentType", preselectedValue);
+            setContentTypeValue(preselectedValue);
+        }
+        // If no query param, leave as-is (user picks manually)
+    }, [preselectedValue]);
+
 
     const fileDialog = useFileDialog({
         accept: "image/*",
@@ -110,7 +147,7 @@ export default function NewDiary() {
     };
 
     const handleCancel = () => {
-        router.push("/owner/dashboard"); // TODO: change to diary once created
+        router.push("/owner/diary/dashboard");
     };
 
     return (
@@ -129,6 +166,7 @@ export default function NewDiary() {
                                 required
                             />
 
+                            {/* JORDON'S ORIGINAL
                             <Select
                                 data={noteTypeOptions}
                                 {...form.getInputProps("contentType")}
@@ -137,6 +175,25 @@ export default function NewDiary() {
                                 placeholder='Select the type of this entry'
                                 required
                             />
+                            */}
+
+                            <Select
+                              data= {normalizedNoteTypeOptions}
+                              // controlled value from local state
+                              value= {contentTypeValue}
+                              onChange= {(val) => {
+                                setContentTypeValue(val);
+                                form.setFieldValue("contentType", val); // keep form data in sync for validation/submit
+                              }}
+
+
+                              {...form.getInputProps ("contentType")}
+                              key= {form.key("contentType")}
+                              label= "Note Type"
+                              placeholder= "Select the type of this entry"
+                              required
+                              disabled={!!preselectedValue}
+                             />
                         </div>
 
                         <Textarea
@@ -151,8 +208,7 @@ export default function NewDiary() {
                         <div className={styles.select_media}>
                             <label>Upload Media</label>
                             <p>
-                                Add 1 or more relevant images to this diary
-                                entry.
+                                Add 1 or more relevant images to this diary entry.
                             </p>
                             <Group>
                                 <Button variant='default' onClick={resetMedia}>

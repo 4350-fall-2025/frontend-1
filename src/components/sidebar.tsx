@@ -40,69 +40,69 @@ export default function Sidebar() {
     return (
         <>
             {/* Mobile toggle button - only visible on small screens */}
-            <button onClick={toggleSidebar} className={styles.toggleBtn}>
+            <button onClick= {toggleSidebar} className= {styles.toggleBtn}>
                 ☰ Menu
             </button>
 
             {/* Sidebar overlay for mobile - closes sidebar when clicked */}
             {isOpen && (
                 <div
-                    data-testid='sidebar-overlay'
-                    onClick={() => setIsOpen(false)}
-                    className={styles.overlay}
+                    data-testid= 'sidebar-overlay'
+                    onClick= {() => setIsOpen(false)}
+                    className= {styles.overlay}
                 />
             )}
 
             {/* Main sidebar */}
-            <aside className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
-                <div className={styles.logoLink}>
+            <aside className= {`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
+                <div className= {styles.logoLink}>
                     <Image
-                        src={logo}
-                        alt='QDog Logo'
-                        style={{
+                        src= {logo}
+                        alt= 'QDog Logo'
+                        style= {{
                             width: "60%",
                             height: "auto",
                         }}
                     />
                 </div>
 
-                <Stack gap='xs'>
+                <Stack gap= 'xs'>
                     <NavLink
-                        component={Link}
-                        href='/owner/dashboard'
-                        label='Dashboard'
-                        className={styles.navLink}
+                        component= {Link}
+                        href= '/owner/dashboard'
+                        label= 'Dashboard'
+                        className= {styles.navLink}
+                    />
+                    <NavLink
+                        component= {Link}
+                        href=  '/owner/pets/dashboard'
+                        label= 'My Pets'
+                        className= {styles.navLink}
+                    />
+                    <NavLink
+                        component= {Link}
+                        href= '/under-construction'
+                        label= 'Appointments'
+                        className= {styles.navLink}
                     />
                     <NavLink
                         component={Link}
-                        href='/owner/pets/dashboard'
-                        label='My Pets'
-                        className={styles.navLink}
+                        href= '/owner/diary/dashboard'
+                        label= 'Pet Diary'
+                        className= {styles.navLink}
                     />
                     <NavLink
-                        component={Link}
-                        href='/under-construction'
-                        label='Appointments'
-                        className={styles.navLink}
-                    />
-                    <NavLink
-                        component={Link}
-                        href='/under-construction'
-                        label='Pet Diary'
-                        className={styles.navLink}
-                    />
-                    <NavLink
-                        component={Link}
-                        href='/under-construction'
-                        label='Messages'
-                        className={styles.navLink}
+                        component= {Link}
+                        href= '/under-construction'
+                        label= 'Messages'
+                        className= {styles.navLink}
                     />
                 </Stack>
-                <div className={styles.bottom}>
+                <div className= {styles.bottom}>
                     <Button
-                        variant='filled'
-                        className={styles.button}
-                        onClick={logOut}
+                        variant= 'filled'
+                        className= {styles.button}
+                        onClick= {logOut}
                     >
                         Sign Out
                     </Button>
@@ -110,7 +110,7 @@ export default function Sidebar() {
             </aside>
 
             {/* Spacer for desktop - prevents content from hiding behind sidebar */}
-            <div className={styles.spacer} />
+            <div className= {styles.spacer} />
         </>
     );
 }
