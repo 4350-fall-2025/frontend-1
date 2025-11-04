@@ -186,7 +186,6 @@ export default function NewDiary() {
                                 form.setFieldValue("contentType", val); // keep form data in sync for validation/submit
                               }}
 
-
                               {...form.getInputProps ("contentType")}
                               key= {form.key("contentType")}
                               label= "Note Type"

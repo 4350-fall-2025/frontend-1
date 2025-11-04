@@ -39,13 +39,35 @@ jest.mock(
     { virtual: true },
 );
 
-// Mock router
-const pushMock = jest.fn();
-jest.mock("next/navigation", () => ({
-    useRouter: () => ({
-        push: pushMock,
-    }),
+// Provide a default useSearchParams mock that returns null for all gets,
+// so tests behave like the "regular button" (no preselection) flow.
+const useSearchParamsMock = jest.fn(() => ({
+  get: jest.fn(() => null),
 }));
+
+// Mock router
+// const pushMock = jest.fn();
+// jest.mock("next/navigation", () => ({
+//     useRouter: () => ({
+//         push: pushMock,
+//     }),
+//     useSearchParams: useSearchParamsMock,
+// }));
+
+jest.mock("next/navigation", () => {
+  const pushMock = jest.fn();
+  return {
+    __esModule: true,
+    useRouter: () => ({ push: pushMock }),
+    useSearchParams: () => ({ get: jest.fn(() => null) }), // default: no preselection
+    // expose for assertions:
+    pushMock,
+  };
+});
+
+// @ts-expect-error: pull test-double out of the mocked module
+const { pushMock } = jest.requireMock("next/navigation");
+
 
 // Create mock functions for file dialog that we can spy on
 const fileDialogOpenMock = jest.fn();
@@ -318,7 +340,7 @@ describe("New Diary Entry page", () => {
                 await user.click(cancelBtn);
 
                 async () =>
-                    expect(pushMock).toHaveBeenCalledWith("/owner/dashboard");
+                    expect(pushMock).toHaveBeenCalledWith("/owner/diary/dashboard");
             });
         });
     });
