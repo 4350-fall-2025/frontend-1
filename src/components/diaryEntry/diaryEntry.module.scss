@@ -1,0 +1,37 @@
+@import "../../app/globals.scss";
+
+.entry_card {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+
+    border: 1px solid var(--mantine-color-gray-6);
+    border-radius: 4px;
+
+    padding: 16px;
+
+    cursor: default;
+    &:hover {
+        cursor: pointer;
+    }
+
+    .entry_header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .heading {
+            margin: 0;
+        }
+    }
+
+    // Line clamping with help from
+    // https://stackoverflow.com/questions/20685684/truncating-text-to-specifc-number-of-lines-after-formatting
+    // and https://stackoverflow.com/questions/20685684/truncating-text-to-specifc-number-of-lines-after-formatting
+    .entry_content {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-clamp: 2;
+        box-orient: vertical;
+    }
+}
