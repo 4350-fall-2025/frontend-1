@@ -10,14 +10,21 @@ export class PetDiaryAPI {
         );
     }
 
-    static async createDiary(
-        ownerId: number,
-        petId: number,
-        petDiary: PetDiary,
-    ): Promise<void> {
-        await axiosClient.post(
-            `/owners/${ownerId}/pets/${petId}/diary`,
-            petDiary,
-        );
+    static async createDiary(petId: string, petDiary: PetDiary): Promise<void> {
+        await axiosClient.post(`/pets/${petId}/diaries`, petDiary);
+    }
+
+    static async getDiaryEntries(
+        petId: string,
+        from?: Date,
+        to?: Date,
+    ): Promise<PetDiary[]> {
+        const response = await axiosClient.get(`/pets/${petId}/diaries`, {
+            params: {
+                from: from,
+                to: to,
+            },
+        });
+        return response.data;
     }
 }

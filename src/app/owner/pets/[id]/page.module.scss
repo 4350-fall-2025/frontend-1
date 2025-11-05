@@ -5,13 +5,15 @@
 .page {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto 3fr 4fr;
-    padding: 32px;
+    grid-template-rows: auto auto;
+    padding: 12px;
 
     .top_bar {
-        grid-row: 1 / 2;
+        grid-row-start: 1;
 
         .back_button {
+            padding: 0;
+
             .back_icon {
                 margin-right: 8px;
             }
@@ -22,88 +24,118 @@
         }
     }
 
-    .header {
-        grid-row: 2 / 3;
-        display: flex;
-        justify-content: flex-start;
-        font-size: $font-2xl;
-    }
-
-    .pet_info {
+    .page_content {
         display: grid;
-        grid-template-columns: minmax(200px, 250px) auto;
-        grid-template-rows: 1fr;
-        column-gap: 32px;
-        color: var(--mantine-color-gray-6);
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 3fr 3fr;
+        padding-left: 8px;
+        padding-right: 8px;
 
-        .pet_image {
-            grid-column: 1 / 2;
-
-            aspect-ratio: 1 / 1;
-            width: 100%;
-            max-width: 250px;
-            height: auto;
+        .header {
+            grid-row-start: 1;
+            display: flex;
+            justify-content: flex-start;
+            font-size: $font-large;
         }
-
-        .pet_info_label {
-            font-weight: bold;
-        }
-
-        .pet_details {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(250px, 300px));
-            column-gap: 20px;
-        }
-
-        .pet_details_column {
-            align-self: center;
-            height: 100px;
-            font-size: $font-medium;
-
-            ul {
-                margin: 0;
-                padding-left: 0;
-            }
-
-            li {
-                list-style: none;
-            }
-        }
-    }
-
-    .pet_notes {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        column-gap: 16px;
-
-        .pet_notes_column {
-            -ms-grid-column-span: 1;
-        }
-    }
-
-    @media screen and (max-width: 1040px) {
+    
         .pet_info {
+            display: grid;
             grid-template-columns: 1fr;
             grid-template-rows: repeat(2, auto);
             row-gap: 16px;
-
+            color: var(--mantine-color-gray-6);
+    
             .pet_image {
                 grid-row: 1 / 2;
                 justify-self: center;
-            }
-
-            .pet_details {
-                grid-template-columns: 1fr;
-            }
-
-            .pet_details_column {
+    
+                width: 100%;
+                max-width: 250px;
                 height: auto;
             }
+    
+            .pet_info_label {
+                font-weight: bold;
+            }
+    
+            .pet_details {
+                display: grid;
+                grid-template-columns: 1fr;
+                column-gap: 20px;
+            }
+    
+            .pet_details_column {
+                align-self: center;
+                height: auto;
+                font-size: $font-medium;
+    
+                ul {
+                    margin: 0;
+                    padding-left: 0;
+                }
+    
+                li {
+                    list-style: none;
+                }
+            }
         }
-
+    
         .pet_notes {
+            display: grid;
             grid-template-columns: 1fr;
             row-gap: 16px;
+    
+            .pet_notes_column {
+                -ms-grid-column-span: 1;
+            }
+    
+            .diary_entries_list {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    }
+
+}
+
+@media screen and (min-width: $size-tablet) {
+    .page {
+        padding: 32px;
+
+        .page_content {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+}
+
+@media screen and (min-width: 1040px) {
+    .page {
+        .page_content {
+            .pet_info {
+                grid-template-columns: minmax(200px, 250px) auto;
+                grid-template-rows: 1fr;
+                column-gap: 32px;
+        
+                .pet_image {
+                    grid-column: 1 / 2;
+                }
+                
+                .pet_details {
+                    grid-template-columns: repeat(2, minmax(250px, 300px));
+                }
+        
+                .pet_details_column {
+                    height: 150px;
+                }
+            }
+
+            .pet_notes {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: 1fr;
+                column-gap: 16px;
+            }
         }
     }
 }
