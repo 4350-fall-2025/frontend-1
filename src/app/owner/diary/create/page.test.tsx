@@ -17,7 +17,6 @@ import { notesMaxCharacters, notesMinCharacters } from "~data/pets/constants";
 import { mockPets } from "~data/pets/mock";
 
 // Mock PetsAPI to return mockPets instead of making real API calls
-// This will work whether the component uses mockPets directly or calls the API
 jest.mock(
     "src/api/petsAPI",
     () => ({
@@ -41,9 +40,14 @@ jest.mock(
 
 // Mock router
 const pushMock = jest.fn();
+const mockGet = jest.fn(() => null);
+
 jest.mock("next/navigation", () => ({
     useRouter: () => ({
         push: pushMock,
+    }),
+    useSearchParams: () => ({
+        get: mockGet,
     }),
 }));
 
@@ -77,6 +81,9 @@ describe("New Diary Entry page", () => {
     describe("Regular functionality", () => {
         beforeEach(async () => {
             jest.clearAllMocks();
+
+            // Reset mockGet to return null (no query params)
+            mockGet.mockReturnValue(null);
 
             // Set up mock user in localStorage
             localStorage.setItem(
@@ -157,17 +164,9 @@ describe("New Diary Entry page", () => {
             beforeEach(async () => {
                 await fillNewDiaryDefaults({ notes: "Valid diary notes here" });
 
-                // Select pet so validation can run, note type left empty so it errors
-                await pickSelectDefaults({
-                    user,
-                    petEl: pet,
-                    noteTypeEl: noteType,
-                    petText: "Bella",
-                    noteTypeText: "",
-                });
-
-                // ensure note type can be selected independently
-                await user.click(noteType);
+                // Select pet so validation can run
+                await user.click(pet);
+                await user.click(await screen.findByText("Bella"));
             });
 
             it("is present", () => {
@@ -175,6 +174,7 @@ describe("New Diary Entry page", () => {
             });
 
             it("can be selected", async () => {
+                await user.click(noteType);
                 await user.click(await screen.findByText("General"));
                 expect((noteType as HTMLInputElement).value).toBe("General");
             });
@@ -194,6 +194,7 @@ describe("New Diary Entry page", () => {
             });
 
             it("submits when valid and navigates to dashboard of owner", async () => {
+                await user.click(noteType);
                 await user.click(await screen.findByText("General"));
                 await user.click(saveButton);
 
@@ -245,7 +246,7 @@ describe("New Diary Entry page", () => {
             });
 
             it("shows max length error when too long", async () => {
-                const longNotes = "A".repeat(notesMaxCharacters + 1); // 1501 characters
+                const longNotes = "A".repeat(notesMaxCharacters + 1);
                 fireEvent.change(notes, { target: { value: longNotes } });
                 submitNewDiary();
 
@@ -285,7 +286,6 @@ describe("New Diary Entry page", () => {
             });
 
             it("allows upload button to be clicked", async () => {
-                // Click the button and verify fileDialog.open is called
                 await user.click(uploadMediaButton);
                 expect(fileDialogOpenMock).toHaveBeenCalledTimes(1);
             });
@@ -311,15 +311,70 @@ describe("New Diary Entry page", () => {
         });
 
         describe("Cancel button", () => {
-            it("navigates to dashboard when clicked", async () => {
+            it("navigates to diary dashboard when clicked", async () => {
                 const cancelBtn = screen.getByRole("button", {
                     name: /cancel/i,
                 });
                 await user.click(cancelBtn);
 
                 async () =>
-                    expect(pushMock).toHaveBeenCalledWith("/owner/dashboard");
+                    expect(pushMock).toHaveBeenCalledWith(
+                        "/owner/diary/dashboard",
+                    );
             });
+        });
+    });
+
+    describe("Preselected note type functionality", () => {
+        beforeEach(async () => {
+            jest.clearAllMocks();
+
+            // Mock mockGet to return "Diet" for noteType query param
+            mockGet.mockImplementation((key) => {
+                if (key === "noteType") return "Diet";
+                return null;
+            });
+
+            localStorage.setItem(
+                "currentUser",
+                JSON.stringify({ id: 1, firstName: "Test", lastName: "User" }),
+            );
+
+            user = userEvent.setup();
+            render(<NewDiary />);
+
+            ({
+                pet,
+                noteType,
+                notes,
+                resetMediaButton,
+                uploadMediaButton,
+                cancelButton,
+                saveButton,
+            } = await getNewDiaryElements());
+        });
+
+        it("preselects note type from query param", async () => {
+            // Wait for the component to process the query param
+            await screen.findByDisplayValue("Diet");
+            expect((noteType as HTMLInputElement).value).toBe("Diet");
+        });
+
+        it("allows form submission with preselected note type", async () => {
+            await screen.findByDisplayValue("Diet");
+
+            // Fill other required fields
+            await user.click(pet);
+            await user.click(await screen.findByText("Bella"));
+
+            fireEvent.change(notes, {
+                target: { value: "Valid diary notes here" },
+            });
+
+            await user.click(saveButton);
+
+            async () =>
+                expect(pushMock).toHaveBeenCalledWith("/owner/dashboard");
         });
     });
 
@@ -327,11 +382,13 @@ describe("New Diary Entry page", () => {
         beforeEach(async () => {
             jest.clearAllMocks();
 
+            // Reset mockGet to return null (no query params)
+            mockGet.mockReturnValue(null);
+
             // Don't set up localStorage - simulating no logged-in user
             user = userEvent.setup();
             render(<NewDiary />);
 
-            // Get elements
             ({
                 pet,
                 noteType,
@@ -357,10 +414,8 @@ describe("New Diary Entry page", () => {
         });
 
         it("shows error when user is not logged in", async () => {
-            // Submit the form
             await user.click(saveButton);
 
-            // Verify error message appears and navigation doesn't happen
             const errorMsg = await screen.findByText(
                 /you cannot make a diary entry for your pet without being logged in./i,
             );

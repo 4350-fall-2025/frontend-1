@@ -71,6 +71,11 @@ describe("Sidebar Component", () => {
             expect(myPetsLink).toHaveAttribute("href", "/owner/pets/dashboard");
         });
 
+        it("Pet Diary link should navigate to /owner/diary/dashboard", () => {
+            const petDiaryLink = screen.getByText("Pet Diary").closest("a");
+            expect(petDiaryLink).toHaveAttribute("href", "/owner/diary/dashboard");
+        });
+
         it("Sign Out Button should navigate back to log in", () => {
             fireEvent.click(screen.getByText("Sign Out"));
             expect(window.confirm).toHaveBeenCalledWith(
@@ -83,14 +88,12 @@ describe("Sidebar Component", () => {
             const appointmentsLink = screen
                 .getByText("Appointments")
                 .closest("a");
-            const petDiaryLink = screen.getByText("Pet Diary").closest("a");
             const messagesLink = screen.getByText("Messages").closest("a");
 
             expect(appointmentsLink).toHaveAttribute(
                 "href",
                 "/under-construction",
             );
-            expect(petDiaryLink).toHaveAttribute("href", "/under-construction");
             expect(messagesLink).toHaveAttribute("href", "/under-construction");
         });
 
