@@ -13,8 +13,8 @@ export class PetDiary {
     public readonly pet: Pet;
     public readonly contentType: ContentType;
     public readonly contentBody: string;
-    public readonly createTimestamp: Date;
-    public readonly media: File[];
+    public readonly createTimestamp: string;
+    public readonly files: string[];
 
     constructor(JSON) {
         Object.assign(this, JSON);

@@ -7,9 +7,9 @@ export const MOCK_DIARY_ENTRY: PetDiary = {
     id: MOCK_DIARY_ID,
     contentType: ContentType.general,
     contentBody: "This is a mock diary entry.",
-    createTimestamp: new Date("2025-01-01"),
+    createTimestamp: new Date("2025-01-01").toISOString(),
     pet: mockPets[0],
-    media: [],
+    files: [],
 };
 
 export const MOCK_DIARY_ENTRIES: PetDiary[] = [MOCK_DIARY_ENTRY];

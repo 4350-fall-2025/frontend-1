@@ -2,6 +2,9 @@ import "@testing-library/jest-dom";
 import { render, screen } from "~tests/utils/custom-testing-library";
 import userEvent from "@testing-library/user-event";
 import PetDashboard from "./page";
+import { mockPets } from "~data/pets/mock";
+import { PetsAPI } from "~api/petsAPI";
+import { owner } from "~data/owner/mock";
 
 /**
  * CREDITS
@@ -78,6 +81,11 @@ describe("Pet Dashboard page", () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+
+        // Set up mock user in localStorage so pets will load
+        localStorage.setItem("currentUser", JSON.stringify(owner));
+
+        PetsAPI.getAllPets = jest.fn().mockResolvedValue(mockPets);
         user = userEvent.setup();
     });
 
@@ -115,8 +123,9 @@ describe("Pet Dashboard page", () => {
     });
 
     describe("Pet cards display", () => {
-        beforeEach(() => {
+        beforeEach(async () => {
             render(<PetDashboard />);
+            await screen.findByText("Bella");
         });
 
         it("renders all pet cards from mock data", () => {
@@ -132,8 +141,9 @@ describe("Pet Dashboard page", () => {
     });
 
     describe("Pet information display", () => {
-        beforeEach(() => {
+        beforeEach(async () => {
             render(<PetDashboard />);
+            await screen.findByText("Bella");
         });
 
         it("displays pet information correctly", () => {
@@ -153,8 +163,9 @@ describe("Pet Dashboard page", () => {
     });
 
     describe("Pet card interactions", () => {
-        beforeEach(() => {
+        beforeEach(async () => {
             render(<PetDashboard />);
+            await screen.findByText("Bella");
         });
 
         it("renders EDIT badge for each pet card", () => {
@@ -167,6 +178,12 @@ describe("Pet Dashboard page", () => {
             await user.click(editBadges[0]);
             // Badge should remain in document after click
             expect(editBadges[0]).toBeInTheDocument();
+        });
+
+        it("navigates to under construction when edit button is clicked", async () => {
+            const editBadges = screen.getAllByRole("button", { name: /edit/i });
+            await user.click(editBadges[0]);
+            expect(pushMock).toHaveBeenCalledWith("/under-construction");
         });
 
         it("renders View Details button for each pet card", () => {
@@ -184,11 +201,21 @@ describe("Pet Dashboard page", () => {
             // Button should remain in document after click
             expect(viewDetailsButtons[0]).toBeInTheDocument();
         });
+
+        it("navigates to pet details page when view details button is clicked", async () => {
+            const viewDetailsButtons = screen.getAllByRole("button", {
+                name: /view details/i,
+            });
+            await user.click(viewDetailsButtons[0]);
+
+            async () => expect(pushMock).toHaveBeenCalledWith("/owner/pets/1");
+        });
     });
 
     describe("Info row labels", () => {
-        beforeEach(() => {
+        beforeEach(async () => {
             render(<PetDashboard />);
+            await screen.findByText("Bella");
         });
 
         it("displays Age label for each pet", () => {

@@ -11,8 +11,10 @@ import { Button, Group, List, Select, Textarea } from "@mantine/core";
 import { noteTypeOptions } from "~data/diary/constants";
 import { useFileDialog } from "@mantine/hooks";
 import { Pet } from "src/models/pet";
-import { mockPets } from "~data/pets/mock";
 import { Owner } from "src/models/owner";
+import { PetsAPI } from "~api/petsAPI";
+import { PetDiaryAPI } from "~api/petDiaryAPI";
+import { todayDate } from "~data/constants";
 
 /**
  * Some sample code came from Mantine use-file-dialog
@@ -34,17 +36,28 @@ function NewDiary() {
         }
     }, []);
 
-    let pets: Pet[];
-    try {
-        pets = mockPets;
+    const [pets, setPets] = useState<Pet[]>([]);
 
-        // TODO: use this instead after the getAllPets is implemented in backend
-        // pets = await PetsAPI.getAllPets(user.id);
-    } catch (error) {
-        setError(
-            "You cannot make a diary entry for your pet without having any pet.",
-        );
-    }
+    // TODO: Make a util function for fetching pets and return the pets? to reduce duplicate code
+    // localStorage code above might benefit from this too but we are switching to firestore so not needed
+
+    // Load pets when owner is available
+    useEffect(() => {
+        const fetchPets = async () => {
+            if (owner?.id) {
+                try {
+                    const fetchedPets = await PetsAPI.getAllPets(owner.id);
+                    setPets(fetchedPets);
+                } catch (error) {
+                    setError(
+                        "We can't retrieve all your pets. Please try again later.",
+                    );
+                }
+            }
+        };
+
+        fetchPets();
+    }, [owner]); // Run when owner changes
 
     const petOptions: string[] = [];
     for (let pet of pets) {
@@ -57,14 +70,14 @@ function NewDiary() {
             pet: null,
             contentType: "",
             contentBody: "",
-            media: null,
+            files: null,
         },
 
         validate: {
             pet: isNotEmpty("This pet field can't be empty."),
             contentType: isNotEmpty("This note type field can't be empty."),
             contentBody: validateDiaryContentBody,
-            media: validateOptionalImage,
+            files: validateOptionalImage,
         },
     });
 
@@ -90,15 +103,20 @@ function NewDiary() {
         accept: "image/*",
     });
 
-    const pickedMedia = Array.from(fileDialog.files || []);
-    const pickedMediaList = pickedMedia.map((file) => (
+    const pickedFiles = Array.from(fileDialog.files || []);
+    const pickedFilesList = pickedFiles.map((file) => (
         <List.Item key={file.name}>{file.name}</List.Item>
     ));
 
-    // clears file dialog and resets media contents
-    const resetMedia = () => {
+    // clears file dialog and resets files contents
+    const resetFiles = () => {
         fileDialog.reset();
-        form.setFieldValue("media", null);
+        form.setFieldValue("files", null);
+    };
+
+    const findPetIdByName = (petName: string): string | null => {
+        const pet = pets.find((p) => p.name === petName);
+        return pet?.id || null;
     };
 
     const handleSubmit = async (values: typeof form.values) => {
@@ -106,17 +124,24 @@ function NewDiary() {
             setError("");
 
             if (owner?.id != null) {
+                const petId = findPetIdByName(values.pet);
+
+                if (!petId) {
+                    setError("Unable to find the selected pet.");
+                    return;
+                }
+
                 const diaryEntryJSON = {
-                    ...values,
-                    media: pickedMedia,
+                    contentBody: values.contentBody,
+                    contentType: values.contentType,
+                    createTimestamp: todayDate,
+                    files: [],
                 };
 
                 const diaryEntry = new PetDiary(diaryEntryJSON);
 
-                // TODO: uncomment after the getAllPets is implemented in backend
-                // await PetDiaryAPI.createDiary(owner.id, values.pet.id, diaryEntry);
-
-                router.push("/owner/dashboard"); // TODO: change to diary once created
+                await PetDiaryAPI.createDiary(petId, diaryEntry);
+                router.push("/owner/diary/dashboard");
             } else {
                 setError(
                     "You cannot make a diary entry for your pet without being logged in.",
@@ -124,7 +149,9 @@ function NewDiary() {
             }
         } catch (error) {
             console.error("Error in handleSubmit: ", error);
-            setError("You cannot make a diary entry."); // TODO: Add a more specific error depending on backend's implementation
+            setError(
+                "Something went wrong with our server when creating diary. Please try again later.",
+            );
         }
     };
 
@@ -174,7 +201,7 @@ function NewDiary() {
                                 entry.
                             </p>
                             <Group>
-                                <Button variant='default' onClick={resetMedia}>
+                                <Button variant='default' onClick={resetFiles}>
                                     Reset
                                 </Button>
                                 <Button
@@ -186,9 +213,9 @@ function NewDiary() {
                                     Upload
                                 </Button>
                             </Group>
-                            {pickedMediaList.length > 0 && (
+                            {pickedFilesList.length > 0 && (
                                 <List mt='sm' size='sm'>
-                                    {pickedMediaList}
+                                    {pickedFilesList}
                                 </List>
                             )}
                         </div>
