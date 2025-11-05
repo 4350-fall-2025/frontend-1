@@ -201,12 +201,13 @@
 
      .newEntryBtn {
          width: auto;
-         font-size: $font-small;
+         font-size: $font-small-med;
          padding: 10px 14px;
          display: flex;
          justify-content: center;
          align-items: center;
          gap: 6px;
+         margin-top: -10px;
      }
 
      .controls {
@@ -214,6 +215,7 @@
          align-items: stretch;
          gap: 12px;
          margin-bottom: 16px;
+         margin-top: 20px;
      }
 
      .filters {
@@ -251,7 +253,7 @@
      }
 
      .sortIcon {
-         margin-left: -24px;
+         margin-left: -30px;
          pointer-events: none;
      }
 
