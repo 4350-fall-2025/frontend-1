@@ -6,6 +6,15 @@ import { IconPlus, IconArrowsSort } from "@tabler/icons-react";
 import { noteTypeOptions } from "src/data/diary/constants";
 import styles from "./page.module.scss";
 
+/**
+ * CREDITS
+ *
+ * Used Claude AI (Anthropic) and ChatGPT-5 to assist with:
+ * - Styling SCSS module classes with proper structure
+ * - Restructuring component to match project patterns
+ * - Ensuring Next.js "use client" directive patterns are followed
+ */
+
 export default function PetDiaryDashboard() {
     const router = useRouter();
 
