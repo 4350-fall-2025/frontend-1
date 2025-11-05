@@ -52,7 +52,7 @@ jobs:
               run: pnpm test -- src/app/owner/pets/create
 
             - name: "[Regression Tests] - Integration tests"
-              run: pnpm test -- src/tests/integration/password-validation
+              run: pnpm test -- src/tests/integration
 
             - name: Build project
               run: pnpm build
