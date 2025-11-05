@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { IconPlus, IconArrowsSort } from '@tabler/icons-react';
 import styles from './page.module.scss';
 
 export default function PetDiaryDashboard() {
@@ -28,7 +29,8 @@ export default function PetDiaryDashboard() {
                     className= {styles.newEntryBtn}
                     onClick={() => router.push("/owner/diary/create")}
                   >
-                    + New Entry
+                    <IconPlus size={16} />
+                    New Entry
                   </button>
                 </div>
 
@@ -61,6 +63,7 @@ export default function PetDiaryDashboard() {
                                   <option> Oldest first </option>
                                   <option> Pet name </option>
                                 </select>
+                                <IconArrowsSort size={16} className={styles.sortIcon} />
                             </div>
                         </div>
 

@@ -35,6 +35,17 @@
   }
 }
 
+.add_button span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.add_button svg {
+  padding-top: 4px;
+  padding-right: 3px;
+}
+
 // PET CARD GRID
 .pet_grid {
     display: grid;

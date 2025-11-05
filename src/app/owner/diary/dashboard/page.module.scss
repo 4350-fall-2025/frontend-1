@@ -3,7 +3,7 @@
 .container {
   display: flex;
   height: 100vh;
-  background-color: #f9fafb;
+  background-color: $color-white;
 }
 
 .mainContent {
@@ -49,20 +49,25 @@
 .filterBtn {
   padding: 8px 14px;
   border-radius: 12px;
-  border: 1px solid #e6e9ef;
-  background: #fff;
+  border: 1px solid $color-off-white;
+  background: $color-white;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .filterBtn:hover {
-  background: #f3f4f6;
+  background: $color-off-white;
 }
 
 .filterBtnActive {
-  background: #d9f3e6;
-  border-color: #c4ead8;
+  background: $color-green-dark;
+  color: $color-white;
+}
+
+.filterBtnActive:hover {
+  background: $color-green;
+  color: $color-black;
 }
 
 .sortContainer {
@@ -73,17 +78,18 @@
 
 .sortLabel {
   font-size: 14px;
-  color: #667085;
+  color: $color-gray;
 }
 
 .sortSelect {
   appearance: none;
   padding: 8px 10px;
   border-radius: 10px;
-  border: 1px solid #e6e9ef;
-  background: #fff;
+  border: 1px solid $color-off-white;
+  background: $color-white;
   font-weight: 500;
-  color: #344054;
+  color: $color-green-dark;
+  cursor: pointer;
 }
 
 /* === Entries (left column) === */
@@ -92,30 +98,30 @@
 }
 
 .placeholder {
-  border: 2px dashed #d0d5dd;
+  border: 2px dashed $color-light-gray;
   border-radius: 12px;
   min-height: 300px;
   display: grid;
   place-items: center;
-  color: #98a2b3;
-  background: #f9fafb;
+  color: $color-gray;
+  background: $color-off-white;
   font-size: 15px;
 }
 
 /* === Sidebar (Quick Add section) === */
 .diarySidebar {
-  background: #fff;
-  border: 1px solid #eef0f4;
+  background: $color-white;
+  border: 1px solid $color-off-white;
   border-radius: 12px;
   padding: 20px 16px;
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
 }
 
 .sidebarTitle {
-  font-size: 18px;
+  font-size: $font-med-large;
   font-weight: 700;
   margin: 4px 0 16px;
-  color: #1d2939;
+  color: $color-rose;
 }
 
 .quickAddButtons {
@@ -128,22 +134,22 @@
   text-align: left;
   padding: 10px 14px;
   border-radius: 10px;
-  border: 1px solid #e6e9ef;
-  background: #fff;
+  border: 1px solid $color-off-white;
+  background: $color-white;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .quickAddBtn:hover {
-  background: #f9f9f9;
-  border-color: #d0d5dd;
+  background: $color-green;
+  border-color: $color-off-white;
 }
 
 /* === New Entry button === */
 .newEntryBtn {
-  background: #ff6b6b;
-  color: #fff;
+  background: $color-rose;
+  color: $color-white;
   border: none;
   border-radius: 10px;
   padding: 10px 14px;
@@ -152,8 +158,19 @@
   transition: background 0.2s ease;
 }
 
+.newEntryBtn span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.newEntryBtn svg {
+  padding-top: 4px;
+  padding-right: 3px;
+}
+
 .newEntryBtn:hover {
-  background: #ff5656;
+  background: $color-rose-hover;
 }
 
 /* === Responsive tweaks === */
