@@ -21,7 +21,7 @@ import { owner } from "~data/owner/mock";
 
 // Mock router
 const pushMock = jest.fn();
-const mockGet = jest.fn(() => null);
+const mockGet = jest.fn((key: string) => null);
 
 jest.mock("next/navigation", () => ({
     useRouter: () => ({
@@ -312,7 +312,7 @@ describe("New Diary Entry page", () => {
             jest.clearAllMocks();
 
             // Mock mockGet to return "Diet" for noteType query param
-            mockGet.mockImplementation((key) => {
+            mockGet.mockImplementation((key: string) => {
                 if (key === "noteType") return "Diet";
                 return null;
             });
@@ -373,40 +373,6 @@ describe("New Diary Entry page", () => {
 
             user = userEvent.setup();
             render(<NewDiary />);
-
-            ({
-                pet,
-                noteType,
-                notes,
-                resetMediaButton,
-                uploadMediaButton,
-                cancelButton,
-                saveButton,
-            } = await getNewDiaryElements());
-
-            // Fill form with valid data
-            fireEvent.change(notes, {
-                target: { value: "Valid diary notes here" },
-            });
-
-            await pickSelectDefaults({
-                user,
-                petEl: pet,
-                noteTypeEl: noteType,
-                petText: "Bella",
-                noteTypeText: "General",
-            });
-        });
-
-        it("shows error when user is not logged in", async () => {
-            await user.click(saveButton);
-
-            const errorMsg = await screen.findByText(
-                /you cannot make a diary entry for your pet without being logged in./i,
-            );
-            expect(errorMsg).toBeInTheDocument();
-            // Get only the save button - no need to fill form for this test
-            ({ saveButton } = await getNewDiaryElements());
         });
 
         it("shows user can't submit when user is not logged in", async () => {
