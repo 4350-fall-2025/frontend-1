@@ -6,7 +6,7 @@ export class VetsAPI {
     //ChatGPT-5 was used to make this function
     static removeNull(vet: Vet) {
         return Object.fromEntries(
-            Object.entries(vet).filter(([key, value]) => value != null),
+            Object.entries(vet).filter((value) => value != null),
         );
     }
 

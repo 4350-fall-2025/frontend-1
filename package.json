@@ -24,8 +24,10 @@
         "@mantine/form": "^8.3.3",
         "@mantine/hooks": "^8.3.3",
         "@radix-ui/react-icons": "^1.3.2",
-        "dayjs": "^1.11.18",
+        "@tabler/icons-react": "^3.35.0",
         "axios": "^1.12.2",
+        "dayjs": "^1.11.18",
+        "firebase": "^12.5.0",
         "next": "^15.5.4",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
@@ -53,7 +55,7 @@
     },
     "prettier": {
         "tabWidth": 4,
-        "endOfLine": "lf",
+        "endOfLine": "crlf",
         "jsxSingleQuote": true
     },
     "lint-staged": {

@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { defaultDate, todayDate } from "~data/constants";
+import { defaultDate, todayDate, allowedImageTypes } from "~data/constants";
 
 // Based on validateName in sign up page
 export const validateRequiredStringValue = (value: string): string | null => {
@@ -46,4 +46,29 @@ export const validateOptionalDateValue = (date: Date): string | null => {
     }
 
     return validateDate(date);
+};
+
+// NOTE: helper function, not meant to be used directly
+const validateImage = (value: File): string | null => {
+    if (!allowedImageTypes.includes(value.type)) {
+        return "Only jpeg, webp, and png images are allowed.";
+    }
+
+    return null;
+};
+
+export const validateRequiredImage = (value: File): string | null => {
+    if (!value) {
+        return "Please select an image.";
+    }
+
+    return validateImage(value);
+};
+
+export const validateOptionalImage = (value: File): string | null => {
+    if (!value) {
+        return null;
+    }
+
+    return validateImage(value);
 };

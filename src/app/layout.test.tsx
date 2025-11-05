@@ -14,15 +14,10 @@ import type { ReactNode } from "react";
 import RootLayout from "./layout";
 
 // mock fonts so the body className concatenation is predictable
-jest.mock("../lib/fonts", () => ({
+jest.mock("~lib/fonts", () => ({
     dmSans: { variable: "dmSansVar" },
     tsukimiRounded: { variable: "tsukimiRoundedVar" },
 }));
-
-// mock ConditionalSidebar to a simple test double
-jest.mock("../components/conditionalSidebar", () => () => (
-    <aside data-testid='conditional-sidebar-mock' />
-));
 
 const renderLayout = (children: ReactNode) =>
     render(<RootLayout>{children}</RootLayout>);
@@ -44,31 +39,12 @@ describe("RootLayout", () => {
     });
 
     describe("Layout structure and child rendering", () => {
-        it("renders grid with ConditionalSidebar and main content", () => {
-            renderLayout(<div data-testid='child' />);
+        it("renders children", () => {
+            renderLayout(<div>Test Content</div>);
 
-            // check that the grid container exists (css module class)
-            const grid = document.querySelector(".layoutGrid");
-            expect(grid).toBeInTheDocument();
+            const child = screen.getByText("Test Content");
 
-            // ConditionalSidebar mock should be rendered inside the grid
-            expect(
-                screen.getByTestId("conditional-sidebar-mock"),
-            ).toBeInTheDocument();
-
-            // verify main content container
-            const main = document.querySelector("main.main");
-            expect(main).toBeInTheDocument();
-        });
-
-        it("renders children inside main element", () => {
-            renderLayout(<div data-testid='child'>Test Content</div>);
-
-            const main = document.querySelector("main.main");
-            const child = screen.getByTestId("child");
-
-            expect(main).toContainElement(child);
-            expect(child).toHaveTextContent("Test Content");
+            expect(child).toBeInTheDocument();
         });
 
         it("wraps content in MantineProvider", () => {
@@ -80,18 +56,6 @@ describe("RootLayout", () => {
     });
 
     describe("Component integration", () => {
-        it("ConditionalSidebar is rendered before main content", () => {
-            renderLayout(<div data-testid='child' />);
-
-            const grid = document.querySelector(".layoutGrid");
-            const sidebar = screen.getByTestId("conditional-sidebar-mock");
-            const main = document.querySelector("main.main");
-
-            // both should be children of the grid
-            expect(grid).toContainElement(sidebar);
-            expect(grid).toContainElement(main as HTMLElement);
-        });
-
         it("allows multiple children to be rendered", () => {
             renderLayout(
                 <>

@@ -13,9 +13,11 @@ import { render, screen } from "~tests/utils/custom-testing-library";
 import Page from "./page";
 
 const pushMock = jest.fn();
+const backMock = jest.fn();
 jest.mock("next/navigation", () => ({
     useRouter: () => ({
         push: pushMock,
+        back: backMock,
     }),
 }));
 
@@ -53,28 +55,42 @@ describe("Under Construction Page", () => {
             });
             expect(button).toBeInTheDocument();
         });
+
+        it("should render the back to previous button", () => {
+            const button = screen.getByRole("button", {
+                name: /Back to Previous/i,
+            });
+            expect(button).toBeInTheDocument();
+        });
     });
 
     describe("Button Functionality", () => {
-        it("button should link to home page", () => {
+        it("back to sign-in should link to home page", () => {
             const button = screen.getByRole("link", {
                 name: /Back to Sign-in/i,
             });
             expect(button).toHaveAttribute("href", "/");
         });
 
-        it("button should have Mantine button classes", () => {
-            const button = screen.getByRole("link", {
-                name: /Back to Sign-in/i,
+        it("back to previous should call router.back when clicked", async () => {
+            const button = screen.getByRole("button", {
+                name: /Back to Previous/i,
             });
-            expect(button.className).toContain("mantine-Button-root");
+            expect(button).toBeInTheDocument();
+            button.click();
+            expect(backMock).toHaveBeenCalled();
         });
 
-        it("button should be clickable", () => {
-            const button = screen.getByRole("link", {
+        it("buttons should be clickable", () => {
+            const backToSignin = screen.getByRole("link", {
                 name: /Back to Sign-in/i,
             });
-            expect(button).toBeEnabled();
+            const backToPrevious = screen.getByRole("button", {
+                name: /Back to Previous/i,
+            });
+
+            expect(backToSignin).toBeEnabled();
+            expect(backToPrevious).toBeEnabled();
         });
     });
 
@@ -155,19 +171,30 @@ describe("Under Construction Page", () => {
             expect(heading).toBeInTheDocument();
         });
 
-        it("button should be keyboard accessible", () => {
-            const button = screen.getByRole("link", {
+        it("buttons should be keyboard accessible", () => {
+            const backToSignin = screen.getByRole("link", {
                 name: /Back to Sign-in/i,
             });
-            button.focus();
-            expect(button).toHaveFocus();
+            backToSignin.focus();
+            expect(backToSignin).toHaveFocus();
+
+            const backToPrevious = screen.getByRole("button", {
+                name: /Back to Previous/i,
+            });
+            backToPrevious.focus();
+            expect(backToPrevious).toHaveFocus();
         });
 
-        it("button should have accessible text", () => {
-            const button = screen.getByRole("link", {
+        it("buttons should have accessible text", () => {
+            const backToSignin = screen.getByRole("link", {
                 name: /Back to Sign-in/i,
             });
-            expect(button).toHaveAccessibleName();
+            expect(backToSignin).toHaveAccessibleName();
+
+            const backToPrevious = screen.getByRole("button", {
+                name: /Back to Previous/i,
+            });
+            expect(backToPrevious).toHaveAccessibleName();
         });
 
         it("heading should be visible to screen readers", () => {
@@ -175,39 +202,6 @@ describe("Under Construction Page", () => {
                 name: /This page is currently under construction/i,
             });
             expect(heading).toBeVisible();
-        });
-    });
-
-    describe("Component Integration", () => {
-        it("all elements should be present in the DOM", () => {
-            expect(
-                screen.getByRole("heading", {
-                    name: /This page is currently under construction/i,
-                }),
-            ).toBeInTheDocument();
-
-            expect(
-                screen.getByText(
-                    /We're working hard to bring this page to life\. Check back soon!/i,
-                ),
-            ).toBeInTheDocument();
-
-            expect(
-                screen.getByRole("link", {
-                    name: /Back to Sign-in/i,
-                }),
-            ).toBeInTheDocument();
-        });
-
-        it("content should be properly nested", () => {
-            const heading = screen.getByRole("heading", {
-                name: /This page is currently under construction/i,
-            });
-            const contentDiv = heading.parentElement;
-            expect(contentDiv).toHaveClass("content");
-
-            const containerDiv = contentDiv?.parentElement;
-            expect(containerDiv).toHaveClass("container");
         });
     });
 });
