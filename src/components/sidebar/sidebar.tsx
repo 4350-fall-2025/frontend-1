@@ -89,7 +89,7 @@ export default function Sidebar() {
                     />
                     <NavLink
                         component={Link}
-                        href='/under-construction'
+                        href='/owner/diary/dashboard'
                         label='Pet Diary'
                         className={styles.navLink}
                     />

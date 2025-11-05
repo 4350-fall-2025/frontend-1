@@ -1,10 +1,10 @@
 "use client";
 import { isNotEmpty, useForm } from "@mantine/form";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import styles from "./page.module.scss";
 import globalStyles from "~app/layout.module.scss";
 import { PetDiary } from "src/models/pet-diary";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { validateOptionalImage } from "~util/validation/validation";
 import { validateDiaryContentBody } from "~util/validation/validate-diary";
 import { Button, Group, List, Select, Textarea } from "@mantine/core";
@@ -18,11 +18,12 @@ import { Owner } from "src/models/owner";
  * Some sample code came from Mantine use-file-dialog
  */
 
-export default function NewDiary() {
+function NewDiary() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [error, setError] = useState("");
-
     const [owner, setOwner] = useState<Owner>(null);
+    const [isNoteTypePreselected, setIsNoteTypePreselected] = useState(false);
 
     useEffect(() => {
         let storedUser = localStorage.getItem("currentUser");
@@ -67,6 +68,24 @@ export default function NewDiary() {
         },
     });
 
+    // Preselect note type from query param
+    useEffect(() => {
+        const noteTypeParam = searchParams.get("noteType");
+        if (noteTypeParam) {
+            // Find matching option by label (case-insensitive)
+            const match = noteTypeOptions.find(
+                (opt) =>
+                    opt.label.toLowerCase() === noteTypeParam.toLowerCase(),
+            );
+
+            if (match) {
+                // Set the form value to the ContentType enum value (e.g., "DIET")
+                form.setFieldValue("contentType", match.value);
+                setIsNoteTypePreselected(true); // Lock if note type is preselected
+            }
+        }
+    }, [searchParams]);
+
     const fileDialog = useFileDialog({
         accept: "image/*",
     });
@@ -110,7 +129,7 @@ export default function NewDiary() {
     };
 
     const handleCancel = () => {
-        router.push("/owner/dashboard"); // TODO: change to diary once created
+        router.push("/owner/diary/dashboard");
     };
 
     return (
@@ -192,5 +211,13 @@ export default function NewDiary() {
                 </form>
             </main>
         </div>
+    );
+}
+
+export default function NewDiaryPage() {
+    return (
+        <Suspense fallback={null}>
+            <NewDiary />
+        </Suspense>
     );
 }

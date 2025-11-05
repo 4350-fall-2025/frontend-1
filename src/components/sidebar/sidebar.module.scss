@@ -7,7 +7,7 @@
  * - Interactive state styling (hover, active)
  */
 
-@import "../app/globals.scss";
+@import "../../app/globals.scss";
 
 /* Toggle button - hidden on desktop, visible on mobile */
 .toggleBtn {
@@ -144,4 +144,3 @@
         display: none;
     }
 }
-

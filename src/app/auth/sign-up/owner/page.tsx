@@ -5,7 +5,7 @@ import { isEmail, useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import PasswordRequirements from "~components/signup/passwordRequirements";
+import PasswordRequirements from "~components/passwordRequirements/passwordRequirements";
 import {
     validateName,
     validatePasswordSignup,

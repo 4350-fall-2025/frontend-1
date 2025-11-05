@@ -9,7 +9,7 @@ import { isEmail, isNotEmpty, useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import PasswordRequirements from "~components/signup/passwordRequirements";
+import PasswordRequirements from "~components/passwordRequirements/passwordRequirements";
 import { provinces } from "~data/vets/constants";
 import {
     validateLicenseId,
