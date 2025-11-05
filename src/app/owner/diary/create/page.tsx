@@ -1,6 +1,6 @@
 "use client";
 import { isNotEmpty, useForm } from "@mantine/form";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import styles from "./page.module.scss";
 import globalStyles from "~app/layout.module.scss";
 import { PetDiary } from "src/models/pet-diary";
@@ -18,7 +18,7 @@ import { Owner } from "src/models/owner";
  * Some sample code came from Mantine use-file-dialog
  */
 
-export default function NewDiary() {
+function NewDiary() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [error, setError] = useState("");
@@ -211,5 +211,13 @@ export default function NewDiary() {
                 </form>
             </main>
         </div>
+    );
+}
+
+export default function NewDiaryPage() {
+    return (
+        <Suspense fallback={null}>
+          <NewDiary />
+        </Suspense>
     );
 }
