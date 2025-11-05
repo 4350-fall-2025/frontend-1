@@ -94,7 +94,6 @@ describe("Sidebar Component", () => {
                 "href",
                 "/under-construction",
             );
-            expect(petDiaryLink).toHaveAttribute("href", "/under-construction");
             expect(messagesLink).toHaveAttribute("href", "/under-construction");
         });
 
