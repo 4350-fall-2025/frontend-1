@@ -60,7 +60,6 @@ describe("Login page (src/app/page.tsx)", () => {
     beforeEach(() => {
         OwnersAPI.ownerLogin = jest.fn().mockResolvedValue({});
         VetsAPI.vetLogin = jest.fn().mockResolvedValue({});
-        //(signInWithBackendToken as jest.Mock).mockResolvedValue({});
     });
 
     it("renders tabs and defaults to Pet Owner", () => {
