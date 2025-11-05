@@ -37,9 +37,7 @@ describe("Pet Diary Dashboard", () => {
         });
 
         it("renders the placeholder for diary entries", () => {
-            expect(
-                screen.getByText("Diary entries will appear here"),
-            ).toBeInTheDocument();
+            expect(screen.getByText("No diary entry yet")).toBeInTheDocument();
         });
 
         it("renders the Quick Add sidebar", () => {

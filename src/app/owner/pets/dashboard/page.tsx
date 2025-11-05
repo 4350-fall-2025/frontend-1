@@ -52,7 +52,6 @@ export default function PetDashboard() {
     // TODO: Make a util function for fetching pets and return the pets? to reduce duplicate code
     // localStorage code above might benefit from this too but we are switching to firestore so not needed
 
-    // Load pets when owner is available
     useEffect(() => {
         const fetchPets = async () => {
             if (owner?.id) {
@@ -61,14 +60,14 @@ export default function PetDashboard() {
                     setPets(fetchedPets);
                 } catch (error) {
                     setError(
-                        "You cannot make a diary entry for your pet without having any pet.",
+                        "We can't retrieve all your pets. Please try again later.",
                     );
                 }
             }
         };
 
         fetchPets();
-    }, [owner]); // Run when owner changes
+    }, [owner]);
 
     return (
         <div className={styles.page}>
