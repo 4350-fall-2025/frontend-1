@@ -19,6 +19,7 @@ import {
 } from "~tests/utils/custom-testing-library";
 import { OwnersAPI } from "src/api/ownersAPI";
 import { VetsAPI } from "src/api/vetsAPI";
+import { signInWithBackendToken } from "src/firebase";
 
 // ---- Mocks ----
 
@@ -41,6 +42,12 @@ jest.mock("~util/validation/validate-signin", () => ({
         value === "badpass" ? "Invalid password" : null,
 }));
 
+jest.mock("../../../firebase", () => ({
+    auth: {},
+    storage: {},
+    signInWithBackendToken: jest.fn(() => Promise.resolve()),
+}));
+
 // ---- SUT ----
 import LoginPage from "./page";
 
@@ -53,6 +60,7 @@ describe("Login page (src/app/page.tsx)", () => {
     beforeEach(() => {
         OwnersAPI.ownerLogin = jest.fn().mockResolvedValue({});
         VetsAPI.vetLogin = jest.fn().mockResolvedValue({});
+        //(signInWithBackendToken as jest.Mock).mockResolvedValue({});
     });
 
     it("renders tabs and defaults to Pet Owner", () => {

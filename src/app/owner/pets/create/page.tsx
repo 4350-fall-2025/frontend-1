@@ -23,6 +23,7 @@ import { useFileDialog } from "@mantine/hooks";
 import { PetsAPI } from "src/api/petsAPI";
 import { Pet } from "src/models/pet";
 import { useRouter } from "next/navigation";
+import { generatePetURL, uploadFile } from "src/firebase";
 
 /**
  * CREDITS
@@ -134,8 +135,16 @@ export default function NewPet() {
                     ...values,
                     estimatedBirthdate: estimatedBirthDate,
                 };
-                const pet = new Pet(petJSON);
-                await PetsAPI.createPet(user.id, pet);
+                let pet = new Pet(petJSON);
+                pet = await PetsAPI.createPet(user.id, pet);
+
+                if (values.petImage != placeholderFile) {
+                    petJSON["imageName"] = petJSON.petImage.name;
+                    let url = generatePetURL(user.id, pet.id);
+                    uploadFile(values.petImage, url);
+                } else {
+                    petJSON.petImage = null;
+                }
                 router.push("/owner/dashboard");
             } else {
                 setError("You cannot make a pet without being logged in.");

@@ -64,6 +64,12 @@ jest.mock("@mantine/hooks", () => {
     };
 });
 
+jest.mock("../../../../firebase", () => ({
+    auth: {},
+    storage: {},
+    signInWithBackendToken: jest.fn(() => Promise.resolve()),
+}));
+
 describe("New Pet page", () => {
     let name: HTMLElement;
     let petImage: HTMLElement;

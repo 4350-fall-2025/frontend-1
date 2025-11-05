@@ -17,19 +17,39 @@ import {
     formatAnimalGroup,
     formatSterileStatus,
 } from "~util/strings/format-pet";
+import { generatePetURL, getImageURL } from "src/firebase";
 
 export default function PetProfilePage() {
+    const placeholderUrl = "/placeholder.jpg";
     const [error, setError] = useState(null);
     const [pet, setPet] = useState<Pet | null>(null);
     const { id } = useParams<{ id: string }>();
+    const [imageUrl, setImageUrl] = useState<string>(placeholderUrl); //default should be placeholder image
 
     const getPetData = async () => {
         try {
             const response = await PetsAPI.getPet(id);
+            getPetImage();
             setPet(response);
         } catch (error) {
             setError(error);
             return;
+        }
+    };
+
+    const getPetImage = async () => {
+        try {
+            const user = JSON.parse(localStorage.getItem("currentUser"));
+            if (user.id != null) {
+                const filePath = generatePetURL(user.id, id);
+                const url = await getImageURL(filePath);
+                setImageUrl(url);
+            } else {
+                setError("Not signed In");
+            }
+        } catch (error) {
+            //TO-DO maybe for a specific error
+            setImageUrl(placeholderUrl);
         }
     };
 
@@ -58,11 +78,9 @@ export default function PetProfilePage() {
             </div>
             <h1 className={styles.header}>{pet?.name}</h1>
             <div className={styles.pet_info}>
-                <Image
+                <img
                     className={styles.pet_image}
-                    src='/placeholder.jpg'
-                    width={200}
-                    height={200}
+                    src={imageUrl}
                     alt='Pet profile picture'
                 />
                 <div className={styles.pet_details}>

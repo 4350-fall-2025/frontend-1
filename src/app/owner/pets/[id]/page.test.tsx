@@ -24,6 +24,12 @@ jest.mock("~util/strings/format-pet", () => {
     };
 });
 
+jest.mock("../../../../firebase", () => ({
+    auth: {},
+    storage: {},
+    signInWithBackendToken: jest.fn(() => Promise.resolve()),
+}));
+
 import "@testing-library/jest-dom";
 import dayjs from "dayjs";
 import { render, screen } from "~tests/utils/custom-testing-library";
