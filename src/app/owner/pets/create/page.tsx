@@ -145,7 +145,7 @@ export default function NewPet() {
                 } else {
                     petJSON.petImage = null;
                 }
-                router.push("/owner/dashboard");
+                router.push("/owner/pets/dashboard");
             } else {
                 setError("You cannot make a pet without being logged in.");
             }
@@ -155,7 +155,7 @@ export default function NewPet() {
     };
 
     const handleCancel = () => {
-        router.push("/owner/dashboard");
+        router.push("/owner/pets/dashboard");
     };
 
     return (

@@ -17,6 +17,7 @@ import { notesMaxCharacters, notesMinCharacters } from "~data/pets/constants";
 import { mockPets } from "~data/pets/mock";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { PetsAPI } from "~api/petsAPI";
+import { owner } from "~data/owner/mock";
 
 // Mock router
 const pushMock = jest.fn();
@@ -71,10 +72,7 @@ describe("New Diary Entry page", () => {
             mockGet.mockReturnValue(null);
 
             // Set up mock user in localStorage
-            localStorage.setItem(
-                "currentUser",
-                JSON.stringify({ id: 1, firstName: "Test", lastName: "User" }),
-            );
+            localStorage.setItem("currentUser", JSON.stringify(owner));
 
             user = userEvent.setup();
 

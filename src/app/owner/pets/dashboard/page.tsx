@@ -1,13 +1,17 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { mockPets } from "src/data/pets/mock";
 import calculateAge from "src/util/ageCalculator";
 import styles from "./page.module.scss";
+import globalStyles from "~app/layout.module.scss";
 import placeholderImage from "~public/placeholder.jpg";
 import { Image } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { getAnimalGroupDisplayLabel } from "src/util/strings/format-pet";
+import { PetsAPI } from "~api/petsAPI";
+import { Owner } from "src/models/owner";
+import { Pet } from "src/models/pet";
 
 /**
  * CREDITS
@@ -31,6 +35,41 @@ const InfoRow = ({ label, value }: { label: string; value: string }) => {
 export default function PetDashboard() {
     const router = useRouter();
 
+    const [error, setError] = useState("");
+    const [owner, setOwner] = useState<Owner>(null);
+
+    useEffect(() => {
+        let storedUser = localStorage.getItem("currentUser");
+        if (storedUser) {
+            const storedOwner = new Owner(JSON.parse(storedUser));
+
+            setOwner(storedOwner);
+        }
+    }, []);
+
+    const [pets, setPets] = useState<Pet[]>([]);
+
+    // TODO: Make a util function for fetching pets and return the pets? to reduce duplicate code
+    // localStorage code above might benefit from this too but we are switching to firestore so not needed
+
+    // Load pets when owner is available
+    useEffect(() => {
+        const fetchPets = async () => {
+            if (owner?.id) {
+                try {
+                    const fetchedPets = await PetsAPI.getAllPets(owner.id);
+                    setPets(fetchedPets);
+                } catch (error) {
+                    setError(
+                        "You cannot make a diary entry for your pet without having any pet.",
+                    );
+                }
+            }
+        };
+
+        fetchPets();
+    }, [owner]); // Run when owner changes
+
     return (
         <div className={styles.page}>
             <main>
@@ -46,65 +85,79 @@ export default function PetDashboard() {
                 </div>
 
                 {/* PET CARD GRID */}
-                <div className={styles.pet_grid}>
-                    {mockPets.map((pet) => (
-                        <div key={pet.id} className={styles.pet_card}>
-                            <div className={styles.pet_image}>
-                                <Image
-                                    src={placeholderImage.src}
-                                    alt={`${pet.name} photo`}
-                                    className={styles.image_icon}
-                                />
-                            </div>
+                {pets && pets.length <= 0 && (
+                    <p>No pets found. Add yours now!</p>
+                )}
+                {pets && pets.length > 0 && (
+                    <div className={styles.pet_grid}>
+                        {pets.map((pet) => (
+                            <div key={pet.id} className={styles.pet_card}>
+                                <div className={styles.pet_image}>
+                                    <Image
+                                        src={
+                                            placeholderImage.src
+                                        }
+                                        alt={`${pet.name} photo`}
+                                        className={styles.image_icon}
+                                    />
+                                </div>
 
-                            <div className={styles.pet_content}>
-                                <div className={styles.pet_header}>
-                                    <h3 className={styles.pet_name}>
-                                        {pet.name}
-                                    </h3>
+                                <div className={styles.pet_content}>
+                                    <div className={styles.pet_header}>
+                                        <h3 className={styles.pet_name}>
+                                            {pet.name}
+                                        </h3>
 
-                                    {/* TODO: Link to edit page when implemented */}
+                                        {/* TODO: Link to edit page when implemented */}
+                                        <button
+                                            className={styles.edit_badge}
+                                            onClick={() =>
+                                                router.push(
+                                                    "/under-construction",
+                                                )
+                                            }
+                                            type='button'
+                                        >
+                                            Edit
+                                        </button>
+                                    </div>
+
+                                    <InfoRow
+                                        label='Age'
+                                        value={calculateAge(pet.birthdate)}
+                                    />
+                                    <InfoRow label='Sex' value={pet.sex} />
+                                    <InfoRow
+                                        label='Animal group'
+                                        value={getAnimalGroupDisplayLabel(
+                                            pet.animalGroup,
+                                        )}
+                                    />
+                                    <InfoRow
+                                        label='Species'
+                                        value={pet.species}
+                                    />
+                                    <InfoRow
+                                        label='Breed/Variety'
+                                        value={pet.breed}
+                                    />
+
                                     <button
-                                        className={styles.edit_badge}
+                                        className={styles.view_details_button}
                                         onClick={() =>
-                                            router.push("/under-construction")
+                                            router.push(`/owner/pets/${pet.id}`)
                                         }
                                         type='button'
                                     >
-                                        Edit
+                                        View Details
                                     </button>
                                 </div>
-
-                                <InfoRow
-                                    label='Age'
-                                    value={calculateAge(pet.birthdate)}
-                                />
-                                <InfoRow label='Sex' value={pet.sex} />
-                                <InfoRow
-                                    label='Animal group'
-                                    value={getAnimalGroupDisplayLabel(
-                                        pet.animalGroup,
-                                    )}
-                                />
-                                <InfoRow label='Species' value={pet.species} />
-                                <InfoRow
-                                    label='Breed/Variety'
-                                    value={pet.breed}
-                                />
-
-                                <button
-                                    className={styles.view_details_button}
-                                    onClick={() =>
-                                        router.push(`/owner/pets/${pet.id}`)
-                                    }
-                                    type='button'
-                                >
-                                    View Details
-                                </button>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
+
+                <p className={globalStyles.error_message}>{error}</p>
             </main>
         </div>
     );

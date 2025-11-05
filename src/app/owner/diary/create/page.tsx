@@ -14,6 +14,7 @@ import { Pet } from "src/models/pet";
 import { Owner } from "src/models/owner";
 import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
+import { todayDate } from "~data/constants";
 
 /**
  * Some sample code came from Mantine use-file-dialog
@@ -66,14 +67,14 @@ function NewDiary() {
             pet: null,
             contentType: "",
             contentBody: "",
-            media: null,
+            files: null,
         },
 
         validate: {
             pet: isNotEmpty("This pet field can't be empty."),
             contentType: isNotEmpty("This note type field can't be empty."),
             contentBody: validateDiaryContentBody,
-            media: validateOptionalImage,
+            files: validateOptionalImage,
         },
     });
 
@@ -99,15 +100,20 @@ function NewDiary() {
         accept: "image/*",
     });
 
-    const pickedMedia = Array.from(fileDialog.files || []);
-    const pickedMediaList = pickedMedia.map((file) => (
+    const pickedFiles = Array.from(fileDialog.files || []);
+    const pickedFilesList = pickedFiles.map((file) => (
         <List.Item key={file.name}>{file.name}</List.Item>
     ));
 
-    // clears file dialog and resets media contents
-    const resetMedia = () => {
+    // clears file dialog and resets files contents
+    const resetFiles = () => {
         fileDialog.reset();
-        form.setFieldValue("media", null);
+        form.setFieldValue("files", null);
+    };
+
+    const findPetIdByName = (petName: string): string | null => {
+        const pet = pets.find((p) => p.name === petName);
+        return pet?.id || null;
     };
 
     const handleSubmit = async (values: typeof form.values) => {
@@ -115,19 +121,23 @@ function NewDiary() {
             setError("");
 
             if (owner?.id != null) {
+                const petId = findPetIdByName(values.pet);
+
+                if (!petId) {
+                    setError("Unable to find the selected pet.");
+                    return;
+                }
+
                 const diaryEntryJSON = {
-                    ...values,
-                    media: pickedMedia,
+                    contentBody: values.contentBody,
+                    contentType: values.contentType,
+                    createTimestamp: todayDate,
+                    files: [],
                 };
 
                 const diaryEntry = new PetDiary(diaryEntryJSON);
 
-                await PetDiaryAPI.createDiary(
-                    owner.id,
-                    values.pet.id,
-                    diaryEntry,
-                );
-
+                await PetDiaryAPI.createDiary(petId, diaryEntry);
                 router.push("/owner/dashboard"); // TODO: change to diary once created
             } else {
                 setError(
@@ -188,7 +198,7 @@ function NewDiary() {
                                 entry.
                             </p>
                             <Group>
-                                <Button variant='default' onClick={resetMedia}>
+                                <Button variant='default' onClick={resetFiles}>
                                     Reset
                                 </Button>
                                 <Button
@@ -200,9 +210,9 @@ function NewDiary() {
                                     Upload
                                 </Button>
                             </Group>
-                            {pickedMediaList.length > 0 && (
+                            {pickedFilesList.length > 0 && (
                                 <List mt='sm' size='sm'>
-                                    {pickedMediaList}
+                                    {pickedFilesList}
                                 </List>
                             )}
                         </div>
