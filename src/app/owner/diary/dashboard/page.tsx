@@ -96,33 +96,25 @@ export default function PetDiaryDashboard() {
                     <aside className={styles.diarySidebar}>
                         <h2 className={styles.sidebarTitle}> Quick Add</h2>
                         <div className={styles.quickAddButtons}>
-                            <button
-                                className={styles.quickAddBtn}
-                                onClick={() => handleQuickAdd("Measurement")}
-                            >
-                                Add Weight entry
-                            </button>
-
-                            <button
-                                className={styles.quickAddBtn}
-                                onClick={() => handleQuickAdd("Diet")}
-                            >
-                                Add Diet entry
-                            </button>
-
-                            <button
-                                className={styles.quickAddBtn}
-                                onClick={() => handleQuickAdd("Behaviour")}
-                            >
-                                Add Behaviour entry
-                            </button>
-
-                            <button
-                                className={styles.quickAddBtn}
-                                onClick={() => handleQuickAdd("General")}
-                            >
-                                Add General entry
-                            </button>
+                            {noteTypeOptions
+                                .filter((option) => option.label !== "Other")
+                                .map((option) => {
+                                    const displayLabel =
+                                        option.label === "Measurement"
+                                            ? "Weight"
+                                            : option.label;
+                                    return (
+                                        <button
+                                            key={option.value}
+                                            className={styles.quickAddBtn}
+                                            onClick={() =>
+                                                handleQuickAdd(option.value)
+                                            }
+                                        >
+                                            Add {displayLabel} entry
+                                        </button>
+                                    );
+                                })}
                         </div>
                     </aside>
                 </div>

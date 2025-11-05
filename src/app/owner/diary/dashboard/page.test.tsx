@@ -30,12 +30,16 @@ describe("Pet Diary Dashboard", () => {
         });
 
         it("renders the new entry button", () => {
-            const newEntryBtn = screen.getByRole("button", { name: /new entry/i });
+            const newEntryBtn = screen.getByRole("button", {
+                name: /new entry/i,
+            });
             expect(newEntryBtn).toBeInTheDocument();
         });
 
         it("renders the placeholder for diary entries", () => {
-            expect(screen.getByText("Diary entries will appear here")).toBeInTheDocument();
+            expect(
+                screen.getByText("Diary entries will appear here"),
+            ).toBeInTheDocument();
         });
 
         it("renders the Quick Add sidebar", () => {
@@ -45,11 +49,21 @@ describe("Pet Diary Dashboard", () => {
 
     describe("Filter functionality", () => {
         it("renders all filter buttons", () => {
-            expect(screen.getByRole("button", { name: "All" })).toBeInTheDocument();
-            expect(screen.getByRole("button", { name: "Weight" })).toBeInTheDocument();
-            expect(screen.getByRole("button", { name: "Diet" })).toBeInTheDocument();
-            expect(screen.getByRole("button", { name: "Behaviour" })).toBeInTheDocument();
-            expect(screen.getByRole("button", { name: "General" })).toBeInTheDocument();
+            expect(
+                screen.getByRole("button", { name: "All" }),
+            ).toBeInTheDocument();
+            expect(
+                screen.getByRole("button", { name: "Weight" }),
+            ).toBeInTheDocument();
+            expect(
+                screen.getByRole("button", { name: "Diet" }),
+            ).toBeInTheDocument();
+            expect(
+                screen.getByRole("button", { name: "Behaviour" }),
+            ).toBeInTheDocument();
+            expect(
+                screen.getByRole("button", { name: "General" }),
+            ).toBeInTheDocument();
         });
 
         it("has 'All' filter active by default", () => {
@@ -89,7 +103,9 @@ describe("Pet Diary Dashboard", () => {
         });
 
         it("has 'Newest first' selected by default", () => {
-            const sortSelect = screen.getByRole("combobox") as HTMLSelectElement;
+            const sortSelect = screen.getByRole(
+                "combobox",
+            ) as HTMLSelectElement;
             expect(sortSelect.value).toBe("Newest first");
         });
 
@@ -100,7 +116,9 @@ describe("Pet Diary Dashboard", () => {
         });
 
         it("changes sort option when selected", async () => {
-            const sortSelect = screen.getByRole("combobox") as HTMLSelectElement;
+            const sortSelect = screen.getByRole(
+                "combobox",
+            ) as HTMLSelectElement;
 
             await user.selectOptions(sortSelect, "Oldest first");
             expect(sortSelect.value).toBe("Oldest first");
@@ -109,56 +127,86 @@ describe("Pet Diary Dashboard", () => {
 
     describe("Navigation", () => {
         it("navigates to create page when 'New Entry' button is clicked", async () => {
-            const newEntryBtn = screen.getByRole("button", { name: /new entry/i });
+            const newEntryBtn = screen.getByRole("button", {
+                name: /new entry/i,
+            });
             await user.click(newEntryBtn);
 
             expect(pushMock).toHaveBeenCalledWith("/owner/diary/create");
         });
 
         it("navigates to create page without query params for regular button", async () => {
-            const newEntryBtn = screen.getByRole("button", { name: /new entry/i });
+            const newEntryBtn = screen.getByRole("button", {
+                name: /new entry/i,
+            });
             await user.click(newEntryBtn);
 
             // Should NOT have any query params
             expect(pushMock).toHaveBeenCalledWith("/owner/diary/create");
-            expect(pushMock).not.toHaveBeenCalledWith(expect.stringContaining("?noteType="));
+            expect(pushMock).not.toHaveBeenCalledWith(
+                expect.stringContaining("?noteType="),
+            );
         });
     });
 
     describe("Quick Add buttons", () => {
         it("renders all quick add buttons", () => {
-            expect(screen.getByRole("button", { name: /add weight entry/i })).toBeInTheDocument();
-            expect(screen.getByRole("button", { name: /add diet entry/i })).toBeInTheDocument();
-            expect(screen.getByRole("button", { name: /add behaviour entry/i })).toBeInTheDocument();
-            expect(screen.getByRole("button", { name: /add general entry/i })).toBeInTheDocument();
+            expect(
+                screen.getByRole("button", { name: /add weight entry/i }),
+            ).toBeInTheDocument();
+            expect(
+                screen.getByRole("button", { name: /add diet entry/i }),
+            ).toBeInTheDocument();
+            expect(
+                screen.getByRole("button", { name: /add behaviour entry/i }),
+            ).toBeInTheDocument();
+            expect(
+                screen.getByRole("button", { name: /add general entry/i }),
+            ).toBeInTheDocument();
         });
 
         it("navigates to create page with Measurement query param when 'Add Weight entry' is clicked", async () => {
-            const weightBtn = screen.getByRole("button", { name: /add weight entry/i });
+            const weightBtn = screen.getByRole("button", {
+                name: /add weight entry/i,
+            });
             await user.click(weightBtn);
 
-            expect(pushMock).toHaveBeenCalledWith("/owner/diary/create?noteType=Measurement");
+            expect(pushMock).toHaveBeenCalledWith(
+                "/owner/diary/create?noteType=MEASUREMENT",
+            );
         });
 
         it("navigates to create page with Diet query param when 'Add Diet entry' is clicked", async () => {
-            const dietBtn = screen.getByRole("button", { name: /add diet entry/i });
+            const dietBtn = screen.getByRole("button", {
+                name: /add diet entry/i,
+            });
             await user.click(dietBtn);
 
-            expect(pushMock).toHaveBeenCalledWith("/owner/diary/create?noteType=Diet");
+            expect(pushMock).toHaveBeenCalledWith(
+                "/owner/diary/create?noteType=DIET",
+            );
         });
 
         it("navigates to create page with Behaviour query param when 'Add Behaviour entry' is clicked", async () => {
-            const behaviourBtn = screen.getByRole("button", { name: /add behaviour entry/i });
+            const behaviourBtn = screen.getByRole("button", {
+                name: /add behaviour entry/i,
+            });
             await user.click(behaviourBtn);
 
-            expect(pushMock).toHaveBeenCalledWith("/owner/diary/create?noteType=Behaviour");
+            expect(pushMock).toHaveBeenCalledWith(
+                "/owner/diary/create?noteType=BEHAVIOUR",
+            );
         });
 
         it("navigates to create page with General query param when 'Add General entry' is clicked", async () => {
-            const generalBtn = screen.getByRole("button", { name: /add general entry/i });
+            const generalBtn = screen.getByRole("button", {
+                name: /add general entry/i,
+            });
             await user.click(generalBtn);
 
-            expect(pushMock).toHaveBeenCalledWith("/owner/diary/create?noteType=General");
+            expect(pushMock).toHaveBeenCalledWith(
+                "/owner/diary/create?noteType=GENERAL",
+            );
         });
     });
 
@@ -170,7 +218,9 @@ describe("Pet Diary Dashboard", () => {
             expect(dietFilterBtn.className).toContain("filterBtnActive");
 
             // Click quick add
-            const dietQuickAddBtn = screen.getByRole("button", { name: /add diet entry/i });
+            const dietQuickAddBtn = screen.getByRole("button", {
+                name: /add diet entry/i,
+            });
             await user.click(dietQuickAddBtn);
 
             // Filter should still be Diet (component doesn't re-render)
@@ -179,12 +229,16 @@ describe("Pet Diary Dashboard", () => {
 
         it("maintains sort state while using quick add buttons", async () => {
             // Change sort
-            const sortSelect = screen.getByRole("combobox") as HTMLSelectElement;
+            const sortSelect = screen.getByRole(
+                "combobox",
+            ) as HTMLSelectElement;
             await user.selectOptions(sortSelect, "Pet name");
             expect(sortSelect.value).toBe("Pet name");
 
             // Click quick add
-            const generalBtn = screen.getByRole("button", { name: /add general entry/i });
+            const generalBtn = screen.getByRole("button", {
+                name: /add general entry/i,
+            });
             await user.click(generalBtn);
 
             // Sort should still be Pet name
