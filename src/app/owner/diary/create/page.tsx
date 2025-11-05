@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import styles from "./page.module.scss";
 import globalStyles from "~app/layout.module.scss";
 import { PetDiary } from "src/models/pet-diary";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { validateOptionalImage } from "~util/validation/validation";
 import { validateDiaryContentBody } from "~util/validation/validate-diary";
 import { Button, Group, List, Select, Textarea } from "@mantine/core";
@@ -13,8 +13,6 @@ import { useFileDialog } from "@mantine/hooks";
 import { Pet } from "src/models/pet";
 import { mockPets } from "~data/pets/mock";
 import { Owner } from "src/models/owner";
-
-import { useSearchParams } from "next/navigation";
 
 /**
  * Some sample code came from Mantine use-file-dialog
@@ -25,6 +23,7 @@ export default function NewDiary() {
     const searchParams = useSearchParams();
     const [error, setError] = useState("");
     const [owner, setOwner] = useState<Owner>(null);
+    const [isNoteTypePreselected, setIsNoteTypePreselected] = useState(false);
 
     useEffect(() => {
         let storedUser = localStorage.getItem("currentUser");
@@ -69,20 +68,19 @@ export default function NewDiary() {
         },
     });
 
+    // NEW: Preselect note type from query param
     useEffect(() => {
-        const noteType = searchParams.get("noteType");
-        if (noteType) {
-            // Normalize and find matching option
-            const normalized = noteType.trim();
-            const validOptions = ["Weight", "Diet", "Behaviour", "General", "Measurement"];
-
-            // Check if it's a valid option (case-insensitive)
-            const match = validOptions.find(
-                opt => opt.toLowerCase() === normalized.toLowerCase()
+        const noteTypeParam = searchParams.get("noteType");
+        if (noteTypeParam) {
+            // Find matching option by label (case-insensitive)
+            const match = noteTypeOptions.find(
+                opt => opt.label.toLowerCase() === noteTypeParam.toLowerCase()
             );
 
             if (match) {
-                form.setFieldValue("contentType", match);
+                // Set the form value to the ContentType enum value (e.g., "DIET")
+                form.setFieldValue("contentType", match.value);
+                setIsNoteTypePreselected(true); // Lock if note type is preselected
             }
         }
     }, [searchParams]);
@@ -156,6 +154,7 @@ export default function NewDiary() {
                                 label='Note Type'
                                 placeholder='Select the type of this entry'
                                 required
+                                disabled={isNoteTypePreselected}
                             />
                         </div>
 
