@@ -8,6 +8,7 @@ import {
     connectAuthEmulator,
     signInWithCustomToken,
     Auth,
+    signOut,
 } from "firebase/auth";
 import {
     getStorage,
@@ -40,6 +41,12 @@ connectStorageEmulator(storage, "localhost", 9199);
 // Sign in with backend custom token
 export async function signInWithBackendToken(token: string): Promise<void> {
     await signInWithCustomToken(auth, token);
+}
+
+export async function signOutOfFirebase() {
+    if (auth.currentUser) {
+        signOut(auth);
+    }
 }
 
 export async function uploadFile(

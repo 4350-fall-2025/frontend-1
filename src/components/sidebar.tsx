@@ -15,6 +15,7 @@ import { useState } from "react";
 import logo from "~public/logo/tennisLogo.png";
 import styles from "./sidebar.module.scss";
 import { useRouter } from "next/navigation";
+import { signOutOfFirebase } from "src/firebase";
 
 /**
  * Sidebar component for navigation:
@@ -33,6 +34,7 @@ export default function Sidebar() {
     const logOut = () => {
         if (window.confirm("Are you sure you want to sign out?")) {
             localStorage.clear();
+            signOutOfFirebase();
             router.push("/");
         }
     };

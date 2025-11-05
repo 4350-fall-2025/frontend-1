@@ -18,6 +18,7 @@ import userEvent from "@testing-library/user-event";
 import { render, screen } from "~tests/utils/custom-testing-library";
 import Sidebar from "./sidebar";
 import { fireEvent } from "~tests/utils/custom-testing-library";
+import { signOutOfFirebase } from "src/firebase";
 
 /**
  * Test suites and mock functions generated with GPT-5 mini and help from:
@@ -28,6 +29,12 @@ jest.mock("next/navigation", () => ({
     useRouter: () => ({
         push: pushMock,
     }),
+}));
+
+jest.mock("../firebase", () => ({
+    auth: {},
+    storage: {},
+    signOutOfFirebase: jest.fn(() => Promise.resolve()),
 }));
 
 window.confirm = jest.fn(() => true);
