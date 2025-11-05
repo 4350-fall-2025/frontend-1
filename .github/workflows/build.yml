@@ -49,7 +49,7 @@ jobs:
               run: pnpm test -- src/app/owner/diary/create
 
             - name: "[Regression Tests] - Create Pet"
-              run: pnpm test -- src/app/owner/pet/create
+              run: pnpm test -- src/app/owner/pets/create
 
             - name: "[Regression Tests] - Integration tests"
               run: pnpm test -- src/tests/integration/password-validation
