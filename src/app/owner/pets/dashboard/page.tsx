@@ -55,7 +55,7 @@ export default function PetDashboard() {
                         <div key={pet.id} className={styles.pet_card}>
                             <div className={styles.pet_image}>
                                 <Image
-                                    src={pet.photoUrl || placeholderImage.src}
+                                    src={placeholderImage.src}
                                     alt={`${pet.name} photo`}
                                     className={styles.image_icon}
                                 />

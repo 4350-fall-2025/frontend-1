@@ -42,7 +42,6 @@ export class PetsAPI {
 
     static async createPet(ownerId: string, pet: Pet): Promise<Pet> {
         const petJson = { ...pet, ownerId: ownerId };
-        console.log(JSON.stringify(petJson));
         const response = await axiosClient.post(`pets`, petJson);
         return new Pet(response.data);
     }
