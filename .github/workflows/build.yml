@@ -42,8 +42,17 @@ jobs:
             - name: Lint and format
               run: pnpm lint && pnpm format
 
-            - name: Run tests
-              run: pnpm test
+            - name: "[Regression Tests] - Authentication"
+              run: pnpm test -- src/app/auth
+
+            - name: "[Regression Tests] - Create Diary"
+              run: pnpm test -- src/app/owner/diary/create
+
+            - name: "[Regression Tests] - Create Pet"
+              run: pnpm test -- src/app/owner/pet/create
+
+            - name: "[Regression Tests] - Integration tests"
+              run: pnpm test -- src/tests/integration/password-validation
 
             - name: Build project
               run: pnpm build
