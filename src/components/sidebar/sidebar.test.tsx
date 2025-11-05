@@ -16,7 +16,7 @@
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import { render, screen } from "~tests/utils/custom-testing-library";
-import Sidebar from "./sidebar/sidebar";
+import Sidebar from "./sidebar";
 import { fireEvent } from "~tests/utils/custom-testing-library";
 
 /**
