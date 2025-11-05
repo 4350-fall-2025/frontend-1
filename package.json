@@ -66,4 +66,3 @@
         "*.md": "prettier --write"
     }
 }
-
