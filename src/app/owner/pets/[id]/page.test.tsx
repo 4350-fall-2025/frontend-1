@@ -50,9 +50,12 @@ describe("Pet Profile Page", () => {
     });
 
     describe("Pet info", () => {
+        beforeEach(() => {
+            mockGetDiaryEntries.mockResolvedValue(MOCK_DIARY_ENTRIES);
+        });
+
         it("renders the pet info on the page", async () => {
             mockGetPet.mockResolvedValue(mockPets[0]);
-            mockGetDiaryEntries.mockResolvedValue(MOCK_DIARY_ENTRIES);
             await render(<PetProfilePage />);
 
             const isoDateString = new Date(mockPets[0].birthdate).toISOString();
@@ -80,7 +83,6 @@ describe("Pet Profile Page", () => {
 
         it("show placeholder when no vet notes present", async () => {
             mockGetPet.mockResolvedValue(mockPets[0]);
-            mockGetDiaryEntries.mockResolvedValue(MOCK_DIARY_ENTRIES);
             await render(<PetProfilePage />);
 
             const noEntriesMessage =
@@ -98,8 +100,11 @@ describe("Pet Profile Page", () => {
     });
 
     describe("Diary entries", () => {
-        it("renders diary entries on the page", async () => {
+        beforeEach(async () => {
             mockGetPet.mockResolvedValue(mockPets[0]);
+        });
+
+        it("renders diary entries on the page", async () => {
             mockGetDiaryEntries.mockResolvedValue([MOCK_DIARY_ENTRY]);
             await render(<PetProfilePage />);
 
@@ -109,7 +114,6 @@ describe("Pet Profile Page", () => {
         });
 
         it("shows placeholder when no diary entries present", async () => {
-            mockGetPet.mockResolvedValue(mockPets[0]);
             mockGetDiaryEntries.mockResolvedValue([]);
             await render(<PetProfilePage />);
 
@@ -118,7 +122,6 @@ describe("Pet Profile Page", () => {
         });
 
         it("renders error component on API error", async () => {
-            mockGetPet.mockResolvedValue(mockPets[0]);
             mockGetDiaryEntries.mockRejectedValue("API Error");
             await render(<PetProfilePage />);
 
