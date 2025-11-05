@@ -22,33 +22,9 @@ import { useSearchParams } from "next/navigation";
 
 export default function NewDiary() {
     const router = useRouter();
-
-    //updated for the new diary entry dashboard
     const searchParams = useSearchParams();
-    const rawNoteType = (searchParams.get("noteType") || "").trim();
-
-    // Normalize options to objects so we can match by value OR label
-    const normalizedNoteTypeOptions = (noteTypeOptions || []).map((opt: any) =>
-      typeof opt === "string" ? { value: opt, label: opt } : opt
-    );
-
-    // Find a match by value OR label (case-insensitive)
-    const preselectedMatch = normalizedNoteTypeOptions.find((opt: any) => {
-      const q = rawNoteType.toLowerCase();
-      return (
-        (opt?.value && String(opt.value).toLowerCase() === q) ||
-        (opt?.label && String(opt.label).toLowerCase() === q)
-      );
-    });
-
-    // what we actually need to put into the Select's "value"
-    const preselectedValue: string | null = preselectedMatch?.value ?? null;
-
     const [error, setError] = useState("");
     const [owner, setOwner] = useState<Owner>(null);
-
-    const [contentTypeValue, setContentTypeValue] = useState<string | null>(preselectedValue);
-
 
     useEffect(() => {
         let storedUser = localStorage.getItem("currentUser");
@@ -80,7 +56,7 @@ export default function NewDiary() {
         mode: "uncontrolled",
         initialValues: {
             pet: null,
-            contentType: preselectedValue,
+            contentType: "",
             contentBody: "",
             media: null,
         },
@@ -93,16 +69,23 @@ export default function NewDiary() {
         },
     });
 
-    // For setting Note type via query param
     useEffect(() => {
-        // If a preselected value exists, mirror it into the form and the local state
-        if (preselectedValue) {
-            form.setFieldValue("contentType", preselectedValue);
-            setContentTypeValue(preselectedValue);
-        }
-        // If no query param, leave as-is (user picks manually)
-    }, [preselectedValue]);
+        const noteType = searchParams.get("noteType");
+        if (noteType) {
+            // Normalize and find matching option
+            const normalized = noteType.trim();
+            const validOptions = ["Weight", "Diet", "Behaviour", "General", "Measurement"];
 
+            // Check if it's a valid option (case-insensitive)
+            const match = validOptions.find(
+                opt => opt.toLowerCase() === normalized.toLowerCase()
+            );
+
+            if (match) {
+                form.setFieldValue("contentType", match);
+            }
+        }
+    }, [searchParams]);
 
     const fileDialog = useFileDialog({
         accept: "image/*",
@@ -166,7 +149,6 @@ export default function NewDiary() {
                                 required
                             />
 
-                            {/* JORDON'S ORIGINAL
                             <Select
                                 data={noteTypeOptions}
                                 {...form.getInputProps("contentType")}
@@ -175,24 +157,6 @@ export default function NewDiary() {
                                 placeholder='Select the type of this entry'
                                 required
                             />
-                            */}
-
-                            <Select
-                              data= {normalizedNoteTypeOptions}
-                              // controlled value from local state
-                              value= {contentTypeValue}
-                              onChange= {(val) => {
-                                setContentTypeValue(val);
-                                form.setFieldValue("contentType", val); // keep form data in sync for validation/submit
-                              }}
-
-                              {...form.getInputProps ("contentType")}
-                              key= {form.key("contentType")}
-                              label= "Note Type"
-                              placeholder= "Select the type of this entry"
-                              required
-                              disabled={!!preselectedValue}
-                             />
                         </div>
 
                         <Textarea
@@ -207,7 +171,8 @@ export default function NewDiary() {
                         <div className={styles.select_media}>
                             <label>Upload Media</label>
                             <p>
-                                Add 1 or more relevant images to this diary entry.
+                                Add 1 or more relevant images to this diary
+                                entry.
                             </p>
                             <Group>
                                 <Button variant='default' onClick={resetMedia}>

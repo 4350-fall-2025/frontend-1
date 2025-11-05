@@ -197,7 +197,17 @@ describe("New Diary Entry page", () => {
             });
 
             it("can be selected", async () => {
-                await user.click(await screen.findByText("General"));
+                // Open the dropdown
+                await user.click(noteType);
+
+                // Select "General"
+                const generalOption = await screen.findByText("General");
+                await user.click(generalOption);
+
+                // Wait a bit for state to update
+                await screen.findByDisplayValue("General");
+
+                // Verify it was selected
                 expect((noteType as HTMLInputElement).value).toBe("General");
             });
 
