@@ -141,7 +141,7 @@ function NewDiary() {
                 const diaryEntry = new PetDiary(diaryEntryJSON);
 
                 await PetDiaryAPI.createDiary(petId, diaryEntry);
-                router.push("/owner/dashboard"); // TODO: change to diary once created
+                router.push("/owner/diary/dashboard");
             } else {
                 setError(
                     "You cannot make a diary entry for your pet without being logged in.",
