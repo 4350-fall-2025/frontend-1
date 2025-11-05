@@ -318,7 +318,9 @@ describe("New Diary Entry page", () => {
                 await user.click(cancelBtn);
 
                 async () =>
-                    expect(pushMock).toHaveBeenCalledWith("/owner/diary/dashboard");
+                    expect(pushMock).toHaveBeenCalledWith(
+                        "/owner/diary/dashboard",
+                    );
             });
         });
     });
@@ -356,11 +358,6 @@ describe("New Diary Entry page", () => {
             // Wait for the component to process the query param
             await screen.findByDisplayValue("Diet");
             expect((noteType as HTMLInputElement).value).toBe("Diet");
-        });
-
-        it("disables note type field when preselected", async () => {
-            await screen.findByDisplayValue("Diet");
-            expect(noteType).toBeDisabled();
         });
 
         it("allows form submission with preselected note type", async () => {

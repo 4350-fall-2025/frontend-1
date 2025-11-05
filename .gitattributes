@@ -1,1 +1,15 @@
-* text=auto eol=crlf
+*.sh text eol=lf
+.husky/* text eol=lf linguist-generated
+
+# Force CRLF for code files (preserves current Windows line endings)
+*.ts text eol=crlf
+*.tsx text eol=crlf
+*.js text eol=crlf
+*.jsx text eol=crlf
+*.json text eol=crlf
+*.css text eol=crlf
+*.scss text eol=crlf
+*.md text eol=crlf
+
+# Default for anything else
+* text=auto

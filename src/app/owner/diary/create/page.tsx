@@ -68,13 +68,14 @@ function NewDiary() {
         },
     });
 
-    // NEW: Preselect note type from query param
+    // Preselect note type from query param
     useEffect(() => {
         const noteTypeParam = searchParams.get("noteType");
         if (noteTypeParam) {
             // Find matching option by label (case-insensitive)
             const match = noteTypeOptions.find(
-                opt => opt.label.toLowerCase() === noteTypeParam.toLowerCase()
+                (opt) =>
+                    opt.label.toLowerCase() === noteTypeParam.toLowerCase(),
             );
 
             if (match) {
@@ -154,7 +155,6 @@ function NewDiary() {
                                 label='Note Type'
                                 placeholder='Select the type of this entry'
                                 required
-                                disabled={isNoteTypePreselected}
                             />
                         </div>
 
@@ -217,7 +217,7 @@ function NewDiary() {
 export default function NewDiaryPage() {
     return (
         <Suspense fallback={null}>
-          <NewDiary />
+            <NewDiary />
         </Suspense>
     );
 }
