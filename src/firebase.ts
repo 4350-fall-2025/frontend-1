@@ -92,11 +92,3 @@ export function generateDiaryURL(
 export function generatePetURL(ownerId: string, petId: string) {
     return `/owners/${ownerId}/pets/${petId}`;
 }
-
-export function generateOwnerProfileURL(ownerId: string) {
-    return `/owners/${ownerId}/profile`;
-}
-
-export function generateVetProfileURL(vetId: string) {
-    return `/vets/${vetId}/profile`;
-}
