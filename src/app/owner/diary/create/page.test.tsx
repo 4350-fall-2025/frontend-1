@@ -15,28 +15,8 @@ import {
 } from "~tests/utils/form-helpers/new-diary-form-helper";
 import { notesMaxCharacters, notesMinCharacters } from "~data/pets/constants";
 import { mockPets } from "~data/pets/mock";
-
-// Mock PetsAPI to return mockPets instead of making real API calls
-jest.mock(
-    "src/api/petsAPI",
-    () => ({
-        PetsAPI: {
-            getAllPets: jest.fn(() => Promise.resolve(mockPets)),
-        },
-    }),
-    { virtual: true },
-);
-
-// Mock PetDiaryAPI to prevent actual API calls during form submission
-jest.mock(
-    "src/api/petDiaryAPI",
-    () => ({
-        PetDiaryAPI: {
-            createDiary: jest.fn(() => Promise.resolve({ success: true })),
-        },
-    }),
-    { virtual: true },
-);
+import { PetDiaryAPI } from "~api/petDiaryAPI";
+import { PetsAPI } from "~api/petsAPI";
 
 // Mock router
 const pushMock = jest.fn();
@@ -78,6 +58,11 @@ describe("New Diary Entry page", () => {
     let saveButton: HTMLElement;
     let user: ReturnType<typeof userEvent.setup>;
 
+    beforeEach(() => {
+        jest.clearAllMocks();
+        PetDiaryAPI.createDiary = jest.fn().mockResolvedValue({});
+    });
+
     describe("Regular functionality", () => {
         beforeEach(async () => {
             jest.clearAllMocks();
@@ -92,6 +77,8 @@ describe("New Diary Entry page", () => {
             );
 
             user = userEvent.setup();
+
+            PetsAPI.getAllPets = jest.fn().mockResolvedValue(mockPets);
             render(<NewDiary />);
 
             ({
@@ -311,11 +298,8 @@ describe("New Diary Entry page", () => {
         });
 
         describe("Cancel button", () => {
-            it("navigates to diary dashboard when clicked", async () => {
-                const cancelBtn = screen.getByRole("button", {
-                    name: /cancel/i,
-                });
-                await user.click(cancelBtn);
+            it("navigates to dashboard when clicked", async () => {
+                await user.click(cancelButton);
 
                 async () =>
                     expect(pushMock).toHaveBeenCalledWith(
@@ -386,6 +370,9 @@ describe("New Diary Entry page", () => {
             mockGet.mockReturnValue(null);
 
             // Don't set up localStorage - simulating no logged-in user
+            // Mock will return empty array for pets since no owner ID
+            PetsAPI.getAllPets = jest.fn().mockResolvedValue([]);
+
             user = userEvent.setup();
             render(<NewDiary />);
 
@@ -420,6 +407,12 @@ describe("New Diary Entry page", () => {
                 /you cannot make a diary entry for your pet without being logged in./i,
             );
             expect(errorMsg).toBeInTheDocument();
+            // Get only the save button - no need to fill form for this test
+            ({ saveButton } = await getNewDiaryElements());
+        });
+
+        it("shows user can't submit when user is not logged in", async () => {
+            await user.click(saveButton);
             expect(pushMock).not.toHaveBeenCalled();
         });
     });

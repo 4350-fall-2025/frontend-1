@@ -53,8 +53,6 @@ export default function LoginPage() {
     const router = useRouter();
 
     const handleLogin = async (values: { email: string; password: string }) => {
-        // TODO: check credentials with backend
-
         try {
             if (selectedUser === vet) {
                 const vet = await VetsAPI.vetLogin(values);

@@ -92,11 +92,10 @@ export default function PetDashboard() {
                                     value={pet.breed}
                                 />
 
-                                {/* TODO: Link to pet details page when implemented */}
                                 <button
                                     className={styles.view_details_button}
                                     onClick={() =>
-                                        router.push("/under-construction")
+                                        router.push(`/owner/pets/${pet.id}`)
                                     }
                                     type='button'
                                 >

@@ -11,8 +11,9 @@ import { Button, Group, List, Select, Textarea } from "@mantine/core";
 import { noteTypeOptions } from "~data/diary/constants";
 import { useFileDialog } from "@mantine/hooks";
 import { Pet } from "src/models/pet";
-import { mockPets } from "~data/pets/mock";
 import { Owner } from "src/models/owner";
+import { PetsAPI } from "~api/petsAPI";
+import { PetDiaryAPI } from "~api/petDiaryAPI";
 
 /**
  * Some sample code came from Mantine use-file-dialog
@@ -34,17 +35,25 @@ function NewDiary() {
         }
     }, []);
 
-    let pets: Pet[];
-    try {
-        pets = mockPets;
+    const [pets, setPets] = useState<Pet[]>([]);
 
-        // TODO: use this instead after the getAllPets is implemented in backend
-        // pets = await PetsAPI.getAllPets(user.id);
-    } catch (error) {
-        setError(
-            "You cannot make a diary entry for your pet without having any pet.",
-        );
-    }
+    // Load pets when owner is available
+    useEffect(() => {
+        const fetchPets = async () => {
+            if (owner?.id) {
+                try {
+                    const fetchedPets = await PetsAPI.getAllPets(owner.id);
+                    setPets(fetchedPets);
+                } catch (error) {
+                    setError(
+                        "You cannot make a diary entry for your pet without having any pet.",
+                    );
+                }
+            }
+        };
+
+        fetchPets();
+    }, [owner]); // Run when owner changes
 
     const petOptions: string[] = [];
     for (let pet of pets) {
@@ -113,8 +122,11 @@ function NewDiary() {
 
                 const diaryEntry = new PetDiary(diaryEntryJSON);
 
-                // TODO: uncomment after the getAllPets is implemented in backend
-                // await PetDiaryAPI.createDiary(owner.id, values.pet.id, diaryEntry);
+                await PetDiaryAPI.createDiary(
+                    owner.id,
+                    values.pet.id,
+                    diaryEntry,
+                );
 
                 router.push("/owner/dashboard"); // TODO: change to diary once created
             } else {
@@ -124,7 +136,9 @@ function NewDiary() {
             }
         } catch (error) {
             console.error("Error in handleSubmit: ", error);
-            setError("You cannot make a diary entry."); // TODO: Add a more specific error depending on backend's implementation
+            setError(
+                "Something went wrong with our server when creating diary. Please try again later.",
+            );
         }
     };
 

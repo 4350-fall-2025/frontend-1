@@ -169,6 +169,14 @@ describe("Pet Dashboard page", () => {
             expect(editBadges[0]).toBeInTheDocument();
         });
 
+        it("navigates to under construction when edit button is clicked", async () => {
+            const editBadges = screen.getAllByRole("button", { name: /edit/i });
+            await user.click(editBadges[0]);
+
+            async () =>
+                expect(pushMock).toHaveBeenCalledWith("/under-construction");
+        });
+
         it("renders View Details button for each pet card", () => {
             const viewDetailsButtons = screen.getAllByRole("button", {
                 name: /view details/i,
@@ -183,6 +191,15 @@ describe("Pet Dashboard page", () => {
             await user.click(viewDetailsButtons[0]);
             // Button should remain in document after click
             expect(viewDetailsButtons[0]).toBeInTheDocument();
+        });
+
+        it("navigates to pet details page when view details button is clicked", async () => {
+            const viewDetailsButtons = screen.getAllByRole("button", {
+                name: /view details/i,
+            });
+            await user.click(viewDetailsButtons[0]);
+
+            async () => expect(pushMock).toHaveBeenCalledWith("/owner/pets/1");
         });
     });
 
