@@ -30,6 +30,12 @@ PetsAPI.getPet = mockGetPet;
 const mockGetDiaryEntries = jest.fn();
 PetDiaryAPI.getDiaryEntries = mockGetDiaryEntries;
 
+jest.mock("../../../../firebase", () => ({
+    auth: {},
+    storage: {},
+    signInWithBackendToken: jest.fn(() => Promise.resolve()),
+}));
+
 import "@testing-library/jest-dom";
 import dayjs from "dayjs";
 import { PetsAPI } from "~api/petsAPI";

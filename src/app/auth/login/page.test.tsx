@@ -19,6 +19,7 @@ import {
 } from "~tests/utils/custom-testing-library";
 import { OwnersAPI } from "src/api/ownersAPI";
 import { VetsAPI } from "src/api/vetsAPI";
+import { signInWithBackendToken } from "src/firebase";
 
 // ---- Mocks ----
 
@@ -39,6 +40,12 @@ jest.mock("next/image", () => (props: any) => {
 jest.mock("~util/validation/validate-signin", () => ({
     validatePassword: (value: string) =>
         value === "badpass" ? "Invalid password" : null,
+}));
+
+jest.mock("../../../firebase", () => ({
+    auth: {},
+    storage: {},
+    signInWithBackendToken: jest.fn(() => Promise.resolve()),
 }));
 
 // ---- SUT ----

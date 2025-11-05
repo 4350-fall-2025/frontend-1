@@ -30,6 +30,12 @@ jest.mock("next/navigation", () => ({
     }),
 }));
 
+jest.mock("../../firebase", () => ({
+    auth: {},
+    storage: {},
+    signOutOfFirebase: jest.fn(() => Promise.resolve()),
+}));
+
 window.confirm = jest.fn(() => true);
 
 describe("Sidebar Component", () => {
@@ -73,7 +79,10 @@ describe("Sidebar Component", () => {
 
         it("Pet Diary link should navigate to /owner/diary/dashboard", () => {
             const petDiaryLink = screen.getByText("Pet Diary").closest("a");
-            expect(petDiaryLink).toHaveAttribute("href", "/owner/diary/dashboard");
+            expect(petDiaryLink).toHaveAttribute(
+                "href",
+                "/owner/diary/dashboard",
+            );
         });
 
         it("Sign Out Button should navigate back to log in", () => {

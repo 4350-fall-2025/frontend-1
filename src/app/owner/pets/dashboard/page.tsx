@@ -6,7 +6,7 @@ import calculateAge from "src/util/ageCalculator";
 import styles from "./page.module.scss";
 import placeholderImage from "~public/placeholder.jpg";
 import { Image } from "@mantine/core";
-import { IconPlus } from '@tabler/icons-react';
+import { IconPlus } from "@tabler/icons-react";
 import { getAnimalGroupDisplayLabel } from "src/util/strings/format-pet";
 
 /**
@@ -51,7 +51,7 @@ export default function PetDashboard() {
                         <div key={pet.id} className={styles.pet_card}>
                             <div className={styles.pet_image}>
                                 <Image
-                                    src={pet.photoUrl || placeholderImage.src}
+                                    src={placeholderImage.src}
                                     alt={`${pet.name} photo`}
                                     className={styles.image_icon}
                                 />
