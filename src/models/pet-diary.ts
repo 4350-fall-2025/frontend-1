@@ -9,9 +9,11 @@ export enum ContentType {
 }
 
 export class PetDiary {
+    public readonly id: string;
     public readonly pet: Pet;
     public readonly contentType: ContentType;
     public readonly contentBody: string;
+    public readonly createTimestamp: Date;
     public readonly media: File[];
 
     constructor(JSON) {

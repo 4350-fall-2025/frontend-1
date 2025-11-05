@@ -24,66 +24,106 @@ jest.mock("~util/strings/format-pet", () => {
     };
 });
 
+const mockGetPet = jest.fn();
+PetsAPI.getPet = mockGetPet;
+
+const mockGetDiaryEntries = jest.fn();
+PetDiaryAPI.getDiaryEntries = mockGetDiaryEntries;
+
 import "@testing-library/jest-dom";
 import dayjs from "dayjs";
-import { render, screen } from "~tests/utils/custom-testing-library";
-import PetProfilePage from "./page";
 import { PetsAPI } from "~api/petsAPI";
+import { PetDiaryAPI } from "~api/petDiaryAPI";
+import { MOCK_DIARY_ENTRIES, MOCK_DIARY_ENTRY } from "~data/diary/mock";
+import {
+    render,
+    screen,
+    waitForElementToBeRemoved,
+} from "~tests/utils/custom-testing-library";
 import { mockPets } from "~data/pets/mock";
-import { todayDate } from "~data/constants";
+import { toSentenceCase } from "~util/strings/normalize";
+import PetProfilePage from "./page";
 
 describe("Pet Profile Page", () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it("renders the pet info on the page", async () => {
-        jest.spyOn(PetsAPI, "getPet").mockResolvedValue(mockPets[0]);
-        await render(<PetProfilePage />);
+    describe("Pet info", () => {
+        it("renders the pet info on the page", async () => {
+            mockGetPet.mockResolvedValue(mockPets[0]);
+            mockGetDiaryEntries.mockResolvedValue(MOCK_DIARY_ENTRIES);
+            await render(<PetProfilePage />);
 
-        const isoDateString = new Date(mockPets[0].birthdate).toISOString();
-        const formattedDateString = dayjs(isoDateString).format("MMMM D, YYYY");
+            const isoDateString = new Date(mockPets[0].birthdate).toISOString();
+            const formattedDateString =
+                dayjs(isoDateString).format("MMMM D, YYYY");
 
-        const name = await screen.findByText(/bella/i);
-        const age = await screen.findByText(/2 years/i);
-        const animalGroup = await screen.findByText(/amphibian/i);
-        const sterileStatus = await screen.findByText(/unknown/i);
-        const breed = await screen.findByText(/beagle/i);
-        const species = await screen.findByText(/dog/i);
-        const sex = await screen.findByText(/female/i);
-        const birthdate = await screen.findByText(formattedDateString);
+            const name = await screen.findByText(/bella/i);
+            const age = await screen.findByText(/2 years/i);
+            const animalGroup = await screen.findByText(/amphibian/i);
+            const sterileStatus = await screen.findByText(/unknown/i);
+            const breed = await screen.findByText(/beagle/i);
+            const species = await screen.findByText(/dog/i);
+            const sex = await screen.findByText(/female/i);
+            const birthdate = await screen.findByText(formattedDateString);
 
-        expect(name).toBeInTheDocument();
-        expect(age).toBeInTheDocument();
-        expect(animalGroup).toBeInTheDocument();
-        expect(sterileStatus).toBeInTheDocument();
-        expect(breed).toBeInTheDocument();
-        expect(species).toBeInTheDocument();
-        expect(sex).toBeInTheDocument();
-        expect(birthdate).toBeInTheDocument();
+            expect(name).toBeInTheDocument();
+            expect(age).toBeInTheDocument();
+            expect(animalGroup).toBeInTheDocument();
+            expect(sterileStatus).toBeInTheDocument();
+            expect(breed).toBeInTheDocument();
+            expect(species).toBeInTheDocument();
+            expect(sex).toBeInTheDocument();
+            expect(birthdate).toBeInTheDocument();
+        });
+
+        it("show placeholder when no vet notes present", async () => {
+            mockGetPet.mockResolvedValue(mockPets[0]);
+            mockGetDiaryEntries.mockResolvedValue(MOCK_DIARY_ENTRIES);
+            await render(<PetProfilePage />);
+
+            const noEntriesMessage =
+                await screen.findByText(/no notes to show/i);
+            expect(noEntriesMessage).toBeInTheDocument();
+        });
+
+        it("renders error component on API error", async () => {
+            mockGetPet.mockRejectedValue("API Error");
+            await render(<PetProfilePage />);
+
+            const errorMessage = await screen.findByText(/ruh roh/i);
+            expect(errorMessage).toBeInTheDocument();
+        });
     });
 
-    it("show message when no diary entries present", async () => {
-        jest.spyOn(PetsAPI, "getPet").mockResolvedValue(mockPets[0]);
-        await render(<PetProfilePage />);
+    describe("Diary entries", () => {
+        it("renders diary entries on the page", async () => {
+            mockGetPet.mockResolvedValue(mockPets[0]);
+            mockGetDiaryEntries.mockResolvedValue([MOCK_DIARY_ENTRY]);
+            await render(<PetProfilePage />);
 
-        const noEntriesMessage = await screen.findByText(/no entries yet/i);
-        expect(noEntriesMessage).toBeInTheDocument();
-    });
+            await expect(
+                screen.findByText(toSentenceCase(MOCK_DIARY_ENTRY.contentType)),
+            ).resolves.toBeInTheDocument();
+        });
 
-    it("show message when no vet notes present", async () => {
-        jest.spyOn(PetsAPI, "getPet").mockResolvedValue(mockPets[0]);
-        await render(<PetProfilePage />);
+        it("shows placeholder when no diary entries present", async () => {
+            mockGetPet.mockResolvedValue(mockPets[0]);
+            mockGetDiaryEntries.mockResolvedValue([]);
+            await render(<PetProfilePage />);
 
-        const noEntriesMessage = await screen.findByText(/no notes to show/i);
-        expect(noEntriesMessage).toBeInTheDocument();
-    });
+            const noEntriesMessage = await screen.findByText(/no entries yet/i);
+            expect(noEntriesMessage).toBeInTheDocument();
+        });
 
-    it("renders error component on API error", async () => {
-        jest.spyOn(PetsAPI, "getPet").mockRejectedValue("API Error");
-        await render(<PetProfilePage />);
+        it("renders error component on API error", async () => {
+            mockGetPet.mockResolvedValue(mockPets[0]);
+            mockGetDiaryEntries.mockRejectedValue("API Error");
+            await render(<PetProfilePage />);
 
-        const errorMessage = await screen.findByText(/ruh roh/i);
-        expect(errorMessage).toBeInTheDocument();
+            const errorMessage = await screen.findByText(/ruh roh/i);
+            expect(errorMessage).toBeInTheDocument();
+        });
     });
 });

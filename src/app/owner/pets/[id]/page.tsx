@@ -7,20 +7,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Pet } from "src/models/pet";
 import { PetsAPI } from "~api/petsAPI";
-import { toSentenceCase } from "~util/strings/normalize";
-import Error from "./error";
-import styles from "./page.module.scss";
+import { PetDiaryAPI } from "~api/petDiaryAPI";
+import DiaryEntry from "~components/diaryEntry/diaryEntry";
 import {
     formatAgeFromDOB,
     formatAnimalGroup,
     formatSterileStatus,
 } from "~util/strings/format-pet";
+import { toSentenceCase } from "~util/strings/normalize";
+import { Pet } from "src/models/pet";
+import { PetDiary } from "src/models/pet-diary";
+import Error from "./error";
+import styles from "./page.module.scss";
 
 export default function PetProfilePage() {
     const [error, setError] = useState(null);
     const [pet, setPet] = useState<Pet | null>(null);
+    const [diaryEntries, setDiaryEntries] = useState<PetDiary[]>([]);
     const { id } = useParams<{ id: string }>();
 
     const getPetData = async () => {
@@ -33,22 +37,32 @@ export default function PetProfilePage() {
         }
     };
 
+    const getPetDiaryData = async () => {
+        try {
+            const response = await PetDiaryAPI.getDiaryEntries(id);
+            setDiaryEntries(response);
+        } catch (error) {
+            setError(error);
+            return;
+        }
+    };
+
     useEffect(() => {
         getPetData();
+        getPetDiaryData();
     }, []);
 
     if (error) {
         return <Error />;
     }
 
-    // TODO: back button must direct to /owner/pets/ once page is done
     // TODO: insert pet image when available
     return (
         <div className={styles.page}>
             <div className={styles.top_bar}>
                 <Button
                     component={Link}
-                    href='/owner/dashboard'
+                    href='/owner/pets/dashboard'
                     variant='transparent'
                     className={styles.back_button}
                 >
@@ -130,7 +144,15 @@ export default function PetProfilePage() {
             <div className={styles.pet_notes}>
                 <div className={styles.pet_notes_column}>
                     <h2>Diary Entries</h2>
-                    <p>No entries yet.</p>
+                    <div className={styles.diary_entries_list}>
+                        {diaryEntries.length > 0 ? (
+                            diaryEntries.map((entry) => (
+                                <DiaryEntry key={entry.id + 1} entry={entry} />
+                            ))
+                        ) : (
+                            <p>No entries yet.</p>
+                        )}
+                    </div>
                 </div>
                 <div className={styles.pet_notes_column}>
                     <h2>Vet Notes</h2>

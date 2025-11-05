@@ -1,13 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { mockPets } from "src/data/pets/mock";
 import calculateAge from "src/util/ageCalculator";
 import styles from "./page.module.scss";
 import placeholderImage from "~public/placeholder.jpg";
-import { Card, Image, Text, Button } from "@mantine/core";
-import Link from "next/link";
+import { Image } from "@mantine/core";
 import { getAnimalGroupDisplayLabel } from "src/util/strings/format-pet";
 
 /**
@@ -31,10 +29,6 @@ const InfoRow = ({ label, value }: { label: string; value: string }) => {
 
 export default function PetDashboard() {
     const router = useRouter();
-
-    console.log("[PetDashboard render] loaded");
-    console.log("mockPets is", mockPets);
-    console.log("InfoRow is", InfoRow);
 
     return (
         <div className={styles.page}>

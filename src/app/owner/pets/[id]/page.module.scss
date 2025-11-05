@@ -79,6 +79,12 @@
         .pet_notes_column {
             -ms-grid-column-span: 1;
         }
+
+        .diary_entries_list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
     }
 
     @media screen and (max-width: 1040px) {
