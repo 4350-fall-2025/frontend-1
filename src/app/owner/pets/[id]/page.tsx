@@ -3,7 +3,6 @@
 import { Button } from "@mantine/core";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import dayjs from "dayjs";
-import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
