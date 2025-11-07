@@ -27,7 +27,7 @@
     .page_content {
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: auto 3fr 3fr;
+        grid-template-rows: auto auto auto;
         padding-left: 8px;
         padding-right: 8px;
 
@@ -52,6 +52,15 @@
                 width: 100%;
                 max-width: 250px;
                 height: auto;
+            }
+
+            .pet_image_container {
+                position: center;
+                border-radius: 8px;
+                overflow: hidden;
+                background-color: $color-light-blue-white;
+                width: 100%;
+                aspect-ratio: 1 / 1;
             }
 
             .pet_info_label {
@@ -114,7 +123,7 @@
         .page_content {
             .pet_info {
                 grid-template-columns: minmax(200px, 250px) auto;
-                grid-template-rows: 1fr;
+                //grid-template-rows: 1fr;
                 column-gap: 32px;
 
                 .pet_image {
