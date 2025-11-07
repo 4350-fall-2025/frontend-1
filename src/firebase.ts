@@ -85,8 +85,9 @@ export function generateDiaryURL(
     ownerId: string,
     petId: string,
     diaryId: string,
+    fileName: string,
 ) {
-    return `/owners/${ownerId}/pets/${petId}/diaries/${diaryId}`;
+    return `/owners/${ownerId}/pets/${petId}/diaries/${diaryId}/${fileName}`;
 }
 
 export function generatePetURL(ownerId: string, petId: string) {

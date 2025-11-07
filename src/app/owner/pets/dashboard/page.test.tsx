@@ -47,6 +47,12 @@ jest.mock("next/navigation", () => ({
     }),
 }));
 
+jest.mock("../../../../firebase", () => ({
+    auth: {},
+    storage: {},
+    getImageURL: jest.fn(() => Promise.resolve("placeholder.jpeg")),
+}));
+
 // Mock @mantine/core components
 jest.mock("@mantine/core", () => ({
     Image: ({ src, alt }: { src: string; alt: string }) => (

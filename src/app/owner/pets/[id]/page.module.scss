@@ -27,7 +27,6 @@
     .page_content {
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: auto 3fr 3fr;
         padding-left: 8px;
         padding-right: 8px;
 
@@ -50,8 +49,16 @@
                 justify-self: center;
 
                 width: 100%;
-                max-width: 250px;
                 height: auto;
+            }
+
+            .pet_image_container {
+                position: center;
+                border-radius: 8px;
+                overflow: hidden;
+                background-color: $color-light-blue-white;
+                width: 100%;
+                aspect-ratio: 1 / 1;
             }
 
             .pet_info_label {

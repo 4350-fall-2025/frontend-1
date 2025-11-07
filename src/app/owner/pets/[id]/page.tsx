@@ -1,9 +1,8 @@
 "use client";
 
-import { Button } from "@mantine/core";
+import { Button, Image } from "@mantine/core";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import dayjs from "dayjs";
-import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -93,11 +92,13 @@ export default function PetProfilePage() {
             <div className={styles.page_content}>
                 <h1 className={styles.header}>{pet?.name}</h1>
                 <div className={styles.pet_info}>
-                    <img
-                        className={styles.pet_image}
-                        src={imageUrl}
-                        alt='Pet profile picture'
-                    />
+                    <div className={styles.pet_image_container}>
+                        <Image
+                            className={styles.pet_image}
+                            src={imageUrl}
+                            alt='Pet profile picture'
+                        />
+                    </div>
                     <div className={styles.pet_details}>
                         <div className={styles.pet_details_column}>
                             <ul>
