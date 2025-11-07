@@ -15,6 +15,7 @@ import { Owner } from "src/models/owner";
 import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { todayDate } from "~data/constants";
+import { generateDiaryURL, uploadFile } from "src/firebase";
 
 /**
  * Some sample code came from Mantine use-file-dialog
@@ -26,6 +27,7 @@ function NewDiary() {
     const [error, setError] = useState("");
     const [owner, setOwner] = useState<Owner>(null);
     const [isNoteTypePreselected, setIsNoteTypePreselected] = useState(false);
+    const [pickedFilesList, setFilesList] = useState([]);
 
     useEffect(() => {
         let storedUser = localStorage.getItem("currentUser");
@@ -101,15 +103,18 @@ function NewDiary() {
 
     const fileDialog = useFileDialog({
         accept: "image/*",
+        onChange(files) {
+            if (files != null) {
+                const filesArray = Array.from(files || []);
+                const fullFileList = pickedFilesList.concat(filesArray);
+                setFilesList(fullFileList);
+            }
+        },
     });
-
-    const pickedFiles = Array.from(fileDialog.files || []);
-    const pickedFilesList = pickedFiles.map((file) => (
-        <List.Item key={file.name}>{file.name}</List.Item>
-    ));
 
     // clears file dialog and resets files contents
     const resetFiles = () => {
+        setFilesList([]);
         fileDialog.reset();
         form.setFieldValue("files", null);
     };
@@ -135,12 +140,27 @@ function NewDiary() {
                     contentBody: values.contentBody,
                     contentType: values.contentType,
                     createTimestamp: todayDate,
-                    files: [],
+                    files: pickedFilesList.map((file) => file.name),
                 };
 
                 const diaryEntry = new PetDiary(diaryEntryJSON);
 
-                await PetDiaryAPI.createDiary(petId, diaryEntry);
+                const createdEntryID = (
+                    await PetDiaryAPI.createDiary(petId, diaryEntry)
+                ).id;
+
+                //upload files to firebase - this method uploads all at the same time
+                let promises = [];
+                for (const file of pickedFilesList) {
+                    let url = generateDiaryURL(
+                        owner.id,
+                        petId,
+                        createdEntryID,
+                        file.name,
+                    );
+                    promises.push(uploadFile(file, url));
+                }
+                await Promise.all(promises);
                 router.push("/owner/diary/dashboard");
             } else {
                 setError(
@@ -215,7 +235,11 @@ function NewDiary() {
                             </Group>
                             {pickedFilesList.length > 0 && (
                                 <List mt='sm' size='sm'>
-                                    {pickedFilesList}
+                                    {pickedFilesList.map((file, index) => (
+                                        <List.Item key={index}>
+                                            {file.name}
+                                        </List.Item>
+                                    ))}
                                 </List>
                             )}
                         </div>

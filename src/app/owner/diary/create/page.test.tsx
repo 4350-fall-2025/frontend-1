@@ -18,6 +18,7 @@ import { mockPets } from "~data/pets/mock";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { PetsAPI } from "~api/petsAPI";
 import { owner } from "~data/owner/mock";
+import { uploadFile } from "src/firebase";
 
 // Mock router
 const pushMock = jest.fn();
@@ -48,6 +49,12 @@ jest.mock("@mantine/hooks", () => {
         }),
     };
 });
+
+jest.mock("../../../../firebase", () => ({
+    auth: {},
+    storage: {},
+    uploadFile: jest.fn(() => Promise.resolve()),
+}));
 
 describe("New Diary Entry page", () => {
     let pet: HTMLElement;
