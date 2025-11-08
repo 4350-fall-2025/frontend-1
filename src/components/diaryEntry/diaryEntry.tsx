@@ -7,7 +7,14 @@ import { toSentenceCase } from "~util/strings/normalize";
 import { PetDiary } from "src/models/pet-diary";
 import styles from "./diaryEntry.module.scss";
 
-export default function DiaryEntry({ entry }: { entry: PetDiary }) {
+//TO-DO: pass in name as a parameter as well
+export default function DiaryEntry({
+    entry,
+    name,
+}: {
+    entry: PetDiary;
+    name?: String;
+}) {
     const router = useRouter();
 
     const handleClick = () => {
@@ -16,8 +23,12 @@ export default function DiaryEntry({ entry }: { entry: PetDiary }) {
 
     return (
         <div className={styles.entry_card} onClick={handleClick}>
+            <div>
+                <h3 className={styles.heading}>{name ? name : ""}</h3>
+            </div>
             <div className={styles.entry_header}>
                 <h3 className={styles.heading}>
+                    {name ? name : ""}
                     {toSentenceCase(entry.contentType)}
                 </h3>
                 <span>

@@ -60,18 +60,22 @@ export default function PetDiaryDashboard() {
     }, [owner]);
 
     // TODO: Make a util function for fetching diaries and return the diaries? to reduce duplicate code
-    const [diaries, setDiaries] = useState<PetDiary[]>([]);
+    const [diaries, setDiaries] = useState<{ entry: PetDiary; pet: Pet }[]>([]);
 
     useEffect(() => {
         const fetchDiaries = async () => {
             if (owner?.id && pets.length > 0) {
                 try {
-                    const fetchedDiaries: PetDiary[] = [];
+                    const fetchedDiaries: { entry: PetDiary; pet: Pet }[] = [];
                     for (const pet of pets) {
                         const petDiaries = await PetDiaryAPI.getDiaryEntries(
                             pet.id,
                         );
-                        fetchedDiaries.push(...petDiaries);
+                        let namedEntry = petDiaries.map((entry) => ({
+                            entry: entry,
+                            pet: pet,
+                        }));
+                        fetchedDiaries.push(...namedEntry); //idea:
                     }
 
                     setDiaries(fetchedDiaries);
@@ -163,7 +167,11 @@ export default function PetDiaryDashboard() {
                         {diaries &&
                             diaries.length > 0 &&
                             diaries.map((diary) => (
-                                <DiaryEntry key={diary.id} entry={diary} />
+                                <DiaryEntry
+                                    key={diary.entry.id}
+                                    entry={diary.entry}
+                                    name={diary.pet.name}
+                                />
                             ))}
 
                         <p className={globalStyles.error_message}>{error}</p>

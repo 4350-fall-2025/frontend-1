@@ -45,7 +45,7 @@ As our server is not currently hosted on the cloud in order to run the app local
 
 The instructions are located [here](https://github.com/4350-fall-2025/backend/blob/develop/README.md).
 
-Once done please run the back end server.
+Once done please run the back end server in emulator mode.
 
 ### 5: Run the Front End Server
 
