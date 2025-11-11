@@ -170,7 +170,7 @@ export default function PetDiaryDashboard() {
                                 <DiaryEntry
                                     key={diary.entry.id}
                                     entry={diary.entry}
-                                    name={diary.pet.name}
+                                    pet={diary.pet}
                                 />
                             ))}
 
