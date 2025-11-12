@@ -24,12 +24,6 @@ export default function DiaryEntry({
 
     return (
         <div className={styles.entry_card} onClick={handleClick}>
-            {pet && (
-                <div className={styles.pet_name_wrapper}>
-                    <h3 className={styles.pet_name}>{pet.name}</h3>
-                </div>
-            )}
-
             <div className={styles.entry_body}>
                 <div className={styles.entry_header}>
                     <h3 className={styles.heading}>
@@ -39,7 +33,8 @@ export default function DiaryEntry({
                         {dayjs(entry.createTimestamp).format("MMMM D, YYYY")}
                     </span>
                 </div>
-                <p className={styles.entry_body}>{entry.contentBody}</p>
+                {pet && <h3 className={styles.pet_name}>{pet.name}</h3>}
+                <p className={styles.entry_content}>{entry.contentBody}</p>
             </div>
         </div>
     );
