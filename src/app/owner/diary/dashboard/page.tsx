@@ -13,6 +13,8 @@ import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { PetDiary } from "src/models/pet-diary";
 import DiaryEntry from "~components/diaryEntry/diaryEntry";
 
+const INIT_FILTER = { value: "ALL", label: "All" };
+
 /**
  * CREDITS
  *
@@ -90,15 +92,18 @@ export default function PetDiaryDashboard() {
         fetchDiaries();
     }, [owner, pets]);
 
-    const [activeFilter, setActiveFilter] = useState("All");
-    const [sortBy, setSortBy] = useState("Newest first");
+    //these should be higher but thats a later problem
+    const [sortBy, setSortBy] = useState("Pet name");
 
-    const filters = [
-        "All",
-        ...noteTypeOptions.map((option) =>
-            option.label === "Measurement" ? "Weight" : option.label,
-        ),
-    ];
+    const filters = [INIT_FILTER, ...noteTypeOptions];
+    const [activeFilter, setActiveFilter] = useState(INIT_FILTER);
+
+    const filteredEntries =
+        activeFilter.label == "All"
+            ? diaries
+            : diaries.filter(
+                  (entry) => entry.entry.contentType == activeFilter.value,
+              );
 
     const handleQuickAdd = (noteType: string) => {
         // Navigate to new entry page with pre-selected note type
@@ -127,7 +132,7 @@ export default function PetDiaryDashboard() {
                         <div className={styles.filters}>
                             {filters.map((filter) => (
                                 <button
-                                    key={filter}
+                                    key={filter.label}
                                     onClick={() => setActiveFilter(filter)}
                                     className={`${styles.filterBtn} ${
                                         activeFilter === filter
@@ -135,7 +140,7 @@ export default function PetDiaryDashboard() {
                                             : ""
                                     }`}
                                 >
-                                    {filter}
+                                    {filter.label}
                                 </button>
                             ))}
                         </div>
@@ -160,19 +165,17 @@ export default function PetDiaryDashboard() {
 
                     {/* Diary Entries Placeholder */}
                     <div className={styles.entriesContainer}>
-                        {diaries && diaries.length <= 0 && (
+                        {filteredEntries && filteredEntries.length <= 0 && (
                             <p>No diary entry yet</p>
                         )}
 
-                        {diaries &&
-                            diaries.length > 0 &&
-                            diaries.map((diary) => (
-                                <DiaryEntry
-                                    key={diary.entry.id}
-                                    entry={diary.entry}
-                                    pet={diary.pet}
-                                />
-                            ))}
+                        {filteredEntries.map((diary) => (
+                            <DiaryEntry
+                                key={diary.entry.id}
+                                entry={diary.entry}
+                                pet={diary.pet}
+                            />
+                        ))}
 
                         <p className={globalStyles.error_message}>{error}</p>
                     </div>
@@ -183,10 +186,7 @@ export default function PetDiaryDashboard() {
                             {noteTypeOptions
                                 .filter((option) => option.label !== "Other")
                                 .map((option) => {
-                                    const displayLabel =
-                                        option.label === "Measurement"
-                                            ? "Weight"
-                                            : option.label;
+                                    const displayLabel = option.label;
                                     return (
                                         <button
                                             key={option.value}
