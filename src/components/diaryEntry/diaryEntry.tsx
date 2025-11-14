@@ -23,7 +23,11 @@ export default function DiaryEntry({
     };
 
     return (
-        <div className={styles.entry_card} onClick={handleClick}>
+        <div
+            className={styles.entry_card}
+            onClick={handleClick}
+            data-testid='diary-entry'
+        >
             <div className={styles.entry_body}>
                 <div className={styles.entry_header}>
                     <h3 className={styles.heading}>
