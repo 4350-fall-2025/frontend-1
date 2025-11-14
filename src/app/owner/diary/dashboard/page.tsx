@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconPlus, IconArrowsSort } from "@tabler/icons-react";
 import { noteTypeOptions } from "src/data/diary/constants";
@@ -29,6 +29,38 @@ export default function PetDiaryDashboard() {
 
     const [error, setError] = useState("");
     const [owner, setOwner] = useState<Owner>(null);
+
+    const [diaries, setDiaries] = useState<{ entry: PetDiary; pet: Pet }[]>([]);
+
+    const [sortBy, setSortBy] = useState("Pet name");
+
+    const filters = [INIT_FILTER, ...noteTypeOptions];
+    const [activeFilter, setActiveFilter] = useState(INIT_FILTER);
+
+    const filteredAndSortedEntries = useMemo(() => {
+        //first apply filtering
+        let result =
+            activeFilter.label == "All"
+                ? diaries
+                : diaries.filter(
+                      (entry) => entry.entry.contentType == activeFilter.value,
+                  );
+        //then sort
+        if (sortBy === "Newest first") {
+            result.sort(
+                (a, b) =>
+                    new Date(b.entry.createTimestamp).getTime() -
+                    new Date(a.entry.createTimestamp).getTime(),
+            );
+        } else if (sortBy === "Oldest first") {
+            result.sort(
+                (a, b) =>
+                    new Date(a.entry.createTimestamp).getTime() -
+                    new Date(b.entry.createTimestamp).getTime(),
+            );
+        }
+        return result;
+    }, [diaries, sortBy, activeFilter]);
 
     useEffect(() => {
         let storedUser = localStorage.getItem("currentUser");
@@ -62,8 +94,6 @@ export default function PetDiaryDashboard() {
     }, [owner]);
 
     // TODO: Make a util function for fetching diaries and return the diaries? to reduce duplicate code
-    const [diaries, setDiaries] = useState<{ entry: PetDiary; pet: Pet }[]>([]);
-
     useEffect(() => {
         const fetchDiaries = async () => {
             if (owner?.id && pets.length > 0) {
@@ -91,19 +121,6 @@ export default function PetDiaryDashboard() {
 
         fetchDiaries();
     }, [owner, pets]);
-
-    //these should be higher but thats a later problem
-    const [sortBy, setSortBy] = useState("Pet name");
-
-    const filters = [INIT_FILTER, ...noteTypeOptions];
-    const [activeFilter, setActiveFilter] = useState(INIT_FILTER);
-
-    const filteredEntries =
-        activeFilter.label == "All"
-            ? diaries
-            : diaries.filter(
-                  (entry) => entry.entry.contentType == activeFilter.value,
-              );
 
     const handleQuickAdd = (noteType: string) => {
         // Navigate to new entry page with pre-selected note type
@@ -165,11 +182,12 @@ export default function PetDiaryDashboard() {
 
                     {/* Diary Entries Placeholder */}
                     <div className={styles.entriesContainer}>
-                        {filteredEntries && filteredEntries.length <= 0 && (
-                            <p>No diary entry yet</p>
-                        )}
+                        {filteredAndSortedEntries &&
+                            filteredAndSortedEntries.length <= 0 && (
+                                <p>No diary entry yet</p>
+                            )}
 
-                        {filteredEntries.map((diary) => (
+                        {filteredAndSortedEntries.map((diary) => (
                             <DiaryEntry
                                 key={diary.entry.id}
                                 entry={diary.entry}

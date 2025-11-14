@@ -11,6 +11,7 @@ import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { MOCK_DIARY_ENTRIES, MOCK_DIARY_ENTRY } from "~data/diary/mock";
 import { mockPets } from "~data/pets/mock";
 import { owner } from "~data/owner/mock";
+import { toSentenceCase } from "~util/strings/normalize";
 
 // Mock router
 const pushMock = jest.fn();
@@ -109,7 +110,7 @@ describe("Pet Diary Dashboard", () => {
         });
     });
 
-    describe("Diary Entries Filtering", () => {
+    describe("Diary Entries Sorting and Filtering", () => {
         beforeEach(() => {
             localStorage.setItem("currentUser", JSON.stringify(owner));
             mockGetAllPets.mockResolvedValue(mockPets);
@@ -121,7 +122,7 @@ describe("Pet Diary Dashboard", () => {
 
         it("displays all entries when 'All' filter is selected", async () => {
             const allEntries = await screen.findAllByTestId("diary-entry");
-            expect(allEntries).toHaveLength(1);
+            expect(allEntries).toHaveLength(2);
         });
 
         it("removes entries when the respective filter is selected", async () => {
@@ -141,6 +142,42 @@ describe("Pet Diary Dashboard", () => {
             expect(allEntries).toHaveLength(1);
 
             expect(allEntries[0]).toHaveTextContent("General");
+        });
+
+        it("sorts entries by oldest accurately", async () => {
+            const sortSelect = screen.getByRole(
+                "combobox",
+            ) as HTMLSelectElement;
+
+            await user.selectOptions(sortSelect, "Oldest first");
+
+            const allEntries = await screen.findAllByTestId("diary-entry");
+
+            // Verify the oldest entry (Jan 1) appears before the newer one (Jan 2)
+            expect(allEntries[0]).toHaveTextContent(
+                toSentenceCase(MOCK_DIARY_ENTRIES[0].contentType),
+            );
+            expect(allEntries[1]).toHaveTextContent(
+                toSentenceCase(MOCK_DIARY_ENTRIES[1].contentType),
+            );
+        });
+
+        it("sorts entries by newest accurately", async () => {
+            const sortSelect = screen.getByRole(
+                "combobox",
+            ) as HTMLSelectElement;
+
+            await user.selectOptions(sortSelect, "Newest first");
+
+            const allEntries = await screen.findAllByTestId("diary-entry");
+
+            // Verify the oldest entry (Jan 1) appears after the newer one (Jan 2)
+            expect(allEntries[0]).toHaveTextContent(
+                toSentenceCase(MOCK_DIARY_ENTRIES[1].contentType),
+            );
+            expect(allEntries[1]).toHaveTextContent(
+                toSentenceCase(MOCK_DIARY_ENTRIES[0].contentType),
+            );
         });
     });
 
