@@ -24,6 +24,10 @@ import { generatePetURL, getImageURL } from "src/firebase";
  * - Ensuring Next.js "use client" directive patterns are followed
  */
 
+interface PetDashboardProps {
+    hideTitle?: boolean;
+}
+
 const InfoRow = ({ label, value }: { label: string; value: string }) => {
     return (
         <div className={styles.info_row}>
@@ -33,7 +37,8 @@ const InfoRow = ({ label, value }: { label: string; value: string }) => {
     );
 };
 
-export default function PetDashboard() {
+// export default function PetDashboard() {
+export default function PetDashboard({ hideTitle = false }: PetDashboardProps) {
     const router = useRouter();
 
     const [error, setError] = useState("");
@@ -99,7 +104,7 @@ export default function PetDashboard() {
         <div className={styles.page}>
             <main>
                 <div className={styles.header}>
-                    <h1 className={styles.title}>My Pets</h1>
+                    {!hideTitle && <h1 className={styles.title}>My Pets</h1>}
                     <button
                         className={styles.add_button}
                         onClick={() => router.push("/owner/pets/create")}
