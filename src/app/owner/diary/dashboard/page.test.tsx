@@ -191,11 +191,11 @@ describe("Pet Diary Dashboard", () => {
             expect(sortSelect).toBeInTheDocument();
         });
 
-        it("has 'Pet name' selected by default", () => {
+        it("has 'Newest first' selected by default", () => {
             const sortSelect = screen.getByRole(
                 "combobox",
             ) as HTMLSelectElement;
-            expect(sortSelect.value).toBe("Pet name");
+            expect(sortSelect.value).toBe("Newest first");
         });
 
         it("renders all sort options", () => {

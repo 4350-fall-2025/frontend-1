@@ -32,7 +32,7 @@ export default function PetDiaryDashboard() {
 
     const [diaries, setDiaries] = useState<{ entry: PetDiary; pet: Pet }[]>([]);
 
-    const [sortBy, setSortBy] = useState("Pet name");
+    const [sortBy, setSortBy] = useState("Newest first");
 
     const filters = [INIT_FILTER, ...noteTypeOptions];
     const [activeFilter, setActiveFilter] = useState(INIT_FILTER);
