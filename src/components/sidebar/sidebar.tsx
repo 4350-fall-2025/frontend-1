@@ -14,6 +14,7 @@ import Link from "next/link";
 import { Button, NavLink, Stack } from "@mantine/core";
 import Image from "next/image";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import logo from "~public/logo/tennisLogo.png";
 import styles from "./sidebar.module.scss";
 import { useRouter } from "next/navigation";
@@ -26,6 +27,7 @@ interface NavLinkItem {
 
 interface SidebarProps {
     navLinks: NavLinkItem[];
+    variant?: "owner" | "vet";
 }
 
 /**
@@ -34,7 +36,7 @@ interface SidebarProps {
  * Accepts dynamic navigation links via props
  * Responsive design: collapses on smaller screens with toggle button
  */
-export default function Sidebar({ navLinks }: SidebarProps) {
+export default function Sidebar({ navLinks, variant = "owner" }: SidebarProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleSidebar = () => {
@@ -42,6 +44,7 @@ export default function Sidebar({ navLinks }: SidebarProps) {
     };
 
     const router = useRouter();
+    const pathname = usePathname();
 
     const logOut = () => {
         if (window.confirm("Are you sure you want to sign out?")) {
@@ -68,7 +71,7 @@ export default function Sidebar({ navLinks }: SidebarProps) {
             )}
 
             {/* Main sidebar */}
-            <aside className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
+            <aside className={`${styles.sidebar} ${styles[variant]} ${isOpen ? styles.open : ""}`}>
                 <div className={styles.logoLink}>
                     <Image
                         src={logo}
@@ -88,6 +91,7 @@ export default function Sidebar({ navLinks }: SidebarProps) {
                             href={link.href}
                             label={link.label}
                             className={styles.navLink}
+                            active={pathname === link.href}
                         />
                     ))}
                 </Stack>

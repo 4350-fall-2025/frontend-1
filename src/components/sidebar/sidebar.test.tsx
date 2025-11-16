@@ -31,6 +31,7 @@ jest.mock("next/navigation", () => ({
     useRouter: () => ({
         push: pushMock,
     }),
+    usePathname: () => "/owner/dashboard",
 }));
 
 jest.mock("../../firebase", () => ({
@@ -43,21 +44,15 @@ window.confirm = jest.fn(() => true);
 
 describe("Sidebar Component", () => {
     let user: ReturnType<typeof userEvent.setup>;
-//     let localStorageClearSpy: jest.SpyInstance;
 
     beforeEach(() => {
         user = userEvent.setup();
         jest.clearAllMocks();
-//         localStorageClearSpy = jest.spyOn(Storage.prototype, "clear");
     });
-
-//     afterEach(() => {
-//         localStorageClearSpy.mockRestore();
-//     });
 
     describe("Rendering Side NavBar - Owner", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={ownerNavLinks} />);
+            render(<Sidebar navLinks={ownerNavLinks} variant="owner" />);
         });
 
         it("should render the sidebar", () => {
@@ -87,7 +82,7 @@ describe("Sidebar Component", () => {
 
     describe("Rendering Side NavBar - Vet", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={vetNavLinks} />);
+            render(<Sidebar navLinks={vetNavLinks} variant="vet" />);
         });
 
         it("should render all vet navigation links", () => {
@@ -111,7 +106,7 @@ describe("Sidebar Component", () => {
 
     describe("Navigation Links - Owner", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={ownerNavLinks} />);
+            render(<Sidebar navLinks={ownerNavLinks} variant="owner" />);
         });
 
         it("Dashboard link should navigate to /owner/dashboard", () => {
@@ -153,7 +148,7 @@ describe("Sidebar Component", () => {
 
     describe("Navigation Links - Vet", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={vetNavLinks} />);
+            render(<Sidebar navLinks={vetNavLinks} variant="vet" />);
         });
 
         it("Dashboard link should navigate to /vet/dashboard", () => {
@@ -169,7 +164,7 @@ describe("Sidebar Component", () => {
 
     describe("Sign Out Functionality", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={ownerNavLinks} />);
+            render(<Sidebar navLinks={ownerNavLinks} variant="owner" />);
         });
 
         it("Sign Out Button should navigate back to log in", () => {
@@ -189,7 +184,7 @@ describe("Sidebar Component", () => {
 
     describe("Desktop View", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={ownerNavLinks} />);
+            render(<Sidebar navLinks={ownerNavLinks} variant="owner" />);
         });
 
         it("logo should be visible on desktop", () => {
@@ -215,7 +210,7 @@ describe("Sidebar Component", () => {
 
     describe("Mobile View - Toggle Functionality", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={ownerNavLinks} />);
+            render(<Sidebar navLinks={ownerNavLinks} variant="owner" />);
         });
 
         it("toggle button should open and close sidebar", async () => {
@@ -290,7 +285,7 @@ describe("Sidebar Component", () => {
 
     describe("Accessibility", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={ownerNavLinks} />);
+            render(<Sidebar navLinks={ownerNavLinks} variant="owner" />);
         });
 
         it("sidebar should be a complementary landmark", () => {
