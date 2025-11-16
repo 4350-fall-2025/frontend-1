@@ -7,17 +7,21 @@
     justify-content: flex-start; /* align to top */
     align-items: flex-start; /* align to left */
     min-height: 100vh;
+    padding: 40px; /* top + general spacing */
+    background-color: $color-white;
     text-align: left;
 
     h1 {
         font-size: 2.5rem;
         font-weight: 700;
         margin-bottom: 10px;
+        color: $color-black;
     }
 
     p {
         font-size: $font-medium;
         font-weight: 400;
+        color: $color-black;
         margin-top: 0;
     }
 }
@@ -39,7 +43,7 @@
 /* Remove padding from embedded pet dashboard main content */
 .pet_dashboard_wrapper :global(main) {
     padding: 0;
-    margin: 0;
+    margin: -60px;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -56,7 +60,7 @@
 .welcome_title {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #333;
+    color: $color-black;
     margin: 0;
     text-align: left;
 }
