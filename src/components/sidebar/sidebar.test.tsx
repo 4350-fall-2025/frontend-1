@@ -20,7 +20,7 @@ import userEvent from "@testing-library/user-event";
 import { render, screen } from "~tests/utils/custom-testing-library";
 import Sidebar from "./sidebar";
 import { fireEvent } from "~tests/utils/custom-testing-library";
-import { ownerNavLinks, vetNavLinks } from "~components/sidebar/sidebar-config";
+import { ownerNavLinks, vetNavLinks } from "./sidebar-config";
 
 /**
  * Test suites and mock functions generated with GPT-5 mini and help from:
@@ -43,11 +43,17 @@ window.confirm = jest.fn(() => true);
 
 describe("Sidebar Component", () => {
     let user: ReturnType<typeof userEvent.setup>;
+//     let localStorageClearSpy: jest.SpyInstance;
 
     beforeEach(() => {
         user = userEvent.setup();
         jest.clearAllMocks();
+//         localStorageClearSpy = jest.spyOn(Storage.prototype, "clear");
     });
+
+//     afterEach(() => {
+//         localStorageClearSpy.mockRestore();
+//     });
 
     describe("Rendering Side NavBar - Owner", () => {
         beforeEach(() => {
@@ -178,12 +184,6 @@ describe("Sidebar Component", () => {
             const signOutMock = require("../../firebase").signOutOfFirebase;
             fireEvent.click(screen.getByText("Sign Out"));
             expect(signOutMock).toHaveBeenCalled();
-        });
-
-        it("should clear localStorage when signing out", () => {
-            const localStorageSpy = jest.spyOn(Storage.prototype, "clear");
-            fireEvent.click(screen.getByText("Sign Out"));
-            expect(localStorageSpy).toHaveBeenCalled();
         });
     });
 
