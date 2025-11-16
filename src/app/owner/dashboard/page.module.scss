@@ -10,18 +10,19 @@
     padding: 40px; /* top + general spacing */
     background-color: #f9f9f9;
     text-align: left;
+    padding: 5% 10%;
 
     h1 {
         font-size: 2.5rem;
         font-weight: 700;
         margin-bottom: 10px;
-        color: #333;
+        color: $color-black;
     }
 
     p {
         font-size: $font-medium;
         font-weight: 400;
-        color: #333;
+        color: $color-black;
         margin-top: 0;
     }
 }
