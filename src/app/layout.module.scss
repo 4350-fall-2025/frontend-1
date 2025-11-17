@@ -21,10 +21,14 @@
     flex: 1 1 auto;
 }
 
-.error_message {
+.error_message_end {
     color: red;
     justify-self: end;
     padding-bottom: 2rem;
+}
+
+.error_message {
+    color: red;
 }
 
 .cancel_or_save {

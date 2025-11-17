@@ -19,7 +19,10 @@ import { OwnersAPI } from "~api/ownersAPI";
 import { validatePassword } from "~util/validation/validate-signin";
 import ownerImage from "~public/login/petOwner.jpg"; // source: https://unsplash.com/photos/woman-hugging-a-dog-FtuJIuBbUhI
 import vetImage from "~public/login/vet.jpg"; // source: https://www.freepik.com/free-photo/close-up-doctor-checking-cat-s-belly_23442502.htm#fromView=keyword&page=1&position=32&uuid=d7e73635-ac35-41b6-80b1-b544a20a5f68&query=Vet
+
 import styles from "./page.module.scss";
+import globalStyles from "~app/layout.module.scss";
+
 import { signInWithBackendToken } from "src/firebase";
 
 export default function LoginPage() {
@@ -111,7 +114,10 @@ export default function LoginPage() {
 
                         <div className={styles.login_footer}>
                             {errorMessage != null && (
-                                <p style={{ color: "red" }}> {errorMessage} </p>
+                                <p className={globalStyles.error_message}>
+                                    {" "}
+                                    {errorMessage}{" "}
+                                </p>
                             )}
                             <a href='/under-construction?hideNav=true'>
                                 Forgot password

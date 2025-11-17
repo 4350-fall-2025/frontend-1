@@ -275,7 +275,7 @@ export default function NewPet() {
                             Save
                         </Button>
                     </div>
-                    <p className={globalStyles.error_message}>{error}</p>
+                    <p className={globalStyles.error_message_end}>{error}</p>
                 </form>
             </main>
         </div>
