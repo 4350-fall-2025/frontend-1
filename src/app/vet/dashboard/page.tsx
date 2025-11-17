@@ -1,16 +1,22 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Vet } from "src/models/vet";
+import { UserRoles } from "~data/constants";
+import { getAuthCookie, hasRole } from "~util/authCookies";
 
 export default function VetDashboard() {
     const [vet, setVet] = useState<Vet>(null);
 
     useEffect(() => {
-        let storedUser = localStorage.getItem("currentUser");
-        if (storedUser) {
-            const storedOwner = new Vet(JSON.parse(storedUser));
-
-            setVet(storedOwner);
+        const authUser = getAuthCookie();
+        if (authUser && hasRole(UserRoles.vet)) {
+            const vetData = new Vet({
+                id: authUser.userId,
+                firstName: authUser.firstName,
+                lastName: authUser.lastName,
+                email: authUser.email,
+            });
+            setVet(vetData);
         }
     }, []);
 

@@ -8,13 +8,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { validateOptionalImage } from "~util/validation/validation";
 import { validateDiaryContentBody } from "~util/validation/validate-diary";
 import { Button, Group, List, Select, Textarea } from "@mantine/core";
+import { getAuthCookie, hasRole } from "~util/authCookies";
 import { noteTypeOptions } from "~data/diary/constants";
 import { useFileDialog } from "@mantine/hooks";
 import { Pet } from "src/models/pet";
 import { Owner } from "src/models/owner";
 import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
-import { todayDate } from "~data/constants";
+import { todayDate, UserRoles } from "~data/constants";
 import { generateDiaryURL, uploadFile } from "src/firebase";
 
 /**
@@ -30,11 +31,18 @@ function NewDiary() {
     const [pickedFilesList, setFilesList] = useState([]);
 
     useEffect(() => {
-        let storedUser = localStorage.getItem("currentUser");
-        if (storedUser) {
-            const storedOwner = new Owner(JSON.parse(storedUser));
+        const authUser = getAuthCookie();
+        if (authUser && hasRole(UserRoles.owner)) {
+            const storedOwner = new Owner({
+                id: authUser.userId,
+                firstName: authUser.firstName,
+                lastName: authUser.lastName,
+                email: authUser.email,
+            });
 
             setOwner(storedOwner);
+        } else {
+            setError("You are not authorized to create a pet.");
         }
     }, []);
 

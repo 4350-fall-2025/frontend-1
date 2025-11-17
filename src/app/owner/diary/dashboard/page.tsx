@@ -12,6 +12,8 @@ import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { PetDiary } from "src/models/pet-diary";
 import DiaryEntry from "~components/diaryEntry/diaryEntry";
+import { getAuthCookie, hasRole } from "~util/authCookies";
+import { UserRoles } from "~data/constants";
 
 const INIT_FILTER = { value: "ALL", label: "All" };
 
@@ -63,11 +65,17 @@ export default function PetDiaryDashboard() {
     }, [diaries, sortBy, activeFilter]);
 
     useEffect(() => {
-        let storedUser = localStorage.getItem("currentUser");
-        if (storedUser) {
-            const storedOwner = new Owner(JSON.parse(storedUser));
-
-            setOwner(storedOwner);
+        const authUser = getAuthCookie();
+        if (authUser && hasRole(UserRoles.owner)) {
+            const ownerData = new Owner({
+                id: authUser.userId,
+                firstName: authUser.firstName,
+                lastName: authUser.lastName,
+                email: authUser.email,
+            });
+            setOwner(ownerData);
+        } else {
+            setError("You are not authorized to create a diary.");
         }
     }, []);
 

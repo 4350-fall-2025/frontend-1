@@ -20,6 +20,7 @@ import { PetDiary } from "src/models/pet-diary";
 import Error from "./error";
 import styles from "./page.module.scss";
 import { generatePetURL, getImageURL } from "src/firebase";
+import { getAuthCookie } from "~util/authCookies";
 
 export default function PetProfilePage() {
     const placeholderUrl = "/placeholder.jpg";
@@ -52,9 +53,9 @@ export default function PetProfilePage() {
 
     const getPetImage = async () => {
         try {
-            const user = JSON.parse(localStorage.getItem("currentUser"));
-            if (user.id != null) {
-                const filePath = generatePetURL(user.id, id);
+            const authUser = getAuthCookie();
+            if (authUser?.userId != null) {
+                const filePath = generatePetURL(authUser.userId, id);
                 const url = await getImageURL(filePath);
                 setImageUrl(url);
             } else {

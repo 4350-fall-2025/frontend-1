@@ -19,6 +19,7 @@ import logo from "~public/logo/tennisLogo.png";
 import styles from "./sidebar.module.scss";
 import { useRouter } from "next/navigation";
 import { signOutOfFirebase } from "src/firebase";
+import { removeAuthCookie } from "~util/authCookies";
 
 interface NavLinkItem {
     label: string;
@@ -48,7 +49,7 @@ export default function Sidebar({ navLinks, variant = "owner" }: SidebarProps) {
 
     const logOut = () => {
         if (window.confirm("Are you sure you want to sign out?")) {
-            localStorage.clear();
+            removeAuthCookie();
             signOutOfFirebase();
             router.push("/");
         }

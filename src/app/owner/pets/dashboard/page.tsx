@@ -13,6 +13,8 @@ import { PetsAPI } from "~api/petsAPI";
 import { Owner } from "src/models/owner";
 import { Pet } from "src/models/pet";
 import { generatePetURL, getImageURL } from "src/firebase";
+import { getAuthCookie, hasRole } from "~util/authCookies";
+import { UserRoles } from "~data/constants";
 
 /**
  * CREDITS
@@ -40,11 +42,17 @@ export default function PetDashboard() {
     const [owner, setOwner] = useState<Owner>(null);
 
     useEffect(() => {
-        let storedUser = localStorage.getItem("currentUser");
-        if (storedUser) {
-            const storedOwner = new Owner(JSON.parse(storedUser));
-
-            setOwner(storedOwner);
+        const authUser = getAuthCookie();
+        if (authUser && hasRole(UserRoles.owner)) {
+            const ownerData = new Owner({
+                id: authUser.userId,
+                firstName: authUser.firstName,
+                lastName: authUser.lastName,
+                email: authUser.email,
+            });
+            setOwner(ownerData);
+        } else {
+            setError("You are not authorized to view the pet dashboard.");
         }
     }, []);
 

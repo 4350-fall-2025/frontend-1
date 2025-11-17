@@ -24,6 +24,7 @@ import { PetsAPI } from "src/api/petsAPI";
 import { Pet } from "src/models/pet";
 import { useRouter } from "next/navigation";
 import { generatePetURL, uploadFile } from "src/firebase";
+import { getAuthCookie } from "~util/authCookies";
 
 /**
  * CREDITS
@@ -128,19 +129,19 @@ export default function NewPet() {
     const handleSubmit = async (values: typeof form.values) => {
         try {
             setError("");
-            const user = JSON.parse(localStorage.getItem("currentUser"));
+            const authUser = getAuthCookie();
 
-            if (user?.id != null) {
+            if (authUser?.userId != null) {
                 const petJSON = {
                     ...values,
                     estimatedBirthdate: estimatedBirthDate,
                 };
                 let pet = new Pet(petJSON);
-                pet = await PetsAPI.createPet(user.id, pet);
+                pet = await PetsAPI.createPet(authUser.userId, pet);
 
                 if (values.petImage != placeholderFile) {
                     petJSON["imageName"] = petJSON.petImage.name;
-                    let url = generatePetURL(user.id, pet.id);
+                    let url = generatePetURL(authUser.userId, pet.id);
                     uploadFile(values.petImage, url);
                 } else {
                     petJSON.petImage = null;

@@ -41,18 +41,17 @@ import dayjs from "dayjs";
 import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { MOCK_DIARY_ENTRIES, MOCK_DIARY_ENTRY } from "~data/diary/mock";
-import {
-    render,
-    screen,
-    waitForElementToBeRemoved,
-} from "~tests/utils/custom-testing-library";
+import { render, screen } from "~tests/utils/custom-testing-library";
 import { mockPets } from "~data/pets/mock";
+import { mockAuthOwner } from "~data/owner/mock";
 import { toSentenceCase } from "~util/strings/normalize";
 import PetProfilePage from "./page";
 
 describe("Pet Profile Page", () => {
     beforeEach(() => {
         jest.clearAllMocks();
+
+        document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(mockAuthOwner))}`;
     });
 
     describe("Pet info", () => {
