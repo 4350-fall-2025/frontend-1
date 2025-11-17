@@ -75,7 +75,7 @@ export default function PetDiaryDashboard() {
             });
             setOwner(ownerData);
         } else {
-            setError("You are not authorized to create a diary.");
+            setError("Only owners who are logged in can view diary dashboard.");
         }
     }, []);
 

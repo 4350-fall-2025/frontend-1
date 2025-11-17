@@ -42,7 +42,7 @@ function NewDiary() {
 
             setOwner(storedOwner);
         } else {
-            setError("You are not authorized to create a pet.");
+            setError("Only owners who are logged in can create a diary.");
         }
     }, []);
 

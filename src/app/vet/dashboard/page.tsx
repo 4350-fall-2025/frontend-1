@@ -21,7 +21,7 @@ export default function VetDashboard() {
             });
             setVet(vetData);
         } else {
-            setError("You are not authorized to view this dashboard.");
+            setError("Only vets who are logged in can view vet dashboard.");
         }
     }, []);
 

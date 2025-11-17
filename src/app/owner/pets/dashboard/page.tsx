@@ -52,7 +52,9 @@ export default function PetDashboard() {
             });
             setOwner(ownerData);
         } else {
-            setError("You are not authorized to view the pet dashboard.");
+            setError(
+                "Only owners who are logged in can view the pet dashboard.",
+            );
         }
     }, []);
 

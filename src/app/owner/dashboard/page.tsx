@@ -21,7 +21,7 @@ export default function OwnerDashboard() {
             });
             setOwner(ownerData);
         } else {
-            setError("You are not authorized to view this dashboard.");
+            setError("Only owners who are logged in can view owner dashboard.");
         }
     }, []);
 
