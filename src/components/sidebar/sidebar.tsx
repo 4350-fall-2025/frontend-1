@@ -19,7 +19,7 @@ import logo from "~public/logo/tennisLogo.png";
 import styles from "./sidebar.module.scss";
 import { useRouter } from "next/navigation";
 import { signOutOfFirebase } from "src/firebase";
-import { removeAuthCookie } from "~util/authCookies";
+import { removeAuthCookie } from "~util/auth/authCookies";
 
 interface NavLinkItem {
     label: string;

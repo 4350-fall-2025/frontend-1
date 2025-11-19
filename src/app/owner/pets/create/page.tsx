@@ -24,7 +24,7 @@ import { PetsAPI } from "src/api/petsAPI";
 import { Pet } from "src/models/pet";
 import { useRouter } from "next/navigation";
 import { generatePetURL, uploadFile } from "src/firebase";
-import { getAuthCookie, hasRole } from "~util/authCookies";
+import { getAuthCookie, hasRole } from "~util/auth/authCookies";
 
 /**
  * CREDITS

@@ -24,7 +24,7 @@ import styles from "./page.module.scss";
 import globalStyles from "~app/layout.module.scss";
 
 import { signInWithBackendToken } from "src/firebase";
-import { setAuthCookie } from "~util/authCookies";
+import { setAuthCookie } from "~util/auth/authCookies";
 import { UserRoles } from "~data/constants";
 
 export default function LoginPage() {

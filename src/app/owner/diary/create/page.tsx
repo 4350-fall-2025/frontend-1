@@ -8,8 +8,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { validateOptionalImage } from "~util/validation/validation";
 import { validateDiaryContentBody } from "~util/validation/validate-diary";
 import { Button, Group, List, Select, Textarea } from "@mantine/core";
-import { getAuthCookie, hasRole } from "~util/authCookies";
 import { noteTypeOptions } from "~data/diary/constants";
+import { getAuthenticatedOwner } from "~util/auth/getAuthenticatedUser";
 import { useFileDialog } from "@mantine/hooks";
 import { Pet } from "src/models/pet";
 import { Owner } from "src/models/owner";
@@ -31,25 +31,20 @@ function NewDiary() {
     const [pickedFilesList, setFilesList] = useState([]);
 
     useEffect(() => {
-        const authUser = getAuthCookie();
-        if (authUser && hasRole(UserRoles.owner)) {
-            const storedOwner = new Owner({
-                id: authUser.userId,
-                firstName: authUser.firstName,
-                lastName: authUser.lastName,
-                email: authUser.email,
-            });
+        const { owner: authenticatedOwner, error: authError } =
+            getAuthenticatedOwner();
 
-            setOwner(storedOwner);
-        } else {
-            setError("Only owners who are logged in can create a diary.");
+        if (authError) {
+            setError(authError);
+            return;
         }
+
+        setOwner(authenticatedOwner);
     }, []);
 
     const [pets, setPets] = useState<Pet[]>([]);
 
     // TODO: Make a util function for fetching pets and return the pets? to reduce duplicate code
-    // localStorage code above might benefit from this too but we are switching to firestore so not needed
 
     // Load pets when owner is available
     useEffect(() => {

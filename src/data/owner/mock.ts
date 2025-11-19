@@ -1,5 +1,5 @@
 import { UserRoles } from "~data/constants";
-import { AuthCookieData } from "~util/authCookies";
+import { AuthCookieData } from "~util/auth/authCookies";
 
 export const mockAuthOwner: AuthCookieData = {
     userId: "123",

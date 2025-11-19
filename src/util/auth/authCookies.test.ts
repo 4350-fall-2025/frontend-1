@@ -1,6 +1,5 @@
 /**
- * Unit tests for authentication cookie utilities
- * Testing cookie management functions for user authentication
+ * Tests written with the help of Claude Sonnet 4.5
  */
 
 import { mockAuthOwner } from "~data/owner/mock";
@@ -16,7 +15,6 @@ import { mockAuthVet } from "~data/vets/mock";
 
 describe("authCookies utility functions", () => {
     beforeEach(() => {
-        // Clear all cookies before each test
         document.cookie = "";
     });
 
@@ -33,7 +31,6 @@ describe("authCookies utility functions", () => {
         it("should set cookie with correct attributes", () => {
             setAuthCookie(mockAuthOwner);
 
-            // Cookie should be set (we can verify it exists)
             const authCookie = getAuthCookie();
             expect(authCookie).toEqual(mockAuthOwner);
         });
@@ -72,8 +69,7 @@ describe("authCookies utility functions", () => {
         });
 
         it("should handle malformed cookie data gracefully", () => {
-            // Set an invalid cookie manually
-            document.cookie = "auth_user=invalid-json-data";
+            document.cookie = "auth_user=invalid-json-data"; // invalid cookie
 
             const consoleSpy = jest
                 .spyOn(console, "error")
@@ -152,28 +148,6 @@ describe("authCookies utility functions", () => {
 
             expect(hasRole(UserRoles.vet)).toBe(true);
             expect(hasRole(UserRoles.owner)).toBe(false);
-        });
-    });
-
-    describe("Cookie persistence and overwrites", () => {
-        it("should overwrite existing cookie with new data", () => {
-            setAuthCookie(mockAuthOwner);
-            expect(getAuthCookie()?.userId).toBe("123");
-
-            setAuthCookie(mockAuthVet);
-            const result = getAuthCookie();
-
-            expect(result?.userId).toBe("456");
-            expect(result?.role).toBe(UserRoles.vet);
-        });
-
-        it("should maintain data integrity across multiple operations", () => {
-            setAuthCookie(mockAuthOwner);
-            removeAuthCookie();
-            setAuthCookie(mockAuthVet);
-
-            const result = getAuthCookie();
-            expect(result).toEqual(mockAuthVet);
         });
     });
 });

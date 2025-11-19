@@ -20,7 +20,7 @@ import { PetDiary } from "src/models/pet-diary";
 import Error from "./error";
 import styles from "./page.module.scss";
 import { generatePetURL, getImageURL } from "src/firebase";
-import { getAuthCookie } from "~util/authCookies";
+import { getAuthCookie } from "~util/auth/authCookies";
 
 export default function PetProfilePage() {
     const placeholderUrl = "/placeholder.jpg";

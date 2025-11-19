@@ -13,8 +13,7 @@ import { PetsAPI } from "~api/petsAPI";
 import { Owner } from "src/models/owner";
 import { Pet } from "src/models/pet";
 import { generatePetURL, getImageURL } from "src/firebase";
-import { getAuthCookie, hasRole } from "~util/authCookies";
-import { UserRoles } from "~data/constants";
+import { getAuthenticatedOwner } from "~util/auth/getAuthenticatedUser";
 
 /**
  * CREDITS
@@ -42,27 +41,21 @@ export default function PetDashboard() {
     const [owner, setOwner] = useState<Owner>(null);
 
     useEffect(() => {
-        const authUser = getAuthCookie();
-        if (authUser && hasRole(UserRoles.owner)) {
-            const ownerData = new Owner({
-                id: authUser.userId,
-                firstName: authUser.firstName,
-                lastName: authUser.lastName,
-                email: authUser.email,
-            });
-            setOwner(ownerData);
-        } else {
-            setError(
-                "Only owners who are logged in can view the pet dashboard.",
-            );
+        const { owner: authenticatedOwner, error: authError } =
+            getAuthenticatedOwner();
+
+        if (authError) {
+            setError(authError);
+            return;
         }
+
+        setOwner(authenticatedOwner);
     }, []);
 
     const [pets, setPets] = useState<Pet[]>([]);
     const [imageUrls, setImageUrls] = useState({}); //dictionary
 
     // TODO: Make a util function for fetching pets and return the pets? to reduce duplicate code
-    // localStorage code above might benefit from this too but we are switching to firestore so not needed
 
     useEffect(() => {
         const fetchPets = async () => {
