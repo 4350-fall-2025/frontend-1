@@ -6,6 +6,12 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import PetDiaryDashboard from "./page";
+import { PetsAPI } from "~api/petsAPI";
+import { PetDiaryAPI } from "~api/petDiaryAPI";
+import { MOCK_DIARY_ENTRIES, MOCK_DIARY_ENTRY } from "~data/diary/mock";
+import { mockPets } from "~data/pets/mock";
+import { owner } from "~data/owner/mock";
+import { toSentenceCase } from "~util/strings/normalize";
 
 // Mock router
 const pushMock = jest.fn();
@@ -15,16 +21,24 @@ jest.mock("next/navigation", () => ({
     }),
 }));
 
+const mockGetAllPets = jest.fn();
+PetsAPI.getAllPets = mockGetAllPets;
+
+const mockGetDiaryEntries = jest.fn();
+PetDiaryAPI.getDiaryEntries = mockGetDiaryEntries;
+
 describe("Pet Diary Dashboard", () => {
     let user: ReturnType<typeof userEvent.setup>;
 
     beforeEach(() => {
         jest.clearAllMocks();
         user = userEvent.setup();
-        render(<PetDiaryDashboard />);
     });
 
     describe("Page rendering", () => {
+        beforeEach(() => {
+            render(<PetDiaryDashboard />);
+        });
         it("renders the page title", () => {
             expect(screen.getByText("Pet Diary")).toBeInTheDocument();
         });
@@ -46,12 +60,15 @@ describe("Pet Diary Dashboard", () => {
     });
 
     describe("Filter functionality", () => {
+        beforeEach(() => {
+            render(<PetDiaryDashboard />);
+        });
         it("renders all filter buttons", () => {
             expect(
                 screen.getByRole("button", { name: "All" }),
             ).toBeInTheDocument();
             expect(
-                screen.getByRole("button", { name: "Weight" }),
+                screen.getByRole("button", { name: "Measurement" }),
             ).toBeInTheDocument();
             expect(
                 screen.getByRole("button", { name: "Diet" }),
@@ -93,7 +110,81 @@ describe("Pet Diary Dashboard", () => {
         });
     });
 
+    describe("Diary Entries Sorting and Filtering", () => {
+        beforeEach(() => {
+            localStorage.setItem("currentUser", JSON.stringify(owner));
+            mockGetAllPets.mockResolvedValue(mockPets);
+            mockGetDiaryEntries
+                .mockResolvedValueOnce(MOCK_DIARY_ENTRIES)
+                .mockResolvedValueOnce([]);
+            render(<PetDiaryDashboard />);
+        });
+
+        it("displays all entries when 'All' filter is selected", async () => {
+            const allEntries = await screen.findAllByTestId("diary-entry");
+            expect(allEntries).toHaveLength(2);
+        });
+
+        it("removes entries when the respective filter is selected", async () => {
+            const dietButton = screen.getByRole("button", { name: "Diet" });
+            await user.click(dietButton);
+
+            expect(screen.getByText("No diary entry yet")).toBeInTheDocument();
+        });
+
+        it("displays entries with matching content type when a filter is applied", async () => {
+            const generalButton = screen.getByRole("button", {
+                name: "General",
+            });
+            await user.click(generalButton);
+
+            const allEntries = await screen.findAllByTestId("diary-entry");
+            expect(allEntries).toHaveLength(1);
+
+            expect(allEntries[0]).toHaveTextContent("General");
+        });
+
+        it("sorts entries by oldest accurately", async () => {
+            const sortSelect = screen.getByRole(
+                "combobox",
+            ) as HTMLSelectElement;
+
+            await user.selectOptions(sortSelect, "Oldest first");
+
+            const allEntries = await screen.findAllByTestId("diary-entry");
+
+            // Verify the oldest entry (Jan 1) appears before the newer one (Jan 2)
+            expect(allEntries[0]).toHaveTextContent(
+                toSentenceCase(MOCK_DIARY_ENTRIES[0].contentType),
+            );
+            expect(allEntries[1]).toHaveTextContent(
+                toSentenceCase(MOCK_DIARY_ENTRIES[1].contentType),
+            );
+        });
+
+        it("sorts entries by newest accurately", async () => {
+            const sortSelect = screen.getByRole(
+                "combobox",
+            ) as HTMLSelectElement;
+
+            await user.selectOptions(sortSelect, "Newest first");
+
+            const allEntries = await screen.findAllByTestId("diary-entry");
+
+            // Verify the oldest entry (Jan 1) appears after the newer one (Jan 2)
+            expect(allEntries[0]).toHaveTextContent(
+                toSentenceCase(MOCK_DIARY_ENTRIES[1].contentType),
+            );
+            expect(allEntries[1]).toHaveTextContent(
+                toSentenceCase(MOCK_DIARY_ENTRIES[0].contentType),
+            );
+        });
+    });
+
     describe("Sort functionality", () => {
+        beforeEach(() => {
+            render(<PetDiaryDashboard />);
+        });
         it("renders the sort dropdown", () => {
             expect(screen.getByText("Sort by:")).toBeInTheDocument();
             const sortSelect = screen.getByRole("combobox");
@@ -124,6 +215,9 @@ describe("Pet Diary Dashboard", () => {
     });
 
     describe("Navigation", () => {
+        beforeEach(() => {
+            render(<PetDiaryDashboard />);
+        });
         it("navigates to create page when 'New Entry' button is clicked", async () => {
             const newEntryBtn = screen.getByRole("button", {
                 name: /new entry/i,
@@ -148,9 +242,12 @@ describe("Pet Diary Dashboard", () => {
     });
 
     describe("Quick Add buttons", () => {
+        beforeEach(() => {
+            render(<PetDiaryDashboard />);
+        });
         it("renders all quick add buttons", () => {
             expect(
-                screen.getByRole("button", { name: /add weight entry/i }),
+                screen.getByRole("button", { name: /add measurement entry/i }),
             ).toBeInTheDocument();
             expect(
                 screen.getByRole("button", { name: /add diet entry/i }),
@@ -163,11 +260,11 @@ describe("Pet Diary Dashboard", () => {
             ).toBeInTheDocument();
         });
 
-        it("navigates to create page with Measurement query param when 'Add Weight entry' is clicked", async () => {
-            const weightBtn = screen.getByRole("button", {
-                name: /add weight entry/i,
+        it("navigates to create page with Measurement query param when 'Add Measurement entry' is clicked", async () => {
+            const measurementBtn = screen.getByRole("button", {
+                name: /add measurement entry/i,
             });
-            await user.click(weightBtn);
+            await user.click(measurementBtn);
 
             expect(pushMock).toHaveBeenCalledWith(
                 "/owner/diary/create?noteType=MEASUREMENT",
@@ -209,6 +306,9 @@ describe("Pet Diary Dashboard", () => {
     });
 
     describe("Integration between filters and quick add", () => {
+        beforeEach(() => {
+            render(<PetDiaryDashboard />);
+        });
         it("maintains filter state while using quick add buttons", async () => {
             // Change filter to Diet
             const dietFilterBtn = screen.getByRole("button", { name: "Diet" });

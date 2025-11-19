@@ -12,4 +12,16 @@ export const MOCK_DIARY_ENTRY: PetDiary = {
     files: [],
 };
 
-export const MOCK_DIARY_ENTRIES: PetDiary[] = [MOCK_DIARY_ENTRY];
+const SECOND_MOCK_DIARY_ENTRY: PetDiary = {
+    id: MOCK_DIARY_ID,
+    contentType: ContentType.behaviour,
+    contentBody: "This is a mock diary entry.",
+    createTimestamp: new Date("2025-01-02").toISOString(),
+    pet: mockPets[0],
+    files: [],
+};
+
+export const MOCK_DIARY_ENTRIES: PetDiary[] = [
+    MOCK_DIARY_ENTRY,
+    SECOND_MOCK_DIARY_ENTRY,
+];
