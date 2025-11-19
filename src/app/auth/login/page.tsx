@@ -115,8 +115,7 @@ export default function LoginPage() {
                         <div className={styles.login_footer}>
                             {errorMessage != null && (
                                 <p className={globalStyles.error_message}>
-                                    {" "}
-                                    {errorMessage}{" "}
+                                    {errorMessage}
                                 </p>
                             )}
                             <a href='/under-construction?hideNav=true'>
