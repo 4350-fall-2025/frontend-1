@@ -23,9 +23,9 @@ export default function OwnerDashboard() {
 
     return (
         <div className={styles.page}>
-            {!error && (
+            {owner && (
                 <>
-                    <h1>Hi {owner?.firstName}!</h1>
+                    <h1>Hi {owner.firstName}!</h1>
                     <p>Welcome to the pet owner dashboard.</p>
                 </>
             )}

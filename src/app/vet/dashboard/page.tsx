@@ -23,7 +23,7 @@ export default function VetDashboard() {
 
     return (
         <div className={styles.page}>
-            {!error && (
+            {vet && (
                 <>
                     <h1>
                         Hi Dr. {vet != null && `${vet?.firstName} ${vet?.lastName}`}!
