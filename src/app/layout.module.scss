@@ -14,11 +14,24 @@
 .layout {
     display: flex;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 /* so that sidebar doesn't cover the main page when the screen is resized */
 .content {
     flex: 1 1 auto;
+    padding: 5% 8%;
+    min-width: 0; // Prevents flex item from overflowing
+    max-width: 100%;
+    overflow-x: hidden;
+
+    @media (max-width: $size-mobile) {
+        padding: 2rem 1rem;
+    }
+
+    @media (max-width: $size-tablet) {
+        padding: 3rem 2rem;
+    }
 }
 
 .error_message_end {
