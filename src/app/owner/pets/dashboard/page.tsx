@@ -53,7 +53,7 @@ export default function PetDashboard({ hideTitle = false }: PetDashboardProps) {
             catch (error) {
                 // Handle invalid JSON gracefully
                 console.error("Failed to parse user data:", error);
-                setOwner("there");
+                setOwner(null);
             }
         }
     }, []);
