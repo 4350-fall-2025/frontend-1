@@ -2,7 +2,7 @@
  * Sidebar Navigation Component Tests
  *
  * Developed with assistance from Claude AI and ChatGPT for:
- * - - Testing responsive sidebar behavior
+ * - Testing responsive sidebar behavior
  * - Testing mobile menu toggle
  * - Testing navigation links
  * - Testing logo visibility

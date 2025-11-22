@@ -112,10 +112,20 @@
 }
 
 .button {
-    background-color: $color-green-dark;
-
-    &:hover {
+    .owner & {
         background-color: $color-green-dark;
+
+        &:hover {
+                background-color: rgba($color-green-dark, 0.75);
+            }
+    }
+
+    .vet & {
+        background-color: $color-orange-dark;
+
+        &:hover {
+            background-color: rgba($color-orange-dark, 0.75);
+        }
     }
 }
 
