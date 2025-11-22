@@ -33,7 +33,7 @@ export default function OwnerDashboard() {
             </header>
 
             <div className={styles.pet_dashboard_wrapper} data-testid="pet-dashboard-wrapper">
-                <PetDashboard hideTitle={true} />
+                <PetDashboard/>
             </div>
         </div>
     );

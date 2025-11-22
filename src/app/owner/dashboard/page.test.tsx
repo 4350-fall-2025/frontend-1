@@ -145,12 +145,11 @@ describe("Owner Dashboard page", () => {
             });
         });
 
-        it("does not display 'My Pets' heading (hideTitle prop)", () => {
+        it("displays 'My Pets' heading from PetDashboard", () => {
             render(<OwnerDashboard />);
-            // The "My Pets" heading should not be present
             expect(
-                screen.queryByRole("heading", { name: /my pets/i }),
-            ).not.toBeInTheDocument();
+                screen.getByRole("heading", { name: /my pets/i }),
+            ).toBeInTheDocument();
         });
 
         it("displays add new pet button from PetDashboard", async () => {

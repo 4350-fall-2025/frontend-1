@@ -7,7 +7,7 @@
     justify-content: flex-start; /* align to top */
     align-items: flex-start; /* align to left */
     min-height: 100vh;
-    padding: 40px; /* top + general spacing */
+    padding: 2rem; /* top + general spacing */
     background-color: $color-white;
     text-align: left;
 
@@ -16,6 +16,7 @@
         font-weight: 700;
         margin-bottom: 10px;
         color: $color-black;
+        letter-spacing: 0.5px;
     }
 
     p {
@@ -63,6 +64,12 @@
     color: $color-black;
     margin: 0;
     text-align: left;
+}
+
+.pet_dashboard_wrapper {
+    :global(main > div > h1) {
+        font-size: $font-med-large !important;
+    }
 }
 
 /* Responsive for welcome title */
