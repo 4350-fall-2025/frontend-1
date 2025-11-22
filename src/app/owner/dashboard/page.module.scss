@@ -1,13 +1,13 @@
 @import "../../globals.scss";
 
-/* Main container — aligns text to the top-left beside the sidebar */
+/* Main container */
 .page {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* align to top */
-    align-items: flex-start; /* align to left */
+    justify-content: flex-start;
+    align-items: flex-start;
     min-height: 100vh;
-    padding: 2rem; /* top + general spacing */
+    padding: 2rem;
     background-color: $color-white;
     text-align: left;
 
@@ -27,35 +27,17 @@
     }
 }
 
-/* responsive font sizes */
-@media (max-width: $size-mobile) {
-    .page h1 {
-        font-size: 1.8rem;
-    }
-}
-
-@media (min-width: $size-tablet) {
-    .page h1 {
-        font-size: 2.5rem;
-    }
-}
-
-/* Container for dashboard wrapper */
-/* Remove padding from embedded pet dashboard main content */
-.pet_dashboard_wrapper :global(main) {
-    padding: 0;
-    margin: -60px;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+/* Container for dashboard */
+.dashboard_container {
     width: 100%;
+    padding: 2rem 3rem;
+    box-sizing: border-box;
 }
 
-/* Welcome header styling */
+/* Welcome header */
 .welcome_header {
     margin-bottom: 2rem;
-    padding-left: 60px;
-    padding-top: 60px;
+    width: 100%;
 }
 
 .welcome_title {
@@ -66,15 +48,32 @@
     text-align: left;
 }
 
+/* Pet dashboard wrapper - matches welcome header alignment */
 .pet_dashboard_wrapper {
+    width: 100%;
+    margin-left: -3rem;
+
+    :global(.page) {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
     :global(main > div > h1) {
         font-size: $font-med-large !important;
     }
 }
 
-/* Responsive for welcome title */
+/* Mobile */
 @media (max-width: $size-mobile) {
+    .dashboard_container {
+        padding: 1.5rem 1rem;
+    }
+
     .welcome_title {
+        font-size: 1.8rem;
+    }
+
+    .page h1 {
         font-size: 1.8rem;
     }
 }
