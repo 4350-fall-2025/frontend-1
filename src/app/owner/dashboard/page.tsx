@@ -11,29 +11,28 @@ export default function OwnerDashboard() {
     useEffect(() => {
         let storedUser = localStorage.getItem("currentUser");
         if (storedUser) {
-            const storedOwner = new Owner(JSON.parse(storedUser));
-
-            setOwner(storedOwner);
+            try {
+                const owner = new Owner(JSON.parse(storedUser));
+                setOwner(owner);
+            }
+            catch (error) {
+                // Handle invalid JSON gracefully
+                console.error("Failed to parse user data:", error);
+                setOwner(null);
+            }
         }
     }, []);
 
     return (
-//         <div className={styles.page}>
-//             <h1>Hi {owner?.firstName}!</h1>
-//             <p>Welcome to the pet owner dashboard.</p>
-//
-//             <PetDashboard hideTitle={true}/>
-//         </div>
-
-        <div className={styles.dashboard_container}>
-            <header className={styles.welcome_header}>
+        <div className={styles.dashboard_container} data-testid="dashboard-container">
+            <header className={styles.welcome_header} data-testid="welcome-header">
                 <h1 className={styles.welcome_title}>
-                    Welcome back, {owner?.firstName}!
+                    Welcome back, {owner?.firstName || ""}!
                 </h1>
                 <p>Welcome to the pet owner dashboard.</p>
             </header>
 
-            <div className={styles.pet_dashboard_wrapper}>
+            <div className={styles.pet_dashboard_wrapper} data-testid="pet-dashboard-wrapper">
                 <PetDashboard hideTitle={true} />
             </div>
         </div>

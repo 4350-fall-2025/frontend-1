@@ -37,7 +37,6 @@ const InfoRow = ({ label, value }: { label: string; value: string }) => {
     );
 };
 
-// export default function PetDashboard() {
 export default function PetDashboard({ hideTitle = false }: PetDashboardProps) {
     const router = useRouter();
 
@@ -47,9 +46,15 @@ export default function PetDashboard({ hideTitle = false }: PetDashboardProps) {
     useEffect(() => {
         let storedUser = localStorage.getItem("currentUser");
         if (storedUser) {
-            const storedOwner = new Owner(JSON.parse(storedUser));
-
-            setOwner(storedOwner);
+            try {
+                const owner = new Owner(JSON.parse(storedUser));
+                setOwner(owner);
+            }
+            catch (error) {
+                // Handle invalid JSON gracefully
+                console.error("Failed to parse user data:", error);
+                setOwner("there");
+            }
         }
     }, []);
 

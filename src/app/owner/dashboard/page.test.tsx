@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom";
-import { render, screen } from "~tests/utils/custom-testing-library";
+import { render, screen, waitFor } from "~tests/utils/custom-testing-library";
 import userEvent from "@testing-library/user-event";
 import OwnerDashboard from "./page";
-import { owner } from "~data/owner/mock";
+import { owner, ownerWithName } from "~data/owner/mock";
 import { mockPets } from "~data/pets/mock";
 import { PetsAPI } from "~api/petsAPI";
 
@@ -33,7 +33,7 @@ jest.mock("next/navigation", () => ({
 
 // Mock the pets data
 jest.mock("~data/pets/mock", () => {
-    const actual = jest.requireActual("../../../../data/pets/mock");
+    const actual = jest.requireActual("../../../data/pets/mock");
     return {
         mockPets: actual.mockPets,
     };
@@ -53,7 +53,7 @@ jest.mock("~public/placeholder.jpg", () => ({
 }));
 
 // Mock firebase
-jest.mock("../../../../firebase", () => ({
+jest.mock("../../../firebase", () => ({
     auth: {},
     storage: {},
     getImageURL: jest.fn(() => Promise.resolve("placeholder.jpeg")),
@@ -93,7 +93,7 @@ describe("Owner Dashboard page", () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        localStorage.setItem("currentUser", JSON.stringify(owner));
+        localStorage.setItem("currentUser", JSON.stringify(ownerWithName));
         PetsAPI.getAllPets = jest.fn().mockResolvedValue(mockPets);
         user = userEvent.setup();
     });
@@ -110,13 +110,14 @@ describe("Owner Dashboard page", () => {
     });
 
     describe("Welcome header", () => {
-        it("displays welcome message with owner's first name", () => {
+        it("displays welcome message with owner's first name", async () => {
             render(<OwnerDashboard />);
-            expect(
-                screen.getByRole("heading", {
-                    name: new RegExp(`Welcome back, ${owner.firstName}!`, "i"),
-                }),
-            ).toBeInTheDocument();
+
+            await waitFor(() => {
+                expect(
+                    screen.getByText(`Welcome back, ${ownerWithName.firstName}!`)
+                ).toBeInTheDocument();
+            });
         });
 
         it("displays subtitle text", () => {
@@ -139,8 +140,9 @@ describe("Owner Dashboard page", () => {
         it("renders PetDashboard component content", async () => {
             render(<OwnerDashboard />);
             // Wait for pets to load
-            await screen.findByText("Bella");
-            expect(screen.getByText("Bella")).toBeInTheDocument();
+            await waitFor(() => {
+                expect(screen.getByText("Bella")).toBeInTheDocument();
+            });
         });
 
         it("does not display 'My Pets' heading (hideTitle prop)", () => {
@@ -153,50 +155,68 @@ describe("Owner Dashboard page", () => {
 
         it("displays add new pet button from PetDashboard", async () => {
             render(<OwnerDashboard />);
-            const addButton = await screen.findByRole("button", {
-                name: /add a new pet/i,
+
+            await waitFor(() => {
+                const addButton = screen.getByRole("button", {
+                    name: /add a new pet/i,
+                });
+                expect(addButton).toBeInTheDocument();
             });
-            expect(addButton).toBeInTheDocument();
         });
 
         it("navigates to create pet page when add button is clicked", async () => {
             render(<OwnerDashboard />);
-            const addButton = await screen.findByRole("button", {
-                name: /add a new pet/i,
-            });
-            await user.click(addButton);
-            expect(pushMock).toHaveBeenCalledWith("/owner/pets/create");
+
+            await waitFor(() => {
+                    expect(screen.getByRole("button", {
+                        name: /add a new pet/i,
+                    })).toBeInTheDocument();
+                });
+
+                const addButton = screen.getByRole("button", {
+                    name: /add a new pet/i,
+                });
+                await user.click(addButton);
+                expect(pushMock).toHaveBeenCalledWith("/owner/pets/create");
         });
     });
 
     describe("Pet cards display from embedded dashboard", () => {
         beforeEach(async () => {
             render(<OwnerDashboard />);
-            await screen.findByText("Bella");
+            await waitFor(() => {
+                expect(screen.getByText("Bella")).toBeInTheDocument();
+            });
         });
 
-        it("renders all pet cards", () => {
-            expect(screen.getByText("Bella")).toBeInTheDocument();
-            expect(screen.getByText("Tweety")).toBeInTheDocument();
+        it("renders all pet cards", async () => {
+            await waitFor(() => {
+                expect(screen.getByText("Bella")).toBeInTheDocument();
+                expect(screen.getByText("Tweety")).toBeInTheDocument();
+            });
         });
 
-        it("displays correct number of pet cards", () => {
-            const petNames = screen.getAllByRole("heading", { level: 3 });
-            expect(petNames).toHaveLength(2);
+        it("displays correct number of pet cards", async() => {
+            await waitFor(() => {
+                const petNames = screen.getAllByRole("heading", { level: 3 });
+                expect(petNames).toHaveLength(2);
+            });
         });
 
-        it("displays pet information for each pet", () => {
-            const ageLabels = screen.getAllByText(/Age:/);
-            const sexLabels = screen.getAllByText(/Sex:/);
-            const groupLabels = screen.getAllByText(/Animal group:/);
-            const speciesLabels = screen.getAllByText(/Species:/);
-            const breedLabels = screen.getAllByText(/Breed\/Variety:/);
+        it("displays pet information for each pet", async () => {
+            await waitFor(() => {
+                const ageLabels = screen.getAllByText(/Age:/);
+                const sexLabels = screen.getAllByText(/Sex:/);
+                const groupLabels = screen.getAllByText(/Animal group:/);
+                const speciesLabels = screen.getAllByText(/Species:/);
+                const breedLabels = screen.getAllByText(/Breed\/Variety:/);
 
-            expect(ageLabels.length).toBe(2);
-            expect(sexLabels.length).toBe(2);
-            expect(groupLabels.length).toBe(2);
-            expect(speciesLabels.length).toBe(2);
-            expect(breedLabels.length).toBe(2);
+                expect(ageLabels.length).toBe(2);
+                expect(sexLabels.length).toBe(2);
+                expect(groupLabels.length).toBe(2);
+                expect(speciesLabels.length).toBe(2);
+                expect(breedLabels.length).toBe(2);
+            });
         });
     });
 
@@ -223,24 +243,20 @@ describe("Owner Dashboard page", () => {
 
     describe("Component structure", () => {
         it("renders with dashboard_container class", () => {
-            const { container } = render(<OwnerDashboard />);
-            const dashboardContainer = container.querySelector(
-                ".dashboard_container",
-            );
+            render(<OwnerDashboard />);
+            const dashboardContainer = screen.getByTestId("dashboard-container");
             expect(dashboardContainer).toBeInTheDocument();
         });
 
         it("renders header with welcome_header class", () => {
-            const { container } = render(<OwnerDashboard />);
-            const welcomeHeader = container.querySelector(".welcome_header");
+            render(<OwnerDashboard />);
+            const welcomeHeader = screen.getByTestId("welcome-header");
             expect(welcomeHeader).toBeInTheDocument();
         });
 
         it("renders pet dashboard wrapper with correct class", () => {
-            const { container } = render(<OwnerDashboard />);
-            const petDashboardWrapper = container.querySelector(
-                ".pet_dashboard_wrapper",
-            );
+            render(<OwnerDashboard />);
+            const petDashboardWrapper = screen.getByTestId("pet-dashboard-wrapper");
             expect(petDashboardWrapper).toBeInTheDocument();
         });
     });
