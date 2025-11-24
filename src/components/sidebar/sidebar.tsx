@@ -1,10 +1,12 @@
 /**
  * Sidebar Navigation Component
  *
- * Developed with assistance from Claude AI and ChatGPT for:
+ * Developed with assistance from Claude AI (Anthropic) and ChatGPT for:
  * - Responsive design implementation
  * - Mobile menu toggle functionality
  * - Navigation link styling
+ * - Dynamic link rendering based on user type (owner/vet)
+ * - Props-based configuration following DRY principles
  */
 
 "use client";
@@ -12,17 +14,29 @@ import Link from "next/link";
 import { Button, NavLink, Stack } from "@mantine/core";
 import Image from "next/image";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import logo from "~public/logo/tennisLogo.png";
 import styles from "./sidebar.module.scss";
 import { useRouter } from "next/navigation";
 import { signOutOfFirebase } from "src/firebase";
 
+interface NavLinkItem {
+    label: string;
+    href: string;
+}
+
+interface SidebarProps {
+    navLinks: NavLinkItem[];
+    variant?: "owner" | "vet";
+}
+
 /**
  * Sidebar component for navigation:
  * Displays vertical nav links using Mantine's NavLink and Stack
+ * Accepts dynamic navigation links via props
  * Responsive design: collapses on smaller screens with toggle button
  */
-export default function Sidebar() {
+export default function Sidebar({ navLinks, variant = "owner" }: SidebarProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleSidebar = () => {
@@ -30,6 +44,7 @@ export default function Sidebar() {
     };
 
     const router = useRouter();
+    const pathname = usePathname();
 
     const logOut = () => {
         if (window.confirm("Are you sure you want to sign out?")) {
@@ -56,7 +71,7 @@ export default function Sidebar() {
             )}
 
             {/* Main sidebar */}
-            <aside className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
+            <aside className={`${styles.sidebar} ${styles[variant]} ${isOpen ? styles.open : ""}`}>
                 <div className={styles.logoLink}>
                     <Image
                         src={logo}
@@ -69,36 +84,16 @@ export default function Sidebar() {
                 </div>
 
                 <Stack gap='xs'>
-                    <NavLink
-                        component={Link}
-                        href='/owner/dashboard'
-                        label='Dashboard'
-                        className={styles.navLink}
-                    />
-                    <NavLink
-                        component={Link}
-                        href='/owner/pets/dashboard'
-                        label='My Pets'
-                        className={styles.navLink}
-                    />
-                    <NavLink
-                        component={Link}
-                        href='/under-construction'
-                        label='Appointments'
-                        className={styles.navLink}
-                    />
-                    <NavLink
-                        component={Link}
-                        href='/owner/diary/dashboard'
-                        label='Pet Diary'
-                        className={styles.navLink}
-                    />
-                    <NavLink
-                        component={Link}
-                        href='/under-construction'
-                        label='Messages'
-                        className={styles.navLink}
-                    />
+                    {navLinks.map((link) => (
+                        <NavLink
+                            key={link.href}
+                            component={Link}
+                            href={link.href}
+                            label={link.label}
+                            className={styles.navLink}
+                            active={pathname === link.href}
+                        />
+                    ))}
                 </Stack>
                 <div className={styles.bottom}>
                     <Button
