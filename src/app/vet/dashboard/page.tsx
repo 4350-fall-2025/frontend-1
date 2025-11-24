@@ -17,7 +17,7 @@ export default function VetDashboard() {
     return (
         <div>
             <h1>
-                Hi Dr.{vet != null && `${vet?.firstName} ${vet?.lastName}`}!
+                Hi Dr. {vet != null && `${vet?.firstName} ${vet?.lastName}`}!
             </h1>
             <p>Welcome to the veterinary dashboard.</p>
         </div>
