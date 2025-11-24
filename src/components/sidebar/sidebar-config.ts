@@ -16,10 +16,6 @@ export interface NavLinkItem {
  */
 export const ownerNavLinks: NavLinkItem[] = [
     {
-        label: "Dashboard",
-        href: "/owner/dashboard",
-    },
-    {
         label: "My Pets",
         href: "/owner/pets/dashboard",
     },

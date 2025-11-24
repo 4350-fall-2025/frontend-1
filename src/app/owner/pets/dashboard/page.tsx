@@ -107,6 +107,13 @@ export default function PetDashboard({ hideTitle = false }: PetDashboardProps) {
 
     return (
         <div className={styles.page}>
+            <header className={styles.welcome_header} data-testid="welcome-header">
+                <h1 className={styles.welcome_title}>
+                    Welcome back, {owner?.firstName || ""}!
+                </h1>
+                <p>Welcome to the pet owner dashboard!</p>
+            </header>
+
             <main>
                 <div className={styles.header}>
                     {!hideTitle && <h1 className={styles.title}>My Pets</h1>}

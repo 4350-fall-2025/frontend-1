@@ -66,7 +66,6 @@ describe("Sidebar Component", () => {
         });
 
         it("should render all owner navigation links", () => {
-            expect(screen.getByText("Dashboard")).toBeInTheDocument();
             expect(screen.getByText("My Pets")).toBeInTheDocument();
             expect(screen.getByText("Appointments")).toBeInTheDocument();
             expect(screen.getByText("Pet Diary")).toBeInTheDocument();
@@ -104,6 +103,7 @@ describe("Sidebar Component", () => {
         });
     });
 
+    describe("Navigation Links", () => {
     describe("Navigation Links - Owner", () => {
         beforeEach(() => {
             render(<Sidebar navLinks={ownerNavLinks} variant="owner" />);
@@ -141,7 +141,7 @@ describe("Sidebar Component", () => {
         });
 
         it("nav links should have navLink class styling", () => {
-            const dashboardLink = screen.getByText("Dashboard");
+            const dashboardLink = screen.getByText("My Pets");
             expect(dashboardLink.closest("a")?.className).toContain("navLink");
         });
     });
@@ -199,7 +199,6 @@ describe("Sidebar Component", () => {
         });
 
         it("all nav links should be visible on desktop", () => {
-            expect(screen.getByText("Dashboard")).toBeVisible();
             expect(screen.getByText("My Pets")).toBeVisible();
             expect(screen.getByText("Appointments")).toBeVisible();
             expect(screen.getByText("Pet Diary")).toBeVisible();
@@ -275,7 +274,6 @@ describe("Sidebar Component", () => {
 
             await user.click(toggleBtn);
 
-            expect(screen.getByText("Dashboard")).toBeVisible();
             expect(screen.getByText("My Pets")).toBeVisible();
             expect(screen.getByText("Appointments")).toBeVisible();
             expect(screen.getByText("Pet Diary")).toBeVisible();
@@ -294,7 +292,7 @@ describe("Sidebar Component", () => {
         });
 
         it("nav links should be keyboard accessible", async () => {
-            const firstLink = screen.getByText("Dashboard").closest("a");
+            const firstLink = screen.getByText("My Pets").closest("a");
             firstLink?.focus();
             expect(firstLink).toHaveFocus();
         });

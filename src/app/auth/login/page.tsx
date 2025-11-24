@@ -65,7 +65,7 @@ export default function LoginPage() {
                 const owner = await OwnersAPI.ownerLogin(values);
                 localStorage.setItem("currentUser", JSON.stringify(owner)); //TODO: remove localstorage and replace with firebase auth functions
                 signInWithBackendToken(owner.token);
-                router.push("/owner/dashboard");
+                router.push("/owner/pets/dashboard");
             }
         } catch (error) {
             setErrorMessage("Invalid Login. Please try again.");
