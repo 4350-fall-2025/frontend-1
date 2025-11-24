@@ -8,19 +8,16 @@
     align-items: flex-start; /* align to left */
     min-height: 100vh;
     text-align: left;
-    padding: 5% 10%;
 
     h1 {
         font-size: 2.5rem;
         font-weight: 700;
         margin-bottom: 10px;
-        color: $color-black;
     }
 
     p {
         font-size: $font-medium;
         font-weight: 400;
-        color: $color-black;
         margin-top: 0;
     }
 }
