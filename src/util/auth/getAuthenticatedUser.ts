@@ -25,7 +25,7 @@ export function getAuthenticatedOwner(): AuthOwnerResult {
     if (!authUser) {
         return {
             owner: null,
-            error: "You must be logged in to access this page.",
+            error: "You must be logged in to access the full page.",
         };
     }
 
@@ -56,7 +56,7 @@ export function getAuthenticatedVet(): AuthVetResult {
     if (!authUser) {
         return {
             vet: null,
-            error: "You must be logged in to access this page.",
+            error: "You must be logged in to access the full page.",
         };
     }
 

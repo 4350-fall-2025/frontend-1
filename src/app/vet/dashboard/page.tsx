@@ -1,5 +1,4 @@
 "use client";
-import styles from "./page.module.scss";
 import globalStyles from "~app/layout.module.scss";
 import { useEffect, useState } from "react";
 import { Vet } from "src/models/vet";
@@ -22,11 +21,12 @@ export default function VetDashboard() {
     }, []);
 
     return (
-        <div className={styles.page}>
+        <div>
             {vet && (
                 <>
                     <h1>
-                        Hi Dr. {vet != null && `${vet?.firstName} ${vet?.lastName}`}!
+                        Hi Dr.{" "}
+                        {vet != null && `${vet?.firstName} ${vet?.lastName}`}!
                     </h1>
                     <p>Welcome to the veterinary dashboard.</p>
                 </>

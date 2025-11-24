@@ -10,8 +10,9 @@ import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { MOCK_DIARY_ENTRIES, MOCK_DIARY_ENTRY } from "~data/diary/mock";
 import { mockPets } from "~data/pets/mock";
-import { owner } from "~data/owner/mock";
+import { mockAuthOwner } from "~data/owner/mock";
 import { toSentenceCase } from "~util/strings/normalize";
+import { setAuthCookie, removeAuthCookie } from "~util/auth/authCookies";
 
 // Mock router
 const pushMock = jest.fn();
@@ -32,6 +33,7 @@ describe("Pet Diary Dashboard", () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        removeAuthCookie();
         user = userEvent.setup();
     });
 
@@ -112,11 +114,16 @@ describe("Pet Diary Dashboard", () => {
 
     describe("Diary Entries Sorting and Filtering", () => {
         beforeEach(() => {
-            localStorage.setItem("currentUser", JSON.stringify(owner));
+            setAuthCookie(mockAuthOwner);
             mockGetAllPets.mockResolvedValue(mockPets);
-            mockGetDiaryEntries
-                .mockResolvedValueOnce(MOCK_DIARY_ENTRIES)
-                .mockResolvedValueOnce([]);
+
+            // Mock getDiaryEntries to return entries for the first pet, empty for second
+            mockGetDiaryEntries.mockImplementation((petId: string) => {
+                if (petId === mockPets[0].id) {
+                    return Promise.resolve(MOCK_DIARY_ENTRIES);
+                }
+                return Promise.resolve([]);
+            });
             render(<PetDiaryDashboard />);
         });
 

@@ -34,7 +34,7 @@ describe("getAuthenticatedUser utilities", () => {
 
             expect(result.owner).toBeNull();
             expect(result.error).toBe(
-                "You must be logged in to access this page.",
+                "You must be logged in to access the full page.",
             );
         });
 
@@ -67,7 +67,7 @@ describe("getAuthenticatedUser utilities", () => {
 
             expect(result.vet).toBeNull();
             expect(result.error).toBe(
-                "You must be logged in to access this page.",
+                "You must be logged in to access the full page.",
             );
         });
 
@@ -114,7 +114,7 @@ describe("getAuthenticatedUser utilities", () => {
 
             expect(result.owner).toBeNull();
             expect(result.error).toBe(
-                "You must be logged in to access this page.",
+                "You must be logged in to access the full page.",
             );
         });
 
@@ -127,7 +127,7 @@ describe("getAuthenticatedUser utilities", () => {
 
             expect(result.vet).toBeNull();
             expect(result.error).toBe(
-                "You must be logged in to access this page.",
+                "You must be logged in to access the full page.",
             );
         });
     });

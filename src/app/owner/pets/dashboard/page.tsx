@@ -183,7 +183,7 @@ export default function PetDashboard() {
                     </div>
                 )}
 
-                <p className={globalStyles.error_message_end}>{error}</p>
+                <p className={globalStyles.error_message}>{error}</p>
             </main>
         </div>
     );

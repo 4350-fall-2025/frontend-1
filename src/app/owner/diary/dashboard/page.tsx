@@ -194,7 +194,7 @@ export default function PetDiaryDashboard() {
                         />
                     ))}
 
-                    <p className={globalStyles.error_message_end}>{error}</p>
+                    <p className={globalStyles.error_message}>{error}</p>
                 </div>
 
                 <aside className={styles.diarySidebar}>
