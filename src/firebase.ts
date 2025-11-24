@@ -18,11 +18,18 @@ import {
     getDownloadURL,
     getBytes,
 } from "firebase/storage";
-import { firebaseDBConfig, firebaseEmulatorConfig } from "./firebase-config";
+import { firebaseDBConfig } from "./firebase-config";
 import placeholderImage from "~public/placeholder.jpg";
 
 export const EMULATOR_FLAG = true;
 export const STORAGE_FLAG = false;
+
+const firebaseEmulatorConfig = {
+    apiKey: "qdog-6aca2-dummy-apikey",
+    authDomain: "qdog-6aca2.firebaseapp.com",
+    projectId: "qdog-6aca2",
+    storageBucket: "qdog-6aca2.appspot.com",
+};
 
 // Initialize Firebase App
 const firebaseConfig = EMULATOR_FLAG
