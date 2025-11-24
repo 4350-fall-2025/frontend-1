@@ -31,7 +31,7 @@ jest.mock("next/navigation", () => ({
     useRouter: () => ({
         push: pushMock,
     }),
-    usePathname: () => "/owner/dashboard",
+    usePathname: () => "/owner/pets/dashboard",
 }));
 
 jest.mock("../../firebase", () => ({
@@ -75,7 +75,7 @@ describe("Sidebar Component", () => {
         it("should render correct number of navigation links", () => {
             const navLinks = screen.getAllByRole("link");
             // ownerNavLinks has 5 links
-            expect(navLinks).toHaveLength(5);
+            expect(navLinks).toHaveLength(4);
         });
     });
 
@@ -103,15 +103,9 @@ describe("Sidebar Component", () => {
         });
     });
 
-    describe("Navigation Links", () => {
     describe("Navigation Links - Owner", () => {
         beforeEach(() => {
             render(<Sidebar navLinks={ownerNavLinks} variant="owner" />);
-        });
-
-        it("Dashboard link should navigate to /owner/dashboard", () => {
-            const dashboardLink = screen.getByText("Dashboard").closest("a");
-            expect(dashboardLink).toHaveAttribute("href", "/owner/dashboard");
         });
 
         it("My Pets link should navigate to /owner/pets/dashboard", () => {
