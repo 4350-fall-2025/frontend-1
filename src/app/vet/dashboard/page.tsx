@@ -13,7 +13,9 @@ export default function VetDashboard() {
             const authenticatedVet: Vet = getAuthenticatedVet();
             setVet(authenticatedVet);
         } catch (error) {
-            setError(error);
+            if (error instanceof Error) {
+                setError(error.message);
+            }
         }
     }, []);
 

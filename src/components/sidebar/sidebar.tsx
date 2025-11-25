@@ -72,7 +72,9 @@ export default function Sidebar({ navLinks, variant = "owner" }: SidebarProps) {
             )}
 
             {/* Main sidebar */}
-            <aside className={`${styles.sidebar} ${styles[variant]} ${isOpen ? styles.open : ""}`}>
+            <aside
+                className={`${styles.sidebar} ${styles[variant]} ${isOpen ? styles.open : ""}`}
+            >
                 <div className={styles.logoLink}>
                     <Image
                         src={logo}
@@ -85,9 +87,9 @@ export default function Sidebar({ navLinks, variant = "owner" }: SidebarProps) {
                 </div>
 
                 <Stack gap='xs'>
-                    {navLinks.map((link) => (
+                    {navLinks.map((link, index) => (
                         <NavLink
-                            key={link.href}
+                            key={`${link.label}-${index}`}
                             component={Link}
                             href={link.href}
                             label={link.label}

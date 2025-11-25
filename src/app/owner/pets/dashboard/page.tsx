@@ -45,7 +45,9 @@ export default function PetDashboard() {
             const authenticatedOwner: Owner = getAuthenticatedOwner();
             setOwner(authenticatedOwner);
         } catch (error) {
-            setError(error);
+            if (error instanceof Error) {
+                setError(error.message);
+            }
         }
     }, []);
 
