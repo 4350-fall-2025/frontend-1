@@ -4,7 +4,7 @@ import { Box, Button, Group, Select, Switch, TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { DatePickerInput } from "@mantine/dates";
-import { todayDate } from "~data/constants";
+import { todayDate, UserRoles } from "~data/constants";
 import {
     animalGroupOptions,
     sexOptions,
@@ -24,6 +24,7 @@ import { PetsAPI } from "src/api/petsAPI";
 import { Pet } from "src/models/pet";
 import { useRouter } from "next/navigation";
 import { generatePetURL, uploadFile } from "src/firebase";
+import { getAuthCookie, hasRole } from "~util/auth/authCookies";
 
 /**
  * CREDITS
@@ -128,26 +129,26 @@ export default function NewPet() {
     const handleSubmit = async (values: typeof form.values) => {
         try {
             setError("");
-            const user = JSON.parse(localStorage.getItem("currentUser"));
+            const authUser = getAuthCookie();
 
-            if (user?.id != null) {
+            if (authUser?.userId != null && hasRole(UserRoles.owner)) {
                 const petJSON = {
                     ...values,
                     estimatedBirthdate: estimatedBirthDate,
                 };
                 let pet = new Pet(petJSON);
-                pet = await PetsAPI.createPet(user.id, pet);
+                pet = await PetsAPI.createPet(authUser.userId, pet);
 
                 if (values.petImage != placeholderFile) {
                     petJSON["imageName"] = petJSON.petImage.name;
-                    let url = generatePetURL(user.id, pet.id);
+                    let url = generatePetURL(authUser.userId, pet.id);
                     uploadFile(values.petImage, url);
                 } else {
                     petJSON.petImage = null;
                 }
                 router.push("/owner/pets/dashboard");
             } else {
-                setError("You cannot make a pet without being logged in.");
+                setError("Only owners who are logged in can create a pet.");
             }
         } catch (error) {
             setError("You cannot make a pet without being logged in.");

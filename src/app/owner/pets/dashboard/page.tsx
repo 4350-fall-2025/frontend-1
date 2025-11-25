@@ -13,6 +13,7 @@ import { PetsAPI } from "~api/petsAPI";
 import { Owner } from "src/models/owner";
 import { Pet } from "src/models/pet";
 import { generatePetURL, getImageURL } from "src/firebase";
+import { getAuthenticatedOwner } from "~util/auth/getAuthenticatedUser";
 
 /**
  * CREDITS
@@ -40,11 +41,13 @@ export default function PetDashboard() {
     const [owner, setOwner] = useState<Owner>(null);
 
     useEffect(() => {
-        let storedUser = localStorage.getItem("currentUser");
-        if (storedUser) {
-            const storedOwner = new Owner(JSON.parse(storedUser));
-
-            setOwner(storedOwner);
+        try {
+            const authenticatedOwner: Owner = getAuthenticatedOwner();
+            setOwner(authenticatedOwner);
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            }
         }
     }, []);
 
@@ -52,7 +55,6 @@ export default function PetDashboard() {
     const [imageUrls, setImageUrls] = useState({}); //dictionary
 
     // TODO: Make a util function for fetching pets and return the pets? to reduce duplicate code
-    // localStorage code above might benefit from this too but we are switching to firestore so not needed
 
     useEffect(() => {
         const fetchPets = async () => {
@@ -180,7 +182,7 @@ export default function PetDashboard() {
                     </div>
                 )}
 
-                <p className={globalStyles.error_message_end}>{error}</p>
+                <p className={globalStyles.error_message}>{error}</p>
             </main>
         </div>
     );

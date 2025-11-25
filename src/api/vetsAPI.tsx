@@ -10,18 +10,18 @@ export class VetsAPI {
         );
     }
 
-    static async getVet(id: number): Promise<Vet> {
+    static async getVet(id: string): Promise<Vet> {
         const response = await axiosClient.get(`/vets/${id}`);
         return new Vet(response?.data);
     }
 
     //input: updated parameters for pets, with unchanged fields as null
-    static async updateVet(id: number, vet: Vet): Promise<void> {
+    static async updateVet(id: string, vet: Vet): Promise<void> {
         const changedValues = this.removeNull(vet);
         await axiosClient.put(`/vets/${id}`, changedValues);
     }
 
-    static async deleteVet(id: number): Promise<void> {
+    static async deleteVet(id: string): Promise<void> {
         await axiosClient.delete(`/vets/${id}`);
     }
 
