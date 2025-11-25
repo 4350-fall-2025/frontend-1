@@ -29,7 +29,7 @@ export default function PetDiaryDashboard() {
     const router = useRouter();
 
     const [error, setError] = useState("");
-    const [owner, setOwner] = useState<Owner>(null);
+    const [owner, setOwner] = useState<Owner | null>(null);
 
     const [diaries, setDiaries] = useState<{ entry: PetDiary; pet: Pet }[]>([]);
 
@@ -64,15 +64,14 @@ export default function PetDiaryDashboard() {
     }, [diaries, sortBy, activeFilter]);
 
     useEffect(() => {
-        const { owner: authenticatedOwner, error: authError } =
-            getAuthenticatedOwner();
-
-        if (authError) {
-            setError(authError);
-            return;
+        try {
+            const authenticatedOwner = getAuthenticatedOwner();
+            setOwner(authenticatedOwner);
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            }
         }
-
-        setOwner(authenticatedOwner);
     }, []);
 
     const [pets, setPets] = useState<Pet[]>([]);

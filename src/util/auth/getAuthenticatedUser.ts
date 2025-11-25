@@ -5,35 +5,19 @@ import { Vet } from "src/models/vet";
 import { getAuthCookie, hasRole } from "~util/auth/authCookies";
 import { UserRoles } from "~data/constants";
 
-export interface AuthOwnerResult {
-    owner: Owner | null;
-    error: string | null;
-}
-
-export interface AuthVetResult {
-    vet: Vet | null;
-    error: string | null;
-}
-
 /**
  * Gets authenticated owner from cookie
  * Returns null owner with error message if not authenticated or not an owner
  */
-export function getAuthenticatedOwner(): AuthOwnerResult {
+export function getAuthenticatedOwner(): Owner {
     const authUser = getAuthCookie();
 
     if (!authUser) {
-        return {
-            owner: null,
-            error: "You must be logged in to access the full page.",
-        };
+        throw new Error("You must be logged in to access the full page.");
     }
 
     if (!hasRole(UserRoles.owner)) {
-        return {
-            owner: null,
-            error: "Only owners can access this page.",
-        };
+        throw new Error("Only owners can access this page.");
     }
 
     const owner = new Owner({
@@ -43,28 +27,22 @@ export function getAuthenticatedOwner(): AuthOwnerResult {
         email: authUser.email,
     });
 
-    return { owner, error: null };
+    return owner;
 }
 
 /**
  * Gets authenticated vet from cookie
  * Returns null vet with error message if not authenticated or not a vet
  */
-export function getAuthenticatedVet(): AuthVetResult {
+export function getAuthenticatedVet(): Vet {
     const authUser = getAuthCookie();
 
     if (!authUser) {
-        return {
-            vet: null,
-            error: "You must be logged in to access the full page.",
-        };
+        throw new Error("You must be logged in to access the full page.");
     }
 
     if (!hasRole(UserRoles.vet)) {
-        return {
-            vet: null,
-            error: "Only veterinarians can access this page.",
-        };
+        throw new Error("Only veterinarians can access this page.");
     }
 
     const vet = new Vet({
@@ -74,5 +52,5 @@ export function getAuthenticatedVet(): AuthVetResult {
         email: authUser.email,
     });
 
-    return { vet, error: null };
+    return vet;
 }

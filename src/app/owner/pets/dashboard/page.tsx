@@ -41,15 +41,12 @@ export default function PetDashboard() {
     const [owner, setOwner] = useState<Owner>(null);
 
     useEffect(() => {
-        const { owner: authenticatedOwner, error: authError } =
-            getAuthenticatedOwner();
-
-        if (authError) {
-            setError(authError);
-            return;
+        try {
+            const authenticatedOwner: Owner = getAuthenticatedOwner();
+            setOwner(authenticatedOwner);
+        } catch (error) {
+            setError(error);
         }
-
-        setOwner(authenticatedOwner);
     }, []);
 
     const [pets, setPets] = useState<Pet[]>([]);

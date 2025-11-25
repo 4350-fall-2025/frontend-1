@@ -21,30 +21,27 @@ describe("getAuthenticatedUser utilities", () => {
 
             const result = getAuthenticatedOwner();
 
-            expect(result.error).toBeNull();
-            expect(result.owner).not.toBeNull();
-            expect(result.owner?.id).toBe("123");
-            expect(result.owner?.firstName).toBe("Test");
-            expect(result.owner?.lastName).toBe("Owner");
-            expect(result.owner?.email).toBe("test@example.com");
+            expect(result).not.toBeNull();
+            expect(result?.id).toBe("123");
+            expect(result?.firstName).toBe("Test");
+            expect(result?.lastName).toBe("Owner");
+            expect(result?.email).toBe("test@example.com");
         });
 
-        it("should return specific error message when no cookie exists", () => {
-            const result = getAuthenticatedOwner();
-
-            expect(result.owner).toBeNull();
-            expect(result.error).toBe(
+        it("should throw error with specific error message when no cookie exists", () => {
+            expect(getAuthenticatedOwner).toThrow(Error);
+            expect(getAuthenticatedOwner).toThrow(
                 "You must be logged in to access the full page.",
             );
         });
 
-        it("should return specific error message when user is a vet, not an owner", () => {
+        it("should throw error with specific error message when user is a vet, not an owner", () => {
             setAuthCookie(mockAuthVet);
 
-            const result = getAuthenticatedOwner();
-
-            expect(result.owner).toBeNull();
-            expect(result.error).toBe("Only owners can access this page.");
+            expect(getAuthenticatedOwner).toThrow(Error);
+            expect(getAuthenticatedOwner).toThrow(
+                "Only owners can access this page.",
+            );
         });
     });
 
@@ -54,51 +51,25 @@ describe("getAuthenticatedUser utilities", () => {
 
             const result = getAuthenticatedVet();
 
-            expect(result.error).toBeNull();
-            expect(result.vet).not.toBeNull();
-            expect(result.vet?.id).toBe("456");
-            expect(result.vet?.firstName).toBe("Jane");
-            expect(result.vet?.lastName).toBe("Smith");
-            expect(result.vet?.email).toBe("jane.smith@example.com");
+            expect(result).not.toBeNull();
+            expect(result?.id).toBe("456");
+            expect(result?.firstName).toBe("Jane");
+            expect(result?.lastName).toBe("Smith");
+            expect(result?.email).toBe("jane.smith@example.com");
         });
 
-        it("should return specific error message when no cookie exists", () => {
-            const result = getAuthenticatedVet();
-
-            expect(result.vet).toBeNull();
-            expect(result.error).toBe(
+        it("should throw error with specific error message when no cookie exists", () => {
+            expect(getAuthenticatedVet).toThrow(Error);
+            expect(getAuthenticatedVet).toThrow(
                 "You must be logged in to access the full page.",
             );
         });
 
-        it("should return specific error message when user is an owner, not a vet", () => {
+        it("should throw error with specific error message when user is an owner, not a vet", () => {
             setAuthCookie(mockAuthOwner);
 
-            const result = getAuthenticatedVet();
-
-            expect(result.vet).toBeNull();
-            expect(result.error).toBe(
-                "Only veterinarians can access this page.",
-            );
-        });
-    });
-
-    describe("Role-based access control", () => {
-        it("should prevent vet from accessing owner-only functions", () => {
-            setAuthCookie(mockAuthVet);
-
-            const ownerResult = getAuthenticatedOwner();
-
-            expect(ownerResult.owner).toBeNull();
-            expect(ownerResult.error).toBe("Only owners can access this page.");
-        });
-
-        it("should prevent owner from accessing vet-only functions", () => {
-            setAuthCookie(mockAuthOwner);
-            const vetResult = getAuthenticatedVet();
-
-            expect(vetResult.vet).toBeNull();
-            expect(vetResult.error).toBe(
+            expect(getAuthenticatedVet).toThrow(Error);
+            expect(getAuthenticatedVet).toThrow(
                 "Only veterinarians can access this page.",
             );
         });
@@ -107,26 +78,24 @@ describe("getAuthenticatedUser utilities", () => {
     describe("Session state management", () => {
         it("should return error after logout (cookie removal) for owner", () => {
             setAuthCookie(mockAuthOwner);
-            expect(getAuthenticatedOwner().owner).not.toBeNull();
+            expect(getAuthenticatedOwner).not.toBeNull();
 
             removeAuthCookie();
-            const result = getAuthenticatedOwner();
 
-            expect(result.owner).toBeNull();
-            expect(result.error).toBe(
+            expect(getAuthenticatedOwner).toThrow(Error);
+            expect(getAuthenticatedOwner).toThrow(
                 "You must be logged in to access the full page.",
             );
         });
 
         it("should return error after logout (cookie removal) for vet", () => {
             setAuthCookie(mockAuthVet);
-            expect(getAuthenticatedVet().vet).not.toBeNull();
+            expect(getAuthenticatedVet).not.toBeNull();
 
             removeAuthCookie();
-            const result = getAuthenticatedVet();
 
-            expect(result.vet).toBeNull();
-            expect(result.error).toBe(
+            expect(getAuthenticatedVet).toThrow(Error);
+            expect(getAuthenticatedVet).toThrow(
                 "You must be logged in to access the full page.",
             );
         });

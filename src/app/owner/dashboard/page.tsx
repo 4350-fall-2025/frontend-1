@@ -10,15 +10,12 @@ export default function OwnerDashboard() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        const { owner: authenticatedOwner, error: authError } =
-            getAuthenticatedOwner();
-
-        if (authError) {
-            setError(authError);
-            return;
+        try {
+            const authenticatedOwner: Owner = getAuthenticatedOwner();
+            setOwner(authenticatedOwner);
+        } catch (error) {
+            setError(error);
         }
-
-        setOwner(authenticatedOwner);
     }, []);
 
     return (

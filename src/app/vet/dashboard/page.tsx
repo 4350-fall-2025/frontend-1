@@ -9,15 +9,12 @@ export default function VetDashboard() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        const { vet: authenticatedVet, error: authError } =
-            getAuthenticatedVet();
-
-        if (authError) {
-            setError(authError);
-            return;
+        try {
+            const authenticatedVet: Vet = getAuthenticatedVet();
+            setVet(authenticatedVet);
+        } catch (error) {
+            setError(error);
         }
-
-        setVet(authenticatedVet);
     }, []);
 
     return (

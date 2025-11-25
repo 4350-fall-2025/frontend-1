@@ -32,9 +32,13 @@ describe("Pet Diary Dashboard", () => {
     let user: ReturnType<typeof userEvent.setup>;
 
     beforeEach(() => {
+        setAuthCookie(mockAuthOwner);
+        user = userEvent.setup();
+    });
+
+    afterEach(() => {
         jest.clearAllMocks();
         removeAuthCookie();
-        user = userEvent.setup();
     });
 
     describe("Page rendering", () => {
@@ -63,6 +67,13 @@ describe("Pet Diary Dashboard", () => {
 
     describe("Filter functionality", () => {
         beforeEach(() => {
+            mockGetAllPets.mockResolvedValue(mockPets);
+            mockGetDiaryEntries.mockImplementation((petId: string) => {
+                if (petId === mockPets[0].id) {
+                    return Promise.resolve(MOCK_DIARY_ENTRIES);
+                }
+                return Promise.resolve([]);
+            });
             render(<PetDiaryDashboard />);
         });
         it("renders all filter buttons", () => {
@@ -114,7 +125,6 @@ describe("Pet Diary Dashboard", () => {
 
     describe("Diary Entries Sorting and Filtering", () => {
         beforeEach(() => {
-            setAuthCookie(mockAuthOwner);
             mockGetAllPets.mockResolvedValue(mockPets);
 
             // Mock getDiaryEntries to return entries for the first pet, empty for second
