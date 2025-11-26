@@ -1,5 +1,6 @@
 import React from "react";
 import Sidebar from "~components/sidebar/sidebar";
+import { ownerNavLinks } from "~components/sidebar/sidebar-config";
 import styles from "../layout.module.scss";
 
 export default function OwnerLayout({
@@ -9,7 +10,7 @@ export default function OwnerLayout({
 }) {
     return (
         <div className={styles.layout}>
-            <Sidebar />
+            <Sidebar navLinks={ownerNavLinks} variant="owner" />
             <main className={styles.content}>{children}</main>
         </div>
     );

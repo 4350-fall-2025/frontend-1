@@ -19,7 +19,6 @@ import {
 } from "~tests/utils/custom-testing-library";
 import { OwnersAPI } from "src/api/ownersAPI";
 import { VetsAPI } from "src/api/vetsAPI";
-import { signInWithBackendToken } from "src/firebase";
 
 // ---- Mocks ----
 

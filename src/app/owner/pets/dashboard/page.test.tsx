@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import PetDashboard from "./page";
 import { mockPets } from "~data/pets/mock";
 import { PetsAPI } from "~api/petsAPI";
-import { owner } from "~data/owner/mock";
+import { mockAuthOwner } from "~data/owner/mock";
 
 /**
  * CREDITS
@@ -28,7 +28,7 @@ jest.mock("~data/pets/mock", () => {
 // Mock the age calculator utility
 jest.mock("~util/ageCalculator", () => ({
     __esModule: true,
-    default: jest.fn((birthdate: string) => {
+    default: jest.fn(() => {
         // Simple mock that returns a fixed age for testing
         return "5y 3m";
     }),
@@ -88,8 +88,8 @@ describe("Pet Dashboard page", () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        // Set up mock user in localStorage so pets will load
-        localStorage.setItem("currentUser", JSON.stringify(owner));
+        // Set up mock user in cookies so pets will load
+        document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(mockAuthOwner))}`;
 
         PetsAPI.getAllPets = jest.fn().mockResolvedValue(mockPets);
         user = userEvent.setup();

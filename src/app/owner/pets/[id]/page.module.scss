@@ -6,7 +6,6 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto;
-    padding: 12px;
 
     .top_bar {
         grid-row-start: 1;
@@ -107,8 +106,6 @@
 
 @media screen and (min-width: $size-tablet) {
     .page {
-        padding: 32px;
-
         .page_content {
             padding-left: 0;
             padding-right: 0;

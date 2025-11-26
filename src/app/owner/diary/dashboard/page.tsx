@@ -12,6 +12,7 @@ import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { PetDiary } from "src/models/pet-diary";
 import DiaryEntry from "~components/diaryEntry/diaryEntry";
+import { getAuthenticatedOwner } from "~util/auth/getAuthenticatedUser";
 
 const INIT_FILTER = { value: "ALL", label: "All" };
 
@@ -28,7 +29,7 @@ export default function PetDiaryDashboard() {
     const router = useRouter();
 
     const [error, setError] = useState("");
-    const [owner, setOwner] = useState<Owner>(null);
+    const [owner, setOwner] = useState<Owner | null>(null);
 
     const [diaries, setDiaries] = useState<{ entry: PetDiary; pet: Pet }[]>([]);
 
@@ -63,18 +64,19 @@ export default function PetDiaryDashboard() {
     }, [diaries, sortBy, activeFilter]);
 
     useEffect(() => {
-        let storedUser = localStorage.getItem("currentUser");
-        if (storedUser) {
-            const storedOwner = new Owner(JSON.parse(storedUser));
-
-            setOwner(storedOwner);
+        try {
+            const authenticatedOwner = getAuthenticatedOwner();
+            setOwner(authenticatedOwner);
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            }
         }
     }, []);
 
     const [pets, setPets] = useState<Pet[]>([]);
 
     // TODO: Make a util function for fetching pets and return the pets? to reduce duplicate code
-    // localStorage code above might benefit from this too but we are switching to firestore so not needed
 
     useEffect(() => {
         const fetchPets = async () => {
@@ -128,99 +130,94 @@ export default function PetDiaryDashboard() {
     };
 
     return (
-        <div className={styles.container}>
+        <>
             {/* Header */}
-            <div className={styles.mainContent}>
-                <div className={styles.header}>
-                    <h1 className={styles.title}>Pet Diary</h1>
-                    <button
-                        className={styles.newEntryBtn}
-                        onClick={() => router.push("/owner/diary/create")}
-                    >
-                        <IconPlus size={16} />
-                        New Entry
-                    </button>
-                </div>
-
-                {/* Content Wrapper - Entries + Sidebar */}
-                <div className={styles.contentWrapper}>
-                    {/* Filters and Sort */}
-                    <div className={styles.controls}>
-                        <div className={styles.filters}>
-                            {filters.map((filter) => (
-                                <button
-                                    key={filter.label}
-                                    onClick={() => setActiveFilter(filter)}
-                                    className={`${styles.filterBtn} ${
-                                        activeFilter === filter
-                                            ? styles.filterBtnActive
-                                            : ""
-                                    }`}
-                                >
-                                    {filter.label}
-                                </button>
-                            ))}
-                        </div>
-
-                        <div className={styles.sortContainer}>
-                            <span className={styles.sortLabel}>Sort by:</span>
-                            <select
-                                value={sortBy}
-                                onChange={(e) => setSortBy(e.target.value)}
-                                className={styles.sortSelect}
-                            >
-                                <option> Newest first </option>
-                                <option> Oldest first </option>
-                                <option> Pet name </option>
-                            </select>
-                            <IconArrowsSort
-                                size={16}
-                                className={styles.sortIcon}
-                            />
-                        </div>
-                    </div>
-
-                    {/* Diary Entries Placeholder */}
-                    <div className={styles.entriesContainer}>
-                        {filteredAndSortedEntries &&
-                            filteredAndSortedEntries.length <= 0 && (
-                                <p>No diary entry yet</p>
-                            )}
-
-                        {filteredAndSortedEntries.map((diary) => (
-                            <DiaryEntry
-                                key={diary.entry.id}
-                                entry={diary.entry}
-                                pet={diary.pet}
-                            />
-                        ))}
-
-                        <p className={globalStyles.error_message}>{error}</p>
-                    </div>
-
-                    <aside className={styles.diarySidebar}>
-                        <h2 className={styles.sidebarTitle}> Quick Add</h2>
-                        <div className={styles.quickAddButtons}>
-                            {noteTypeOptions
-                                .filter((option) => option.label !== "Other")
-                                .map((option) => {
-                                    const displayLabel = option.label;
-                                    return (
-                                        <button
-                                            key={option.value}
-                                            className={styles.quickAddBtn}
-                                            onClick={() =>
-                                                handleQuickAdd(option.value)
-                                            }
-                                        >
-                                            Add {displayLabel} entry
-                                        </button>
-                                    );
-                                })}
-                        </div>
-                    </aside>
-                </div>
+            <div className={styles.header}>
+                <h1 className={styles.title}>Pet Diary</h1>
+                <button
+                    className={styles.newEntryBtn}
+                    onClick={() => router.push("/owner/diary/create")}
+                >
+                    <IconPlus size={16} />
+                    New Entry
+                </button>
             </div>
-        </div>
+
+            {/* Content Wrapper - Entries + Sidebar */}
+            <div className={styles.contentWrapper}>
+                {/* Filters and Sort */}
+                <div className={styles.controls}>
+                    <div className={styles.filters}>
+                        {filters.map((filter) => (
+                            <button
+                                key={filter.label}
+                                onClick={() => setActiveFilter(filter)}
+                                className={`${styles.filterBtn} ${
+                                    activeFilter === filter
+                                        ? styles.filterBtnActive
+                                        : ""
+                                }`}
+                            >
+                                {filter.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className={styles.sortContainer}>
+                        <span className={styles.sortLabel}>Sort by:</span>
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                            className={styles.sortSelect}
+                        >
+                            <option> Newest first </option>
+                            <option> Oldest first </option>
+                            <option> Pet name </option>
+                        </select>
+                        <IconArrowsSort size={16} className={styles.sortIcon} />
+                    </div>
+                </div>
+
+                {/* Diary Entries Placeholder */}
+                <div className={styles.entriesContainer}>
+                    {filteredAndSortedEntries &&
+                        filteredAndSortedEntries.length <= 0 && (
+                            <p>No diary entry yet</p>
+                        )}
+
+                    {filteredAndSortedEntries.map((diary) => (
+                        <DiaryEntry
+                            key={diary.entry.id}
+                            entry={diary.entry}
+                            pet={diary.pet}
+                        />
+                    ))}
+
+                    <p className={globalStyles.error_message}>{error}</p>
+                </div>
+
+                <aside className={styles.diarySidebar}>
+                    <h2 className={styles.sidebarTitle}> Quick Add</h2>
+                    <div className={styles.quickAddButtons}>
+                        {noteTypeOptions
+                            .filter((option) => option.label !== "Other")
+                            .map((option) => {
+                                const displayLabel = option.label;
+                                return (
+                                    <button
+                                        key={option.value}
+                                        className={styles.quickAddBtn}
+                                        onClick={() =>
+                                            handleQuickAdd(option.value)
+                                        }
+                                    >
+                                        Add {displayLabel} entry
+                                    </button>
+                                );
+                            })}
+                    </div>
+                </aside>
+            </div>
+        </>
     );
 }
