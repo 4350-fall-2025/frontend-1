@@ -1,137 +1,140 @@
-/* Tests written with help from Copilot GPT-5 mini
- * Help with mocking/spying on the api taken from:
- * https://www.meticulous.ai/blog/mocking-a-javascript-class-with-jest-two-ways-to-make-it-easier#example-class-exchangerateapi-client
- **/
-
-const mockUseRouter = jest.fn();
-jest.mock("next/navigation", () => ({
-    useRouter: () => ({
-        back: mockUseRouter,
-    }),
-    useParams: () => ({ id: 1 }),
-}));
-
-jest.mock("~util/strings/format-pet", () => {
-    const originalModule = jest.requireActual("~util/strings/format-pet");
-    return {
-        __esModule: true,
-        ...originalModule,
-        formatAgeFromDOB: jest.fn(() => {
-            return "2 years";
-        }),
-        formatAnimalGroup: jest.fn(() => "amphibian"),
-        formatSterileStatus: jest.fn(() => "Unknown"),
-    };
-});
-
-const mockGetPet = jest.fn();
-PetsAPI.getPet = mockGetPet;
-
-const mockGetDiaryEntries = jest.fn();
-PetDiaryAPI.getDiaryEntries = mockGetDiaryEntries;
-
-jest.mock("../../../../firebase", () => ({
-    auth: {},
-    storage: {},
-    signInWithBackendToken: jest.fn(() => Promise.resolve()),
-}));
-
 import "@testing-library/jest-dom";
-import dayjs from "dayjs";
-import { PetsAPI } from "~api/petsAPI";
-import { PetDiaryAPI } from "~api/petDiaryAPI";
-import { MOCK_DIARY_ENTRIES, MOCK_DIARY_ENTRY } from "~data/diary/mock";
-import { render, screen } from "~tests/utils/custom-testing-library";
+import { render, screen, waitFor } from "~tests/utils/custom-testing-library";
 import { mockPets } from "~data/pets/mock";
 import { mockAuthOwner } from "~data/owner/mock";
-import { toSentenceCase } from "~util/strings/normalize";
+import { MOCK_DIARY_ENTRIES } from "~data/diary/mock";
 import PetProfilePage from "./page";
+import { setAuthCookie, removeAuthCookie } from "~util/auth/authCookies";
+
+const mockUseRouter = jest.fn();
+const mockBack = jest.fn();
+jest.mock("next/navigation", () => ({
+    useRouter: () => ({
+        back: mockBack,
+        push: mockUseRouter,
+    }),
+    useParams: () => ({ id: "pet123" }),
+}));
+
+const mockGetPet = jest.fn();
+jest.mock("~api/petsAPI", () => ({
+    PetsAPI: {
+        getPet: (...args: any[]) => mockGetPet(...args),
+    },
+}));
+
+const mockGetDiaryEntries = jest.fn();
+jest.mock("~api/petDiaryAPI", () => ({
+    PetDiaryAPI: {
+        getDiaryEntries: (...args: any[]) => mockGetDiaryEntries(...args),
+    },
+}));
+
+const mockGetImageURL = jest.fn();
+jest.mock("../../../../firebase", () => ({
+    generatePetURL: jest.fn(() => "pets/user123/pet123"),
+    getImageURL: (...args: any[]) => mockGetImageURL(...args),
+    signInWithBackendToken: jest.fn(() => Promise.resolve()),
+}));
 
 describe("Pet Profile Page", () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        setAuthCookie(mockAuthOwner);
 
-        document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(mockAuthOwner))}`;
+        mockGetPet.mockResolvedValue(mockPets[0]);
+        mockGetDiaryEntries.mockResolvedValue(MOCK_DIARY_ENTRIES);
+        mockGetImageURL.mockResolvedValue("/test-image.jpg");
     });
 
-    describe("Pet info", () => {
-        beforeEach(() => {
-            mockGetDiaryEntries.mockResolvedValue(MOCK_DIARY_ENTRIES);
+    afterEach(() => {
+        removeAuthCookie();
+    });
+
+    describe("Page rendering", () => {
+        it("renders the back button", async () => {
+            render(<PetProfilePage />);
+
+            const backButton = await screen.findByRole("link", {
+                name: /back to my pets/i,
+            });
+            expect(backButton).toBeInTheDocument();
+            expect(backButton).toHaveAttribute("href", "/owner/pets/dashboard");
         });
 
-        it("renders the pet info on the page", async () => {
-            mockGetPet.mockResolvedValue(mockPets[0]);
-            await render(<PetProfilePage />);
+        it("fetches and displays pet data", async () => {
+            render(<PetProfilePage />);
 
-            const isoDateString = new Date(mockPets[0].birthdate).toISOString();
-            const formattedDateString =
-                dayjs(isoDateString).format("MMMM D, YYYY");
+            await waitFor(() => {
+                expect(mockGetPet).toHaveBeenCalledWith("pet123");
+            });
 
-            const name = await screen.findByText(/bella/i);
-            const age = await screen.findByText(/2 years/i);
-            const animalGroup = await screen.findByText(/amphibian/i);
-            const sterileStatus = await screen.findByText(/unknown/i);
-            const breed = await screen.findByText(/beagle/i);
-            const species = await screen.findByText(/dog/i);
-            const sex = await screen.findByText(/female/i);
-            const birthdate = await screen.findByText(formattedDateString);
-
-            expect(name).toBeInTheDocument();
-            expect(age).toBeInTheDocument();
-            expect(animalGroup).toBeInTheDocument();
-            expect(sterileStatus).toBeInTheDocument();
-            expect(breed).toBeInTheDocument();
-            expect(species).toBeInTheDocument();
-            expect(sex).toBeInTheDocument();
-            expect(birthdate).toBeInTheDocument();
+            const petName = await screen.findByText(/bella/i);
+            expect(petName).toBeInTheDocument();
         });
 
-        it("show placeholder when no vet notes present", async () => {
-            mockGetPet.mockResolvedValue(mockPets[0]);
-            await render(<PetProfilePage />);
+        it("fetches and displays diary entries", async () => {
+            render(<PetProfilePage />);
 
-            const noEntriesMessage =
-                await screen.findByText(/no notes to show/i);
-            expect(noEntriesMessage).toBeInTheDocument();
+            await waitFor(() => {
+                expect(mockGetDiaryEntries).toHaveBeenCalledWith("pet123");
+            });
         });
 
-        it("renders error component on API error", async () => {
+        it("fetches pet image", async () => {
+            render(<PetProfilePage />);
+
+            await waitFor(() => {
+                expect(mockGetImageURL).toHaveBeenCalled();
+            });
+        });
+    });
+
+    describe("Error handling", () => {
+        it("displays error component when pet fetch fails", async () => {
             mockGetPet.mockRejectedValue("API Error");
-            await render(<PetProfilePage />);
 
-            const errorMessage = await screen.findByText(/ruh roh/i);
-            expect(errorMessage).toBeInTheDocument();
-        });
-    });
+            render(<PetProfilePage />);
 
-    describe("Diary entries", () => {
-        beforeEach(async () => {
-            mockGetPet.mockResolvedValue(mockPets[0]);
+            const errorComponent = await screen.findByText(/ruh roh/i);
+            expect(errorComponent).toBeInTheDocument();
         });
 
-        it("renders diary entries on the page", async () => {
-            mockGetDiaryEntries.mockResolvedValue([MOCK_DIARY_ENTRY]);
-            await render(<PetProfilePage />);
-
-            await expect(
-                screen.findByText(toSentenceCase(MOCK_DIARY_ENTRY.contentType)),
-            ).resolves.toBeInTheDocument();
-        });
-
-        it("shows placeholder when no diary entries present", async () => {
-            mockGetDiaryEntries.mockResolvedValue([]);
-            await render(<PetProfilePage />);
-
-            const noEntriesMessage = await screen.findByText(/no entries yet/i);
-            expect(noEntriesMessage).toBeInTheDocument();
-        });
-
-        it("renders error component on API error", async () => {
+        it("displays error component when diary entries fetch fails", async () => {
             mockGetDiaryEntries.mockRejectedValue("API Error");
-            await render(<PetProfilePage />);
 
-            const errorMessage = await screen.findByText(/ruh roh/i);
-            expect(errorMessage).toBeInTheDocument();
+            render(<PetProfilePage />);
+
+            const errorComponent = await screen.findByText(/ruh roh/i);
+            expect(errorComponent).toBeInTheDocument();
+        });
+
+        it("uses placeholder image when image fetch fails", async () => {
+            mockGetImageURL.mockRejectedValue("API Error");
+
+            render(<PetProfilePage />);
+
+            await waitFor(() => {
+                expect(mockGetImageURL).toHaveBeenCalled();
+            });
+
+            // Image should still render with placeholder
+            const placeholderUrl = "/placeholder.jpg";
+            const petImage = await screen.findByAltText("Pet profile picture");
+            expect(petImage).toBeInTheDocument();
+            expect(petImage).toHaveAttribute(
+                "src",
+                expect.stringContaining(placeholderUrl),
+            );
+        });
+
+        it("displays error when user is not signed in", async () => {
+            removeAuthCookie();
+
+            render(<PetProfilePage />);
+
+            const errorComponent = await screen.findByText(/ruh roh/i);
+            expect(errorComponent).toBeInTheDocument();
         });
     });
 });

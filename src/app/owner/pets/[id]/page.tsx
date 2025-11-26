@@ -1,29 +1,23 @@
 "use client";
 
-import { Button, Image } from "@mantine/core";
+import { Button } from "@mantine/core";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import dayjs from "dayjs";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
-import DiaryEntry from "~components/diaryEntry/diaryEntry";
-import {
-    formatAgeFromDOB,
-    formatAnimalGroup,
-    formatSterileStatus,
-} from "~util/strings/format-pet";
-import { toSentenceCase } from "~util/strings/normalize";
 import { Pet } from "src/models/pet";
 import { PetDiary } from "src/models/pet-diary";
-import Error from "./error";
-import styles from "./page.module.scss";
+import Error from "~components/error/error";
 import { generatePetURL, getImageURL } from "src/firebase";
 import { getAuthCookie } from "~util/auth/authCookies";
+import PetProfile from "~components/petProfile/petProfile";
+import styles from "./page.module.scss";
 
 export default function PetProfilePage() {
     const placeholderUrl = "/placeholder.jpg";
+
     const [error, setError] = useState(null);
     const [pet, setPet] = useState<Pet | null>(null);
     const [diaryEntries, setDiaryEntries] = useState<PetDiary[]>([]);
@@ -76,7 +70,6 @@ export default function PetProfilePage() {
         return <Error />;
     }
 
-    // TODO: insert pet image when available
     return (
         <div className={styles.page}>
             <div className={styles.top_bar}>
@@ -90,101 +83,11 @@ export default function PetProfilePage() {
                     Back to My Pets
                 </Button>
             </div>
-            <div className={styles.page_content}>
-                <h1 className={styles.header}>{pet?.name}</h1>
-                <div className={styles.pet_info}>
-                    <div className={styles.pet_image_container}>
-                        <Image
-                            className={styles.pet_image}
-                            src={imageUrl}
-                            alt='Pet profile picture'
-                        />
-                    </div>
-                    <div className={styles.pet_details}>
-                        <div className={styles.pet_details_column}>
-                            <ul>
-                                <li>
-                                    <span className={styles.pet_info_label}>
-                                        Sex:
-                                    </span>{" "}
-                                    {pet?.sex && toSentenceCase(pet?.sex)}
-                                </li>
-                                <li>
-                                    <span className={styles.pet_info_label}>
-                                        Animal group:
-                                    </span>{" "}
-                                    {pet?.animalGroup &&
-                                        formatAnimalGroup(pet?.animalGroup)}
-                                </li>
-                                <li>
-                                    <span className={styles.pet_info_label}>
-                                        Species:
-                                    </span>{" "}
-                                    {pet?.species &&
-                                        toSentenceCase(pet?.species)}
-                                </li>
-                                <li>
-                                    <span className={styles.pet_info_label}>
-                                        Breed:
-                                    </span>{" "}
-                                    {pet?.breed && toSentenceCase(pet?.breed)}
-                                </li>
-                            </ul>
-                        </div>
-                        <div className={styles.pet_details_column}>
-                            <ul>
-                                <li>
-                                    <span className={styles.pet_info_label}>
-                                        Birthdate:
-                                    </span>{" "}
-                                    {pet?.birthdate &&
-                                        dayjs(pet?.birthdate).format(
-                                            "MMMM D, YYYY",
-                                        )}
-                                </li>
-                                <li>
-                                    <span className={styles.pet_info_label}>
-                                        Age:{" "}
-                                    </span>
-                                    {pet?.birthdate &&
-                                        formatAgeFromDOB(pet?.birthdate)}
-                                </li>
-                                <li>
-                                    <span className={styles.pet_info_label}>
-                                        Spayed/Neutered:
-                                    </span>{" "}
-                                    {pet?.sterileStatus &&
-                                        formatSterileStatus(
-                                            pet?.sterileStatus,
-                                            pet?.sex,
-                                        )}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.pet_notes}>
-                    <div className={styles.pet_notes_column}>
-                        <h2>Diary Entries</h2>
-                        <div className={styles.diary_entries_list}>
-                            {diaryEntries.length > 0 ? (
-                                diaryEntries.map((entry) => (
-                                    <DiaryEntry
-                                        key={entry.id + 1}
-                                        entry={entry}
-                                    />
-                                ))
-                            ) : (
-                                <p>No entries yet.</p>
-                            )}
-                        </div>
-                    </div>
-                    <div className={styles.pet_notes_column}>
-                        <h2>Vet Notes</h2>
-                        <p>No notes to show.</p>
-                    </div>
-                </div>
-            </div>
+            <PetProfile
+                pet={pet}
+                diaryEntries={diaryEntries}
+                imageUrl={imageUrl}
+            ></PetProfile>
         </div>
     );
 }
