@@ -5,6 +5,7 @@ import PetDashboard from "./page";
 import { mockPets } from "~data/pets/mock";
 import { PetsAPI } from "~api/petsAPI";
 import { mockAuthOwner } from "~data/owner/mock";
+import { setAuthCookie } from "~util/auth/authCookies";
 
 /**
  * CREDITS
@@ -89,7 +90,7 @@ describe("Pet Dashboard page", () => {
         jest.clearAllMocks();
 
         // Set up mock user in cookies so pets will load
-        document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(mockAuthOwner))}`;
+        setAuthCookie(mockAuthOwner);
 
         PetsAPI.getAllPets = jest.fn().mockResolvedValue(mockPets);
         user = userEvent.setup();

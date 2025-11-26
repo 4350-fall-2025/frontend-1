@@ -33,11 +33,9 @@ jest.mock("~util/strings/format-pet", () => {
     };
 });
 
-describe("Pet Profile Page", () => {
+describe("Pet Profile", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-
-        document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(mockAuthOwner))}`;
     });
 
     describe("Pet info", () => {
