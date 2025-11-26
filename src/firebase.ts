@@ -14,10 +14,10 @@ import {
 } from "firebase/storage";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyABKDG4qCnILmCUJwqSj9UX0WCXP6fUlt0",
-    authDomain: "qdog-prod-43670.firebaseapp.com",
-    projectId: "qdog-prod-43670",
-    storageBucket: "qdog-prod-43670.firebasestorage.app",
+    apiKey: process.env.NEXT_PUBLIC_GCP_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_GCP_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_GCP_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_GCP_BUCKET,
 };
 
 // Initialize Firebase App
