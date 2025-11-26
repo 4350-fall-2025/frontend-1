@@ -5,54 +5,54 @@
 name: Build
 
 on:
-    push:
-        branches:
-            - main
-            - develop
-    pull_request:
-        branches:
-            - main
-            - develop
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
 
-            - name: Install pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  run_install: false
-              # version defaults to packageManager version in package.json
-              # required of no packageManager field in package.json
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+        # version defaults to packageManager version in package.json
+        # required of no packageManager field in package.json
 
-            - name: Set up Node.js
-              uses: actions/setup-node@v6
-              with:
-                  node-version: "22"
-                  cache: "pnpm"
-                  # cache dependencies to reduce install time
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+          # cache dependencies to reduce install time
 
-            - name: Install dependencies
-              run: pnpm install
+      - name: Install dependencies
+        run: pnpm install
 
-            - name: Lint and format
-              run: pnpm lint && pnpm format
+      - name: Lint and format
+        run: pnpm lint && pnpm format
 
-            - name: "[Regression Tests] - Authentication"
-              run: pnpm test -- src/app/auth
+      - name: "[Regression Tests] - Authentication"
+        run: pnpm test -- src/app/auth
 
-            - name: "[Regression Tests] - Create Diary"
-              run: pnpm test -- src/app/owner/diary/create
+      - name: "[Regression Tests] - Create Diary"
+        run: pnpm test -- src/app/owner/diary/create
 
-            - name: "[Regression Tests] - Create Pet"
-              run: pnpm test -- src/app/owner/pets/create
+      - name: "[Regression Tests] - Create Pet"
+        run: pnpm test -- src/app/owner/pets/create
 
-            - name: "[Regression Tests] - Integration tests"
-              run: pnpm test -- src/tests/integration
+      - name: "[Regression Tests] - Integration tests"
+        run: pnpm test -- src/tests/integration
 
-            - name: Build project
-              run: pnpm build
+      - name: Build project
+        run: pnpm build

@@ -62,7 +62,6 @@ export default function PetDashboard() {
                         owner.id,
                     );
                     setPets(fetchedPets);
-                    console.log(fetchedPets);
 
                     const promises = [];
                     const images = {};

@@ -1,0 +1,15 @@
+services:
+    nextjs:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                NEXT_PUBLIC_GCP_API_KEY: ${NEXT_PUBLIC_GCP_API_KEY}
+                NEXT_PUBLIC_GCP_AUTH_DOMAIN: ${NEXT_PUBLIC_GCP_AUTH_DOMAIN}
+                NEXT_PUBLIC_GCP_PROJECT_ID: ${NEXT_PUBLIC_GCP_PROJECT_ID}
+                NEXT_PUBLIC_GCP_BUCKET: ${NEXT_PUBLIC_GCP_BUCKET}
+        ports:
+            - "3001:3001"
+        env_file:
+            - ./.env.production
+        restart: no

@@ -1,0 +1,73 @@
+# Dependencies
+node_modules
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js build output
+.next
+out
+dist
+
+# Testing
+coverage
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__
+src/tests
+
+# Environment files
+.env*
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.swc
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Documentation
+*.md
+
+# Docker
+dockerfile
+.dockerignore
+docker-compose.yml
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+
+# Firebase
+firebase-*.json
+
+# TypeScript
+*.tsbuildinfo
+
+# Misc
+.prettierignore
+.prettierrc
+.prettierrc.json
+.eslintrc
+.editorconfig
+jest.config.ts
+next-env.d.ts
+.oxlintrc.json
