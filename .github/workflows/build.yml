@@ -56,3 +56,8 @@ jobs:
 
       - name: Build project
         run: pnpm build
+        env:
+          NEXT_PUBLIC_GCP_API_KEY: ${{ vars.NEXT_PUBLIC_GCP_API_KEY }}
+          NEXT_PUBLIC_GCP_AUTH_DOMAIN: ${{ vars.NEXT_PUBLIC_GCP_AUTH_DOMAIN }}
+          NEXT_PUBLIC_GCP_PROJECT_ID: ${{ vars.NEXT_PUBLIC_GCP_PROJECT_ID }}
+          NEXT_PUBLIC_GCP_BUCKET: ${{ vars.NEXT_PUBLIC_GCP_BUCKET }}
