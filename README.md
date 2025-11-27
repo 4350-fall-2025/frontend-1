@@ -94,3 +94,11 @@ pnpm prepare
 ```bash
 pnpm oxlint .
 ```
+
+## Running the app in a container
+
+Pre-built images of the application can be found in our [repository packages](https://github.com/orgs/4350-fall-2025/packages?repo_name=frontend-1).
+
+To run the latest version of the application simply run `docker compose up` in your terminal and it should pull the image locally and run it in a container.
+
+**Important**: Make sure that you have docker installed and running before running the compose file. For instructions on installing Docker and Docker Desktop, visit their [official documentation](https://docs.docker.com/desktop/)
