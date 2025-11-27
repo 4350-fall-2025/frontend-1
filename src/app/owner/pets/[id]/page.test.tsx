@@ -1,140 +1,58 @@
 import "@testing-library/jest-dom";
-import { render, screen, waitFor } from "~tests/utils/custom-testing-library";
-import { mockPets } from "~data/pets/mock";
-import { mockAuthOwner } from "~data/owner/mock";
-import { MOCK_DIARY_ENTRIES } from "~data/diary/mock";
+import { render, screen } from "~tests/utils/custom-testing-library";
 import PetProfilePage from "./page";
-import { setAuthCookie, removeAuthCookie } from "~util/auth/authCookies";
 
-const mockUseRouter = jest.fn();
-const mockBack = jest.fn();
+const mockUseParams = jest.fn();
 jest.mock("next/navigation", () => ({
-    useRouter: () => ({
-        back: mockBack,
-        push: mockUseRouter,
-    }),
-    useParams: () => ({ id: "pet123" }),
+    useParams: () => mockUseParams(),
 }));
 
-const mockGetPet = jest.fn();
-jest.mock("~api/petsAPI", () => ({
-    PetsAPI: {
-        getPet: (...args: any[]) => mockGetPet(...args),
-    },
-}));
-
-const mockGetDiaryEntries = jest.fn();
-jest.mock("~api/petDiaryAPI", () => ({
-    PetDiaryAPI: {
-        getDiaryEntries: (...args: any[]) => mockGetDiaryEntries(...args),
-    },
-}));
-
-const mockGetImageURL = jest.fn();
-jest.mock("../../../../firebase", () => ({
-    generatePetURL: jest.fn(() => "pets/user123/pet123"),
-    getImageURL: (...args: any[]) => mockGetImageURL(...args),
-    signInWithBackendToken: jest.fn(() => Promise.resolve()),
-}));
+// Mock the PetProfile component since we're only testing the page wrapper
+jest.mock("~components/petProfile/petProfile", () => {
+    return function MockPetProfile({ id }: { id: string }) {
+        return (
+            <div data-testid='pet-profile-component'>
+                Pet Profile with id: {id}
+            </div>
+        );
+    };
+});
 
 describe("Pet Profile Page", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        setAuthCookie(mockAuthOwner);
-
-        mockGetPet.mockResolvedValue(mockPets[0]);
-        mockGetDiaryEntries.mockResolvedValue(MOCK_DIARY_ENTRIES);
-        mockGetImageURL.mockResolvedValue("/test-image.jpg");
+        mockUseParams.mockReturnValue({ id: "pet123" });
     });
 
-    afterEach(() => {
-        removeAuthCookie();
-    });
-
-    describe("Page rendering", () => {
-        it("renders the back button", async () => {
+    describe("Page layout", () => {
+        it("renders the back button with correct link", () => {
             render(<PetProfilePage />);
 
-            const backButton = await screen.findByRole("link", {
+            const backButton = screen.getByRole("link", {
                 name: /back to my pets/i,
             });
             expect(backButton).toBeInTheDocument();
             expect(backButton).toHaveAttribute("href", "/owner/pets/dashboard");
         });
 
-        it("fetches and displays pet data", async () => {
+        it("renders the PetProfile component", () => {
             render(<PetProfilePage />);
 
-            await waitFor(() => {
-                expect(mockGetPet).toHaveBeenCalledWith("pet123");
-            });
-
-            const petName = await screen.findByText(/bella/i);
-            expect(petName).toBeInTheDocument();
-        });
-
-        it("fetches and displays diary entries", async () => {
-            render(<PetProfilePage />);
-
-            await waitFor(() => {
-                expect(mockGetDiaryEntries).toHaveBeenCalledWith("pet123");
-            });
-        });
-
-        it("fetches pet image", async () => {
-            render(<PetProfilePage />);
-
-            await waitFor(() => {
-                expect(mockGetImageURL).toHaveBeenCalled();
-            });
-        });
-    });
-
-    describe("Error handling", () => {
-        it("displays error component when pet fetch fails", async () => {
-            mockGetPet.mockRejectedValue("API Error");
-
-            render(<PetProfilePage />);
-
-            const errorComponent = await screen.findByText(/ruh roh/i);
-            expect(errorComponent).toBeInTheDocument();
-        });
-
-        it("displays error component when diary entries fetch fails", async () => {
-            mockGetDiaryEntries.mockRejectedValue("API Error");
-
-            render(<PetProfilePage />);
-
-            const errorComponent = await screen.findByText(/ruh roh/i);
-            expect(errorComponent).toBeInTheDocument();
-        });
-
-        it("uses placeholder image when image fetch fails", async () => {
-            mockGetImageURL.mockRejectedValue("API Error");
-
-            render(<PetProfilePage />);
-
-            await waitFor(() => {
-                expect(mockGetImageURL).toHaveBeenCalled();
-            });
-
-            // Image should still render with placeholder
-            const placeholderUrl = "/placeholder.jpg";
-            const petImage = await screen.findByAltText("Pet profile picture");
-            expect(petImage).toBeInTheDocument();
-            expect(petImage).toHaveAttribute(
-                "src",
-                expect.stringContaining(placeholderUrl),
+            const petProfileComponent = screen.getByTestId(
+                "pet-profile-component",
             );
+            expect(petProfileComponent).toBeInTheDocument();
         });
 
-        it("displays error when user is not signed in", async () => {
-            removeAuthCookie();
-
+        it("passes the correct pet id from params to PetProfile component", () => {
             render(<PetProfilePage />);
 
-            const errorComponent = await screen.findByText(/ruh roh/i);
-            expect(errorComponent).toBeInTheDocument();
+            const petProfileComponent = screen.getByTestId(
+                "pet-profile-component",
+            );
+            expect(petProfileComponent).toHaveTextContent(
+                "Pet Profile with id: pet123",
+            );
         });
     });
 });

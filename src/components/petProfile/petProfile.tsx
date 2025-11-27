@@ -8,22 +8,76 @@ import {
     formatAnimalGroup,
     formatSterileStatus,
 } from "~util/strings/format-pet";
-import { toSentenceCase } from "~util/strings/normalize";
+import { useEffect, useState } from "react";
+import { PetsAPI } from "~api/petsAPI";
+import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { Pet } from "src/models/pet";
 import { PetDiary } from "src/models/pet-diary";
+import Error from "~components/error/error";
+import { generatePetURL, getImageURL } from "src/firebase";
+import { getAuthCookie } from "~util/auth/authCookies";
+import { toSentenceCase } from "~util/strings/normalize";
 import styles from "./petProfile.module.scss";
 
 interface PetProfileProps {
-    pet: Pet;
-    diaryEntries: PetDiary[];
-    imageUrl: string;
+    id: string;
 }
 
-export default function PetProfile({
-    pet,
-    diaryEntries,
-    imageUrl,
-}: PetProfileProps) {
+export default function PetProfile({ id }: PetProfileProps) {
+    const placeholderUrl = "/placeholder.jpg";
+
+    const [error, setError] = useState<string>(null);
+    const [pet, setPet] = useState<Pet | null>(null);
+    const [diaryEntries, setDiaryEntries] = useState<PetDiary[]>([]);
+
+    const [imageUrl, setImageUrl] = useState<string>(placeholderUrl); //default should be placeholder image
+
+    const getPetData = async () => {
+        try {
+            const response = await PetsAPI.getPet(id);
+            getPetImage();
+            setPet(response);
+        } catch (error) {
+            setError(error);
+            return;
+        }
+    };
+
+    const getPetDiaryData = async () => {
+        try {
+            const response = await PetDiaryAPI.getDiaryEntries(id);
+            setDiaryEntries(response);
+        } catch (error) {
+            setError(error);
+            return;
+        }
+    };
+
+    const getPetImage = async () => {
+        try {
+            const authUser = getAuthCookie();
+            if (authUser?.userId != null) {
+                const filePath = generatePetURL(authUser.userId, id);
+                const url = await getImageURL(filePath);
+                setImageUrl(url);
+            } else {
+                setError("Not signed In");
+            }
+        } catch (error) {
+            //TO-DO maybe for a specific error
+            setImageUrl(placeholderUrl);
+        }
+    };
+
+    useEffect(() => {
+        getPetData();
+        getPetDiaryData();
+    }, []);
+
+    if (error) {
+        return <Error />;
+    }
+
     return (
         <div className={styles.component}>
             <div className={styles.component_content}>

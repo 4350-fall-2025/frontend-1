@@ -5,19 +5,19 @@
 
 import "@testing-library/jest-dom";
 import dayjs from "dayjs";
-import { MOCK_DIARY_ENTRIES, MOCK_DIARY_ENTRY } from "~data/diary/mock";
+import { PetsAPI } from "~api/petsAPI";
+import { PetDiaryAPI } from "~api/petDiaryAPI";
+import { MOCK_DIARY_ENTRY } from "~data/diary/mock";
 import { render, screen } from "~tests/utils/custom-testing-library";
 import { mockPets } from "~data/pets/mock";
 import { mockAuthOwner } from "~data/owner/mock";
 import { toSentenceCase } from "~util/strings/normalize";
 import PetProfile from "./petProfile";
+import { removeAuthCookie, setAuthCookie } from "~util/auth/authCookies";
 
 const mockUseRouter = jest.fn();
 jest.mock("next/navigation", () => ({
-    useRouter: () => ({
-        back: mockUseRouter,
-    }),
-    useParams: () => ({ id: 1 }),
+    useRouter: () => mockUseRouter,
 }));
 
 jest.mock("~util/strings/format-pet", () => {
@@ -33,20 +33,42 @@ jest.mock("~util/strings/format-pet", () => {
     };
 });
 
+const mockGetPet = jest.fn();
+PetsAPI.getPet = mockGetPet;
+
+const mockGetDiaryEntries = jest.fn();
+PetDiaryAPI.getDiaryEntries = mockGetDiaryEntries;
+
+const mockGetImageURL = jest.fn();
+jest.mock("../../firebase", () => ({
+    auth: {},
+    storage: {},
+    generatePetURL: jest.fn(() => "pets/user123/pet123"),
+    getImageURL: (...args: any[]) => mockGetImageURL(...args),
+    signInWithBackendToken: jest.fn(() => Promise.resolve()),
+}));
+
 describe("Pet Profile", () => {
+    const petId = "pet123";
+
     beforeEach(() => {
         jest.clearAllMocks();
+        setAuthCookie(mockAuthOwner);
+        mockGetDiaryEntries.mockResolvedValue([]);
+    });
+
+    afterEach(() => {
+        removeAuthCookie();
     });
 
     describe("Pet info", () => {
+        beforeEach(() => {
+            mockGetDiaryEntries.mockResolvedValue([]);
+        });
+
         it("renders the pet info on the page", async () => {
-            await render(
-                <PetProfile
-                    pet={mockPets[0]}
-                    diaryEntries={MOCK_DIARY_ENTRIES}
-                    imageUrl='/placeholder.jpg'
-                />,
-            );
+            mockGetPet.mockResolvedValue(mockPets[0]);
+            await render(<PetProfile id={petId} />);
 
             const isoDateString = new Date(mockPets[0].birthdate).toISOString();
             const formattedDateString =
@@ -72,29 +94,31 @@ describe("Pet Profile", () => {
         });
 
         it("show placeholder when no vet notes present", async () => {
-            await render(
-                <PetProfile
-                    pet={mockPets[0]}
-                    diaryEntries={MOCK_DIARY_ENTRIES}
-                    imageUrl='/placeholder.jpg'
-                />,
-            );
+            mockGetPet.mockResolvedValue(mockPets[0]);
+            await render(<PetProfile id={petId} />);
 
             const noEntriesMessage =
                 await screen.findByText(/no notes to show/i);
             expect(noEntriesMessage).toBeInTheDocument();
         });
+
+        it("renders error component on API error", async () => {
+            mockGetPet.mockRejectedValue("API Error");
+            await render(<PetProfile id={petId} />);
+
+            const errorMessage = await screen.findByText(/ruh roh/i);
+            expect(errorMessage).toBeInTheDocument();
+        });
     });
 
     describe("Diary entries", () => {
+        beforeEach(async () => {
+            mockGetPet.mockResolvedValue(mockPets[0]);
+        });
+
         it("renders diary entries on the page", async () => {
-            await render(
-                <PetProfile
-                    pet={mockPets[0]}
-                    diaryEntries={MOCK_DIARY_ENTRIES}
-                    imageUrl='/placeholder.jpg'
-                />,
-            );
+            mockGetDiaryEntries.mockResolvedValue([MOCK_DIARY_ENTRY]);
+            await render(<PetProfile id={petId} />);
 
             await expect(
                 screen.findByText(toSentenceCase(MOCK_DIARY_ENTRY.contentType)),
@@ -102,35 +126,49 @@ describe("Pet Profile", () => {
         });
 
         it("shows placeholder when no diary entries present", async () => {
-            await render(
-                <PetProfile
-                    pet={mockPets[0]}
-                    diaryEntries={[]}
-                    imageUrl='/placeholder.jpg'
-                />,
-            );
+            mockGetDiaryEntries.mockResolvedValue([]);
+            await render(<PetProfile id={petId} />);
 
             const noEntriesMessage = await screen.findByText(/no entries yet/i);
             expect(noEntriesMessage).toBeInTheDocument();
         });
+
+        it("renders error component on API error", async () => {
+            mockGetDiaryEntries.mockRejectedValue("API Error");
+            await render(<PetProfile id={petId} />);
+
+            const errorMessage = await screen.findByText(/ruh roh/i);
+            expect(errorMessage).toBeInTheDocument();
+        });
     });
 
     describe("Pet image", () => {
+        beforeEach(() => {
+            mockGetPet.mockResolvedValue(mockPets[0]);
+            mockGetDiaryEntries.mockResolvedValue([]);
+        });
+
         it("renders pet image with correct URL", async () => {
-            const testImageUrl = "/test-pet-image.jpg";
-            await render(
-                <PetProfile
-                    pet={mockPets[0]}
-                    diaryEntries={MOCK_DIARY_ENTRIES}
-                    imageUrl={testImageUrl}
-                />,
-            );
+            mockGetImageURL.mockResolvedValue("/test-pet-image.jpg");
+            await render(<PetProfile id={petId} />);
 
             const petImage = await screen.findByAltText("Pet profile picture");
             expect(petImage).toBeInTheDocument();
             expect(petImage).toHaveAttribute(
                 "src",
-                expect.stringContaining(testImageUrl),
+                expect.stringContaining("/test-pet-image.jpg"),
+            );
+        });
+
+        it("renders placeholder image if pet has no image", async () => {
+            mockGetImageURL.mockRejectedValue("API Error");
+            await render(<PetProfile id={petId} />);
+
+            const petImage = await screen.findByAltText("Pet profile picture");
+            expect(petImage).toBeInTheDocument();
+            expect(petImage).toHaveAttribute(
+                "src",
+                expect.stringContaining("/placeholder.jpg"),
             );
         });
     });
