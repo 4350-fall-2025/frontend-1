@@ -45,7 +45,18 @@ As our server is not currently hosted on the cloud in order to run the app local
 
 The instructions are located [here](https://github.com/4350-fall-2025/backend/blob/develop/README.md).
 
-Once done please run the back end server in emulator mode.
+Once done please run the back end server.
+
+### 5: (optional) Add Firebase related values in .env file
+
+if you want to connect to a real database instance, create a .env file with the following values:
+
+```bash
+NEXT_PUBLIC_GCP_API_KEY=
+NEXT_PUBLIC_GCP_AUTH_DOMAIN=
+NEXT_PUBLIC_GCP_PROJECT_ID=
+NEXT_PUBLIC_GCP_BUCKET=
+```
 
 ### 5: Run the Front End Server
 
