@@ -4,9 +4,7 @@
 @import "../../../globals.scss";
 
 .page {
-    background-color: $color-white;
     min-height: 100vh;
-    padding: 5% 8%;
 }
 
 // HEADER SECTION
@@ -18,7 +16,6 @@
     font-size: $font-xlarge;
     font-weight: 700;
     margin: 0 0 20px 0;
-    color: $color-black;
 }
 
 .add_button {

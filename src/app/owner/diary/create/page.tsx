@@ -9,12 +9,13 @@ import { validateOptionalImage } from "~util/validation/validation";
 import { validateDiaryContentBody } from "~util/validation/validate-diary";
 import { Button, Group, List, Select, Textarea } from "@mantine/core";
 import { noteTypeOptions } from "~data/diary/constants";
+import { getAuthenticatedOwner } from "~util/auth/getAuthenticatedUser";
 import { useFileDialog } from "@mantine/hooks";
 import { Pet } from "src/models/pet";
 import { Owner } from "src/models/owner";
 import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
-import { todayDate } from "~data/constants";
+import { todayDate, UserRoles } from "~data/constants";
 import { generateDiaryURL, uploadFile, STORAGE_FLAG } from "src/firebase";
 
 /**
@@ -25,23 +26,24 @@ function NewDiary() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [error, setError] = useState("");
-    const [owner, setOwner] = useState<Owner>(null);
+    const [owner, setOwner] = useState<Owner | null>(null);
     const [isNoteTypePreselected, setIsNoteTypePreselected] = useState(false);
     const [pickedFilesList, setFilesList] = useState([]);
 
     useEffect(() => {
-        let storedUser = localStorage.getItem("currentUser");
-        if (storedUser) {
-            const storedOwner = new Owner(JSON.parse(storedUser));
-
-            setOwner(storedOwner);
+        try {
+            const authenticatedOwner = getAuthenticatedOwner();
+            setOwner(authenticatedOwner);
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            }
         }
     }, []);
 
     const [pets, setPets] = useState<Pet[]>([]);
 
     // TODO: Make a util function for fetching pets and return the pets? to reduce duplicate code
-    // localStorage code above might benefit from this too but we are switching to firestore so not needed
 
     // Load pets when owner is available
     useEffect(() => {
@@ -261,7 +263,9 @@ function NewDiary() {
                             </Button>
                         </div>
 
-                        <p className={globalStyles.error_message}>{error}</p>
+                        <p className={globalStyles.error_message_end}>
+                            {error}
+                        </p>
                     </div>
                 </form>
             </main>

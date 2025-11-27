@@ -18,6 +18,8 @@ import {
 } from "~util/validation/validate-signup";
 
 import styles from "./page.module.scss";
+import globalStyles from "~app/layout.module.scss";
+
 import { Vet } from "src/models/vet";
 import { VetsAPI } from "src/api/vetsAPI";
 
@@ -123,7 +125,9 @@ export default function VetSignup() {
                     <Button type='submit'>I'm ready!</Button>
                 </Group>
             </form>
-            {error != "" && <h3 className={styles.red_text}>{error}</h3>}
+            {error != "" && (
+                <h3 className={globalStyles.error_message}>{error}</h3>
+            )}
         </>
     );
 }

@@ -6,6 +6,8 @@
  * - Testing mobile menu toggle
  * - Testing navigation links
  * - Testing logo visibility
+ * - Testing dynamic link rendering based on props
+ * - Testing different user type configurations (owner/vet)
  *
  * Testing patterns and best practices from:
  * - https://testing-library.com/docs/react-testing-library/intro
@@ -18,6 +20,7 @@ import userEvent from "@testing-library/user-event";
 import { render, screen } from "~tests/utils/custom-testing-library";
 import Sidebar from "./sidebar";
 import { fireEvent } from "~tests/utils/custom-testing-library";
+import { ownerNavLinks, vetNavLinks } from "./sidebar-config";
 
 /**
  * Test suites and mock functions generated with GPT-5 mini and help from:
@@ -28,6 +31,7 @@ jest.mock("next/navigation", () => ({
     useRouter: () => ({
         push: pushMock,
     }),
+    usePathname: () => "/owner/dashboard",
 }));
 
 jest.mock("../../firebase", () => ({
@@ -43,10 +47,14 @@ describe("Sidebar Component", () => {
 
     beforeEach(() => {
         user = userEvent.setup();
-        render(<Sidebar />);
+        jest.clearAllMocks();
     });
 
-    describe("Rendering Side NavBar", () => {
+    describe("Rendering Side NavBar - Owner", () => {
+        beforeEach(() => {
+            render(<Sidebar navLinks={ownerNavLinks} variant='owner' />);
+        });
+
         it("should render the sidebar", () => {
             const sidebar = screen.getByRole("complementary");
             expect(sidebar).toBeInTheDocument();
@@ -57,16 +65,50 @@ describe("Sidebar Component", () => {
             expect(logo).toBeInTheDocument();
         });
 
-        it("should render all navigation links", () => {
+        it("should render all owner navigation links", () => {
             expect(screen.getByText("Dashboard")).toBeInTheDocument();
             expect(screen.getByText("My Pets")).toBeInTheDocument();
             expect(screen.getByText("Appointments")).toBeInTheDocument();
             expect(screen.getByText("Pet Diary")).toBeInTheDocument();
             expect(screen.getByText("Messages")).toBeInTheDocument();
         });
+
+        it("should render correct number of navigation links", () => {
+            const navLinks = screen.getAllByRole("link");
+            // ownerNavLinks has 5 links
+            expect(navLinks).toHaveLength(5);
+        });
     });
 
-    describe("Navigation Links", () => {
+    describe("Rendering Side NavBar - Vet", () => {
+        beforeEach(() => {
+            render(<Sidebar navLinks={vetNavLinks} variant='vet' />);
+        });
+
+        it("should render all vet navigation links", () => {
+            expect(screen.getByText("Dashboard")).toBeInTheDocument();
+            expect(screen.getByText("Appointments")).toBeInTheDocument();
+            expect(screen.getByText("Patients")).toBeInTheDocument();
+            expect(screen.getByText("Messages")).toBeInTheDocument();
+        });
+
+        it("should not render owner-specific links", () => {
+            expect(screen.queryByText("My Pets")).not.toBeInTheDocument();
+            expect(screen.queryByText("Pet Diary")).not.toBeInTheDocument();
+        });
+
+        it("should render correct number of navigation links", () => {
+            const navLinks = screen.getAllByRole("link");
+            // vetNavLinks has 5 links
+            expect(navLinks).toHaveLength(4);
+        });
+    });
+
+    describe("Navigation Links - Owner", () => {
+        beforeEach(() => {
+            render(<Sidebar navLinks={ownerNavLinks} variant='owner' />);
+        });
+
         it("Dashboard link should navigate to /owner/dashboard", () => {
             const dashboardLink = screen.getByText("Dashboard").closest("a");
             expect(dashboardLink).toHaveAttribute("href", "/owner/dashboard");
@@ -83,14 +125,6 @@ describe("Sidebar Component", () => {
                 "href",
                 "/owner/diary/dashboard",
             );
-        });
-
-        it("Sign Out Button should navigate back to log in", () => {
-            fireEvent.click(screen.getByText("Sign Out"));
-            expect(window.confirm).toHaveBeenCalledWith(
-                "Are you sure you want to sign out?",
-            );
-            expect(pushMock).toHaveBeenCalledWith("/");
         });
 
         it("other nav links should link to under-construction page", () => {
@@ -112,7 +146,47 @@ describe("Sidebar Component", () => {
         });
     });
 
+    describe("Navigation Links - Vet", () => {
+        beforeEach(() => {
+            render(<Sidebar navLinks={vetNavLinks} variant='vet' />);
+        });
+
+        it("Dashboard link should navigate to /vet/dashboard", () => {
+            const dashboardLink = screen.getByText("Dashboard").closest("a");
+            expect(dashboardLink).toHaveAttribute("href", "/vet/dashboard");
+        });
+
+        it("Patients link should navigate to under-construction", () => {
+            const patientsLink = screen.getByText("Patients").closest("a");
+            expect(patientsLink).toHaveAttribute("href", "/under-construction");
+        });
+    });
+
+    describe("Sign Out Functionality", () => {
+        beforeEach(() => {
+            render(<Sidebar navLinks={ownerNavLinks} variant='owner' />);
+        });
+
+        it("Sign Out Button should navigate back to log in", () => {
+            fireEvent.click(screen.getByText("Sign Out"));
+            expect(window.confirm).toHaveBeenCalledWith(
+                "Are you sure you want to sign out?",
+            );
+            expect(pushMock).toHaveBeenCalledWith("/");
+        });
+
+        it("should call signOutOfFirebase when signing out", () => {
+            const signOutMock = require("../../firebase").signOutOfFirebase;
+            fireEvent.click(screen.getByText("Sign Out"));
+            expect(signOutMock).toHaveBeenCalled();
+        });
+    });
+
     describe("Desktop View", () => {
+        beforeEach(() => {
+            render(<Sidebar navLinks={ownerNavLinks} variant='owner' />);
+        });
+
         it("logo should be visible on desktop", () => {
             const logo = screen.getByAltText("QDog Logo");
             expect(logo).toBeVisible();
@@ -135,6 +209,10 @@ describe("Sidebar Component", () => {
     });
 
     describe("Mobile View - Toggle Functionality", () => {
+        beforeEach(() => {
+            render(<Sidebar navLinks={ownerNavLinks} variant='owner' />);
+        });
+
         it("toggle button should open and close sidebar", async () => {
             const toggleBtn = screen.getByRole("button", { name: /menu/i });
 
@@ -206,6 +284,10 @@ describe("Sidebar Component", () => {
     });
 
     describe("Accessibility", () => {
+        beforeEach(() => {
+            render(<Sidebar navLinks={ownerNavLinks} variant='owner' />);
+        });
+
         it("sidebar should be a complementary landmark", () => {
             const sidebar = screen.getByRole("complementary");
             expect(sidebar).toBeInTheDocument();
@@ -230,6 +312,33 @@ describe("Sidebar Component", () => {
         it("toggle button should have descriptive text", () => {
             const toggleBtn = screen.getByRole("button", { name: /menu/i });
             expect(toggleBtn).toHaveTextContent("Menu");
+        });
+    });
+
+    describe("Dynamic Link Rendering", () => {
+        it("should render custom links when provided", () => {
+            const customLinks = [
+                { label: "Custom Link 1", href: "/custom1" },
+                { label: "Custom Link 2", href: "/custom2" },
+            ];
+
+            render(<Sidebar navLinks={customLinks} />);
+
+            expect(screen.getByText("Custom Link 1")).toBeInTheDocument();
+            expect(screen.getByText("Custom Link 2")).toBeInTheDocument();
+            expect(screen.getAllByRole("link")).toHaveLength(2);
+        });
+
+        it("should handle empty navLinks array", () => {
+            render(<Sidebar navLinks={[]} />);
+
+            // Should still render sidebar structure
+            expect(screen.getByRole("complementary")).toBeInTheDocument();
+            expect(screen.getByAltText("QDog Logo")).toBeInTheDocument();
+            expect(screen.getByText("Sign Out")).toBeInTheDocument();
+
+            // But no nav links
+            expect(screen.queryAllByRole("link")).toHaveLength(0);
         });
     });
 });
