@@ -10,7 +10,7 @@ export default function OwnerLayout({
 }) {
     return (
         <div className={styles.layout}>
-            <Sidebar navLinks={ownerNavLinks} variant="owner" />
+            <Sidebar navLinks={ownerNavLinks} variant='owner' />
             <main className={styles.content}>{children}</main>
         </div>
     );

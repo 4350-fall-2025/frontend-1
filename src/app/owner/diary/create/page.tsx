@@ -16,7 +16,7 @@ import { Owner } from "src/models/owner";
 import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { todayDate, UserRoles } from "~data/constants";
-import { generateDiaryURL, uploadFile } from "src/firebase";
+import { generateDiaryURL, uploadFile, STORAGE_FLAG } from "src/firebase";
 
 /**
  * Some sample code came from Mantine use-file-dialog
@@ -144,6 +144,10 @@ function NewDiary() {
                     createTimestamp: todayDate,
                     files: pickedFilesList.map((file) => file.name),
                 };
+
+                if (!STORAGE_FLAG) {
+                    diaryEntryJSON["files"] = [];
+                }
 
                 const diaryEntry = new PetDiary(diaryEntryJSON);
 
