@@ -72,7 +72,6 @@ jest.mock("../../../../firebase", () => ({
 
 describe("New Pet page", () => {
     let name: HTMLElement;
-    let petImage: HTMLElement;
     let resetImageButton: HTMLElement;
     let pickImageButton: HTMLElement;
     let animalGroup: HTMLElement;
@@ -89,8 +88,6 @@ describe("New Pet page", () => {
         user = userEvent.setup();
         render(<NewPet />);
 
-        // Wait for the placeholder image effect to finish (ensures act warnings are silenced)
-        petImage = await screen.findByAltText(/new pet image/i);
         ({
             name,
             resetImageButton,
