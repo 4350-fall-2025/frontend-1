@@ -31,7 +31,7 @@ jest.mock("next/navigation", () => ({
     useRouter: () => ({
         push: pushMock,
     }),
-    usePathname: () => "/owner/dashboard",
+    usePathname: () => "/owner/pets/dashboard",
 }));
 
 jest.mock("../../firebase", () => ({
@@ -66,7 +66,6 @@ describe("Sidebar Component", () => {
         });
 
         it("should render all owner navigation links", () => {
-            expect(screen.getByText("Dashboard")).toBeInTheDocument();
             expect(screen.getByText("My Pets")).toBeInTheDocument();
             expect(screen.getByText("Appointments")).toBeInTheDocument();
             expect(screen.getByText("Pet Diary")).toBeInTheDocument();
@@ -76,7 +75,7 @@ describe("Sidebar Component", () => {
         it("should render correct number of navigation links", () => {
             const navLinks = screen.getAllByRole("link");
             // ownerNavLinks has 5 links
-            expect(navLinks).toHaveLength(5);
+            expect(navLinks).toHaveLength(4);
         });
     });
 
@@ -109,11 +108,6 @@ describe("Sidebar Component", () => {
             render(<Sidebar navLinks={ownerNavLinks} variant='owner' />);
         });
 
-        it("Dashboard link should navigate to /owner/dashboard", () => {
-            const dashboardLink = screen.getByText("Dashboard").closest("a");
-            expect(dashboardLink).toHaveAttribute("href", "/owner/dashboard");
-        });
-
         it("My Pets link should navigate to /owner/pets/dashboard", () => {
             const myPetsLink = screen.getByText("My Pets").closest("a");
             expect(myPetsLink).toHaveAttribute("href", "/owner/pets/dashboard");
@@ -141,7 +135,7 @@ describe("Sidebar Component", () => {
         });
 
         it("nav links should have navLink class styling", () => {
-            const dashboardLink = screen.getByText("Dashboard");
+            const dashboardLink = screen.getByText("My Pets");
             expect(dashboardLink.closest("a")?.className).toContain("navLink");
         });
     });
@@ -199,7 +193,6 @@ describe("Sidebar Component", () => {
         });
 
         it("all nav links should be visible on desktop", () => {
-            expect(screen.getByText("Dashboard")).toBeVisible();
             expect(screen.getByText("My Pets")).toBeVisible();
             expect(screen.getByText("Appointments")).toBeVisible();
             expect(screen.getByText("Pet Diary")).toBeVisible();
@@ -275,7 +268,6 @@ describe("Sidebar Component", () => {
 
             await user.click(toggleBtn);
 
-            expect(screen.getByText("Dashboard")).toBeVisible();
             expect(screen.getByText("My Pets")).toBeVisible();
             expect(screen.getByText("Appointments")).toBeVisible();
             expect(screen.getByText("Pet Diary")).toBeVisible();
@@ -294,7 +286,7 @@ describe("Sidebar Component", () => {
         });
 
         it("nav links should be keyboard accessible", async () => {
-            const firstLink = screen.getByText("Dashboard").closest("a");
+            const firstLink = screen.getByText("My Pets").closest("a");
             firstLink?.focus();
             expect(firstLink).toHaveFocus();
         });

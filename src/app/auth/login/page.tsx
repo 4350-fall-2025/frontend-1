@@ -79,7 +79,7 @@ export default function LoginPage() {
                     email: owner.email,
                 });
                 signInWithBackendToken(owner.token);
-                router.push("/owner/dashboard");
+                router.push("/owner/pets/dashboard");
             }
         } catch (error) {
             setErrorMessage("Invalid Login. Please try again.");
