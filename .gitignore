@@ -44,4 +44,3 @@ next-env.d.ts
 .DS_Store
 # vscode
 .vscode/*
-src/firebase-config.ts
