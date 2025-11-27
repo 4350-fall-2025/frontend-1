@@ -18,7 +18,6 @@ import {
     getDownloadURL,
     getBytes,
 } from "firebase/storage";
-import { firebaseDBConfig } from "./firebase-config";
 import placeholderImage from "~public/placeholder.jpg";
 
 export const EMULATOR_FLAG = true;
@@ -29,6 +28,13 @@ const firebaseEmulatorConfig = {
     authDomain: "qdog-6aca2.firebaseapp.com",
     projectId: "qdog-6aca2",
     storageBucket: "qdog-6aca2.appspot.com",
+};
+
+const firebaseDBConfig = {
+    apiKey: process.env.NEXT_PUBLIC_GCP_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_GCP_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_GCP_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_GCP_BUCKET,
 };
 
 // Initialize Firebase App
