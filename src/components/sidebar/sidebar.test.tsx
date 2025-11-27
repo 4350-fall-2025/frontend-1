@@ -31,7 +31,7 @@ jest.mock("next/navigation", () => ({
     useRouter: () => ({
         push: pushMock,
     }),
-    usePathname: () => "/owner/dashboard",
+    usePathname: () => "/owner/pets/dashboard",
 }));
 
 jest.mock("../../firebase", () => ({
@@ -52,7 +52,7 @@ describe("Sidebar Component", () => {
 
     describe("Rendering Side NavBar - Owner", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={ownerNavLinks} variant="owner" />);
+            render(<Sidebar navLinks={ownerNavLinks} variant='owner' />);
         });
 
         it("should render the sidebar", () => {
@@ -66,7 +66,6 @@ describe("Sidebar Component", () => {
         });
 
         it("should render all owner navigation links", () => {
-            expect(screen.getByText("Dashboard")).toBeInTheDocument();
             expect(screen.getByText("My Pets")).toBeInTheDocument();
             expect(screen.getByText("Appointments")).toBeInTheDocument();
             expect(screen.getByText("Pet Diary")).toBeInTheDocument();
@@ -76,13 +75,13 @@ describe("Sidebar Component", () => {
         it("should render correct number of navigation links", () => {
             const navLinks = screen.getAllByRole("link");
             // ownerNavLinks has 5 links
-            expect(navLinks).toHaveLength(5);
+            expect(navLinks).toHaveLength(4);
         });
     });
 
     describe("Rendering Side NavBar - Vet", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={vetNavLinks} variant="vet" />);
+            render(<Sidebar navLinks={vetNavLinks} variant='vet' />);
         });
 
         it("should render all vet navigation links", () => {
@@ -106,12 +105,7 @@ describe("Sidebar Component", () => {
 
     describe("Navigation Links - Owner", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={ownerNavLinks} variant="owner" />);
-        });
-
-        it("Dashboard link should navigate to /owner/dashboard", () => {
-            const dashboardLink = screen.getByText("Dashboard").closest("a");
-            expect(dashboardLink).toHaveAttribute("href", "/owner/dashboard");
+            render(<Sidebar navLinks={ownerNavLinks} variant='owner' />);
         });
 
         it("My Pets link should navigate to /owner/pets/dashboard", () => {
@@ -141,14 +135,14 @@ describe("Sidebar Component", () => {
         });
 
         it("nav links should have navLink class styling", () => {
-            const dashboardLink = screen.getByText("Dashboard");
+            const dashboardLink = screen.getByText("My Pets");
             expect(dashboardLink.closest("a")?.className).toContain("navLink");
         });
     });
 
     describe("Navigation Links - Vet", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={vetNavLinks} variant="vet" />);
+            render(<Sidebar navLinks={vetNavLinks} variant='vet' />);
         });
 
         it("Dashboard link should navigate to /vet/dashboard", () => {
@@ -164,7 +158,7 @@ describe("Sidebar Component", () => {
 
     describe("Sign Out Functionality", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={ownerNavLinks} variant="owner" />);
+            render(<Sidebar navLinks={ownerNavLinks} variant='owner' />);
         });
 
         it("Sign Out Button should navigate back to log in", () => {
@@ -184,7 +178,7 @@ describe("Sidebar Component", () => {
 
     describe("Desktop View", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={ownerNavLinks} variant="owner" />);
+            render(<Sidebar navLinks={ownerNavLinks} variant='owner' />);
         });
 
         it("logo should be visible on desktop", () => {
@@ -199,7 +193,6 @@ describe("Sidebar Component", () => {
         });
 
         it("all nav links should be visible on desktop", () => {
-            expect(screen.getByText("Dashboard")).toBeVisible();
             expect(screen.getByText("My Pets")).toBeVisible();
             expect(screen.getByText("Appointments")).toBeVisible();
             expect(screen.getByText("Pet Diary")).toBeVisible();
@@ -210,7 +203,7 @@ describe("Sidebar Component", () => {
 
     describe("Mobile View - Toggle Functionality", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={ownerNavLinks} variant="owner" />);
+            render(<Sidebar navLinks={ownerNavLinks} variant='owner' />);
         });
 
         it("toggle button should open and close sidebar", async () => {
@@ -275,7 +268,6 @@ describe("Sidebar Component", () => {
 
             await user.click(toggleBtn);
 
-            expect(screen.getByText("Dashboard")).toBeVisible();
             expect(screen.getByText("My Pets")).toBeVisible();
             expect(screen.getByText("Appointments")).toBeVisible();
             expect(screen.getByText("Pet Diary")).toBeVisible();
@@ -285,7 +277,7 @@ describe("Sidebar Component", () => {
 
     describe("Accessibility", () => {
         beforeEach(() => {
-            render(<Sidebar navLinks={ownerNavLinks} variant="owner" />);
+            render(<Sidebar navLinks={ownerNavLinks} variant='owner' />);
         });
 
         it("sidebar should be a complementary landmark", () => {
@@ -294,7 +286,7 @@ describe("Sidebar Component", () => {
         });
 
         it("nav links should be keyboard accessible", async () => {
-            const firstLink = screen.getByText("Dashboard").closest("a");
+            const firstLink = screen.getByText("My Pets").closest("a");
             firstLink?.focus();
             expect(firstLink).toHaveFocus();
         });

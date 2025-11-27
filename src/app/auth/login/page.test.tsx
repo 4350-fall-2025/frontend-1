@@ -108,7 +108,7 @@ describe("Login page (src/app/page.tsx)", () => {
         await user.click(screen.getByRole("button", { name: /login/i }));
 
         await waitFor(() => {
-            expect(push).toHaveBeenCalledWith("/owner/dashboard");
+            expect(push).toHaveBeenCalledWith("/owner/pets/dashboard");
         });
     });
 

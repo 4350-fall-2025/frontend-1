@@ -18,6 +18,7 @@ import { mockPets } from "~data/pets/mock";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { PetsAPI } from "~api/petsAPI";
 import { mockAuthOwner } from "~data/owner/mock";
+import { setAuthCookie } from "~util/auth/authCookies";
 
 // Mock router
 const pushMock = jest.fn();
@@ -78,7 +79,7 @@ describe("New Diary Entry page", () => {
             mockGet.mockReturnValue(null);
 
             // Set up mock user in cookies
-            document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(mockAuthOwner))}`;
+            setAuthCookie(mockAuthOwner);
 
             user = userEvent.setup();
 
@@ -323,7 +324,7 @@ describe("New Diary Entry page", () => {
                 return null;
             });
 
-            document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(mockAuthOwner))}`;
+            setAuthCookie(mockAuthOwner);
 
             user = userEvent.setup();
             render(<NewDiary />);

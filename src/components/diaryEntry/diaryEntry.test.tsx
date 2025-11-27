@@ -1,16 +1,16 @@
-const mockPush = jest.fn();
-jest.mock("next/navigation", () => ({
-    useRouter: () => ({
-        push: mockPush,
-    }),
-}));
-
 import "@testing-library/jest-dom";
 import dayjs from "dayjs";
 import { MOCK_DIARY_ENTRY } from "~data/diary/mock";
 import { render, screen } from "~tests/utils/custom-testing-library";
 import { toSentenceCase } from "~util/strings/normalize";
 import DiaryEntry from "./diaryEntry";
+
+const mockPush = jest.fn();
+jest.mock("next/navigation", () => ({
+    useRouter: () => ({
+        push: mockPush,
+    }),
+}));
 
 describe("Diary Entry Component", () => {
     it("renders diary entry content", () => {

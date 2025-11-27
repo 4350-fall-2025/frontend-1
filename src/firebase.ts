@@ -3,17 +3,33 @@
 
 // src/firebase.ts
 import { initializeApp, FirebaseApp } from "firebase/app";
-import { getAuth, signInWithCustomToken, Auth, signOut } from "firebase/auth";
+import {
+    getAuth,
+    connectAuthEmulator,
+    signInWithCustomToken,
+    Auth,
+    signOut,
+} from "firebase/auth";
 import {
     getStorage,
     ref,
     uploadBytes,
     getDownloadURL,
     getBytes,
-    FirebaseStorage,
 } from "firebase/storage";
+import placeholderImage from "~public/placeholder.jpg";
 
-const firebaseConfig = {
+export const EMULATOR_FLAG = true;
+export const STORAGE_FLAG = false;
+
+const firebaseEmulatorConfig = {
+    apiKey: "qdog-6aca2-dummy-apikey",
+    authDomain: "qdog-6aca2.firebaseapp.com",
+    projectId: "qdog-6aca2",
+    storageBucket: "qdog-6aca2.appspot.com",
+};
+
+const firebaseDBConfig = {
     apiKey: process.env.NEXT_PUBLIC_GCP_API_KEY,
     authDomain: process.env.NEXT_PUBLIC_GCP_AUTH_DOMAIN,
     projectId: process.env.NEXT_PUBLIC_GCP_PROJECT_ID,
@@ -21,13 +37,21 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase App
+const firebaseConfig = EMULATOR_FLAG
+    ? firebaseEmulatorConfig
+    : firebaseDBConfig;
 export const app: FirebaseApp = initializeApp(firebaseConfig);
 
 // Auth
 export const auth: Auth = getAuth(app);
 
-// Storage
-export const storage: FirebaseStorage = getStorage(app);
+// Storage emulator
+export const storage = getStorage(app);
+
+if (EMULATOR_FLAG) {
+    connectAuthEmulator(auth, "http://localhost:9099");
+    connectStorageEmulator(storage, "localhost", 9199);
+}
 
 // Sign in with backend custom token
 export async function signInWithBackendToken(token: string): Promise<void> {
@@ -48,28 +72,39 @@ export async function uploadFile(
         throw new Error("User is not authenticated.");
     }
 
-    // Reference to the file location in Firebase Storage
-    const storageRef = ref(storage, `${filePath}`);
-    await uploadBytes(storageRef, file);
-    const fileUrl = await getDownloadURL(storageRef); // Get the file's download URL
+    if (STORAGE_FLAG) {
+        // Reference to the file location in Firebase Storage
+        const storageRef = ref(storage, `${filePath}`);
+        await uploadBytes(storageRef, file);
+        const fileUrl = await getDownloadURL(storageRef); // Get the file's download URL
 
-    return fileUrl; // Return the download URL
+        return fileUrl; // Return the download URL
+    } else {
+        return placeholderImage.src;
+    }
 }
 
 export async function downloadFile(filePath: string): Promise<Blob> {
     if (!auth.currentUser) {
         throw new Error("User is not authenticated.");
     }
-
-    const storageRef = ref(storage, filePath);
-    const fileBytes = await getBytes(storageRef); // Get file bytes from Firebase Storage
-    return new Blob([fileBytes]);
+    if (STORAGE_FLAG) {
+        const storageRef = ref(storage, filePath);
+        const fileBytes = await getBytes(storageRef); // Get file bytes from Firebase Storage
+        return new Blob([fileBytes]);
+    } else {
+        return null;
+    }
 }
 
 export async function getImageURL(filePath: string): Promise<string> {
-    const storageRef = ref(storage, `${filePath}`);
-    const fileUrl = await getDownloadURL(storageRef);
-    return fileUrl;
+    if (STORAGE_FLAG) {
+        const storageRef = ref(storage, `${filePath}`);
+        const fileUrl = await getDownloadURL(storageRef);
+        return fileUrl;
+    } else {
+        return placeholderImage.src;
+    }
 }
 
 export function generateDiaryURL(

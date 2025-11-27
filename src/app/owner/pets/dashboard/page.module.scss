@@ -12,10 +12,21 @@
     margin-bottom: 32px;
 }
 
-.title {
+.welcome_header {
+    margin: 0 0 45px 0;
+}
+
+.welcome_title {
     font-size: $font-xlarge;
+    width: 100%;
     font-weight: 700;
     margin: 0 0 20px 0;
+}
+
+.title {
+    font-size: $font-large;
+    margin: 0 0 20px 0;
+    color: $color-black;
 }
 
 .add_button {
