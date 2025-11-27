@@ -64,7 +64,6 @@ export default function PetDashboard() {
                         owner.id,
                     );
                     setPets(fetchedPets);
-                    console.log(fetchedPets);
 
                     const promises = [];
                     const images = {};
@@ -99,7 +98,10 @@ export default function PetDashboard() {
 
     return (
         <div className={styles.page}>
-            <header className={styles.welcome_header} data-testid="welcome-header">
+            <header
+                className={styles.welcome_header}
+                data-testid='welcome-header'
+            >
                 <h1 className={styles.welcome_title}>
                     Welcome back, {owner?.firstName || ""}!
                 </h1>

@@ -12,16 +12,19 @@ import {
 } from "firebase/auth";
 import {
     getStorage,
-    connectStorageEmulator,
     ref,
     uploadBytes,
     getDownloadURL,
     getBytes,
+    FirebaseStorage,
+    connectStorageEmulator,
 } from "firebase/storage";
 import placeholderImage from "~public/placeholder.jpg";
 
-export const EMULATOR_FLAG = true;
-export const STORAGE_FLAG = false;
+export const USE_EMULATOR: boolean =
+    process.env.NEXT_PUBLIC_USE_EMULATOR === "true";
+export const USE_STORAGE: boolean =
+    process.env.NEXT_PUBLIC_USE_STORAGE === "true";
 
 const firebaseEmulatorConfig = {
     apiKey: "qdog-6aca2-dummy-apikey",
@@ -38,19 +41,19 @@ const firebaseDBConfig = {
 };
 
 // Initialize Firebase App
-const firebaseConfig = EMULATOR_FLAG
-    ? firebaseEmulatorConfig
-    : firebaseDBConfig;
+const firebaseConfig = USE_EMULATOR ? firebaseEmulatorConfig : firebaseDBConfig;
+
 export const app: FirebaseApp = initializeApp(firebaseConfig);
 
-// Auth emulator
+// Auth
 export const auth: Auth = getAuth(app);
+if (USE_EMULATOR) {
+    connectAuthEmulator(auth, "http://localhost:9099");
+}
 
 // Storage emulator
-export const storage = getStorage(app);
-
-if (EMULATOR_FLAG) {
-    connectAuthEmulator(auth, "http://localhost:9099");
+export const storage: FirebaseStorage = getStorage(app);
+if (USE_EMULATOR) {
     connectStorageEmulator(storage, "localhost", 9199);
 }
 
@@ -73,7 +76,7 @@ export async function uploadFile(
         throw new Error("User is not authenticated.");
     }
 
-    if (STORAGE_FLAG) {
+    if (USE_STORAGE) {
         // Reference to the file location in Firebase Storage
         const storageRef = ref(storage, `${filePath}`);
         await uploadBytes(storageRef, file);
@@ -89,7 +92,7 @@ export async function downloadFile(filePath: string): Promise<Blob> {
     if (!auth.currentUser) {
         throw new Error("User is not authenticated.");
     }
-    if (STORAGE_FLAG) {
+    if (USE_STORAGE) {
         const storageRef = ref(storage, filePath);
         const fileBytes = await getBytes(storageRef); // Get file bytes from Firebase Storage
         return new Blob([fileBytes]);
@@ -99,7 +102,7 @@ export async function downloadFile(filePath: string): Promise<Blob> {
 }
 
 export async function getImageURL(filePath: string): Promise<string> {
-    if (STORAGE_FLAG) {
+    if (USE_STORAGE) {
         const storageRef = ref(storage, `${filePath}`);
         const fileUrl = await getDownloadURL(storageRef);
         return fileUrl;

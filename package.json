@@ -11,7 +11,7 @@
         "test:changed": "jest --onlyChanged",
         "test:watch": "jest --watch",
         "lint": "oxlint .",
-        "prepare": "husky",
+        "prepare": "if [ \"$NODE_ENV\" != 'production' ]; then husky install; fi",
         "format": "prettier --write ."
     },
     "keywords": [],
@@ -52,11 +52,6 @@
         "ts-jest": "^29.4.5",
         "ts-node": "^10.9.2",
         "typescript": "^5.9.3"
-    },
-    "prettier": {
-        "tabWidth": 4,
-        "endOfLine": "crlf",
-        "jsxSingleQuote": true
     },
     "lint-staged": {
         "*.{ts,tsx}": [
