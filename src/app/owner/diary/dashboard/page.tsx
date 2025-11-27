@@ -12,6 +12,7 @@ import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { PetDiary } from "src/models/pet-diary";
 import DiaryEntry from "~components/diaryEntry/diaryEntry";
+import { getAuthenticatedOwner } from "~util/auth/getAuthenticatedUser";
 
 const INIT_FILTER = { value: "ALL", label: "All" };
 
@@ -28,7 +29,7 @@ export default function PetDiaryDashboard() {
     const router = useRouter();
 
     const [error, setError] = useState("");
-    const [owner, setOwner] = useState<Owner>(null);
+    const [owner, setOwner] = useState<Owner | null>(null);
 
     const [diaries, setDiaries] = useState<{ entry: PetDiary; pet: Pet }[]>([]);
 
@@ -63,18 +64,19 @@ export default function PetDiaryDashboard() {
     }, [diaries, sortBy, activeFilter]);
 
     useEffect(() => {
-        let storedUser = localStorage.getItem("currentUser");
-        if (storedUser) {
-            const storedOwner = new Owner(JSON.parse(storedUser));
-
-            setOwner(storedOwner);
+        try {
+            const authenticatedOwner = getAuthenticatedOwner();
+            setOwner(authenticatedOwner);
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            }
         }
     }, []);
 
     const [pets, setPets] = useState<Pet[]>([]);
 
     // TODO: Make a util function for fetching pets and return the pets? to reduce duplicate code
-    // localStorage code above might benefit from this too but we are switching to firestore so not needed
 
     useEffect(() => {
         const fetchPets = async () => {
@@ -191,7 +193,7 @@ export default function PetDiaryDashboard() {
                         />
                     ))}
 
-                    <p className={globalStyles.error_message_end}>{error}</p>
+                    <p className={globalStyles.error_message}>{error}</p>
                 </div>
 
                 <aside className={styles.diarySidebar}>

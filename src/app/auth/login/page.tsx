@@ -24,6 +24,8 @@ import styles from "./page.module.scss";
 import globalStyles from "~app/layout.module.scss";
 
 import { signInWithBackendToken } from "src/firebase";
+import { setAuthCookie } from "~util/auth/authCookies";
+import { UserRoles } from "~data/constants";
 
 export default function LoginPage() {
     const owner: string = "owner";
@@ -59,11 +61,23 @@ export default function LoginPage() {
         try {
             if (selectedUser === vet) {
                 const vet = await VetsAPI.vetLogin(values);
-                localStorage.setItem("currentUser", JSON.stringify(vet));
+                setAuthCookie({
+                    userId: vet.id,
+                    role: UserRoles.vet,
+                    firstName: vet.firstName,
+                    lastName: vet.lastName,
+                    email: vet.email,
+                });
                 router.push("/vet/dashboard");
             } else {
                 const owner = await OwnersAPI.ownerLogin(values);
-                localStorage.setItem("currentUser", JSON.stringify(owner)); //TODO: remove localstorage and replace with firebase auth functions
+                setAuthCookie({
+                    userId: owner.id,
+                    role: UserRoles.owner,
+                    firstName: owner.firstName,
+                    lastName: owner.lastName,
+                    email: owner.email,
+                });
                 signInWithBackendToken(owner.token);
                 router.push("/owner/pets/dashboard");
             }

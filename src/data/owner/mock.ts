@@ -1,9 +1,10 @@
-export const owner = { id: 1, name: "Test" }; // just for local storage, no need to match the actual owner
-export const ownerWithName = {
-    id: "1",
+import { UserRoles } from "~data/constants";
+import { AuthCookieData } from "~util/auth/authCookies";
+
+export const mockAuthOwner: AuthCookieData = {
+    userId: "123",
+    role: UserRoles.owner,
     firstName: "Test",
     lastName: "Owner",
     email: "test@example.com",
-    password: "password123",
-    token: "mock-token"
 };
