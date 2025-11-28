@@ -97,7 +97,7 @@
     }
 }
 
-@media screen and (min-width: 1040px) {
+@container (min-width: 1040px) {
     .component {
         .component_content {
             .pet_info {

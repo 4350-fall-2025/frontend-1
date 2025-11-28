@@ -4,9 +4,13 @@ import PetProfile from "~components/petProfile/petProfile";
 import { useEffect, useState } from "react";
 import styles from "./page.module.scss";
 import { Textarea, Button } from "@mantine/core";
-import { getAuthenticatedOwner } from "~util/auth/getAuthenticatedUser";
+import {
+    getAuthenticatedOwner,
+    getAuthenticatedVet,
+} from "~util/auth/getAuthenticatedUser";
 import { Owner } from "src/models/owner";
 import { Client } from "@stomp/stompjs";
+import { Vet } from "src/models/vet";
 
 enum Sender {
     me = "me",
@@ -52,15 +56,13 @@ export default function Messaging() {
     };
 
     useEffect(() => {
-        let owner: Owner = getAuthenticatedOwner();
+        let vet: Vet = getAuthenticatedVet();
         if (!websocket) {
             const connection = new Client({
-                brokerURL: `ws://localhost:3000/ws-chat/websocket?userId=${owner.id}`,
+                brokerURL: `ws://localhost:3000/ws-chat/websocket?userId=${vet.id}`,
                 onConnect: () => {
                     console.log("connected :D ");
-                    connection.subscribe("/topic/online", (msg) => {
-                        console.log(msg.body);
-                    });
+                    connection.publish({ destination: "/app/vet/online" });
                 },
             });
             connection.onStompError = function (frame) {
