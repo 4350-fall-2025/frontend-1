@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Textarea, ActionIcon } from "@mantine/core";
 import { ArrowUpIcon } from "@radix-ui/react-icons";
 import styles from "./chat.module.scss";

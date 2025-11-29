@@ -3,11 +3,7 @@
 import PetProfile from "~components/petProfile/petProfile";
 import { useEffect, useState } from "react";
 import styles from "./page.module.scss";
-import { Textarea, Button } from "@mantine/core";
-import {
-    getAuthenticatedOwner,
-    getAuthenticatedVet,
-} from "~util/auth/getAuthenticatedUser";
+import { getAuthenticatedVet } from "~util/auth/getAuthenticatedUser";
 import { Client } from "@stomp/stompjs";
 import { Vet } from "src/models/vet";
 import Chat from "~components/chat/chat";

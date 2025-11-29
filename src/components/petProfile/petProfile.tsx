@@ -15,7 +15,6 @@ import { Pet } from "src/models/pet";
 import { PetDiary } from "src/models/pet-diary";
 import Error from "~components/error/error";
 import { generatePetURL, getImageURL } from "src/firebase";
-import { getAuthCookie } from "~util/auth/authCookies";
 import { toSentenceCase } from "~util/strings/normalize";
 import styles from "./petProfile.module.scss";
 
