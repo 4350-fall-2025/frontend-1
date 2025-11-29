@@ -35,7 +35,7 @@ export default function PetProfile({ id }: PetProfileProps) {
     const getPetData = async () => {
         try {
             const response = await PetsAPI.getPet(id);
-            getPetImage();
+            getPetImage(response.ownerId);
             setPet(response);
         } catch (error) {
             setError(error);
@@ -53,19 +53,18 @@ export default function PetProfile({ id }: PetProfileProps) {
         }
     };
 
-    const getPetImage = async () => {
+    const getPetImage = async (ownerID: string) => {
         try {
-            const authUser = getAuthCookie();
-            if (authUser?.userId != null) {
-                const filePath = generatePetURL(authUser.userId, id);
-                const url = await getImageURL(filePath);
-                setImageUrl(url);
-            } else {
-                setError("Not signed In");
-            }
+            const filePath = generatePetURL(ownerID, id);
+            const url = await getImageURL(filePath);
+            setImageUrl(url);
         } catch (error) {
-            //TO-DO maybe for a specific error
-            setImageUrl(placeholderUrl);
+            console.log(JSON.stringify(error));
+            if (error.code == "storage/unauthenticated") {
+                setError("Not signed in");
+            } else {
+                setImageUrl(placeholderUrl);
+            }
         }
     };
 
