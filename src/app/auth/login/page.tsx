@@ -68,6 +68,7 @@ export default function LoginPage() {
                     lastName: vet.lastName,
                     email: vet.email,
                 });
+                signInWithBackendToken(vet.token);
                 router.push("/vet/dashboard");
             } else {
                 const owner = await OwnersAPI.ownerLogin(values);

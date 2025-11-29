@@ -60,7 +60,10 @@ export default function PetProfile({ id }: PetProfileProps) {
             setImageUrl(url);
         } catch (error) {
             console.log(JSON.stringify(error));
-            if (error.code == "storage/unauthenticated") {
+            if (
+                error.code == "storage/unauthenticated" ||
+                error.code == "storage/unauthorized"
+            ) {
                 setError("Not signed in");
             } else {
                 setImageUrl(placeholderUrl);

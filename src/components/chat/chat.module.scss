@@ -1,0 +1,96 @@
+@import "~app/globals.scss";
+
+.chat {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat_header {
+    background-color: $color-off-white;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.chat_header_name {
+    color: $color-black;
+    font-size: $font-med-large;
+    font-weight: bold;
+    margin: 0;
+}
+
+.chat_subheader {
+    color: $color-gray;
+    font-size: $font-small-med;
+}
+
+.chat_body {
+    overflow-y: auto;
+    display: flex;
+    flex: 1;
+    padding: 1rem;
+    flex-direction: column-reverse;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.inner_body {
+    width: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.chat_input_container {
+    height: 15%;
+    background: $color-blue;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.input {
+    border: 2px solid $color-green-dark;
+    border-radius: 20px;
+}
+
+// ----- Other person's messages -----
+.message_other {
+    align-self: flex-start;
+    max-width: 70%;
+    background: $color-off-white;
+    color: $color-gray;
+    padding: 0.75rem 1rem;
+    border-radius: 15px;
+    border-top-left-radius: 2px; // subtle "speech bubble" shape
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+}
+
+// ----- Your messages -----
+.message_me {
+    align-self: flex-end;
+    max-width: 70%;
+    background: $color-green; // soft green similar to your UI
+    color: $color-gray;
+    padding: 0.75rem 1rem;
+    border-radius: 15px;
+    border-top-right-radius: 4px;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    text-align: right;
+}
+
+@container (max-width: 900px) {
+    .page {
+        grid-template-columns: 1fr; // only show the chat
+    }
+
+    .pet_profile {
+        display: none; // hide the panel
+    }
+}
+
