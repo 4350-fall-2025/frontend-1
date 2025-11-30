@@ -18,9 +18,9 @@ export default function Messaging() {
                 brokerURL: `ws://localhost:3000/ws-chat/websocket?userId=${owner.id}`,
                 onConnect: () => {
                     console.log("connected :D ");
-                    // connection.subscribe("/queue/online-init", (msg) => {
-                    //     console.log("init" + msg);
-                    // });
+                    connection.subscribe("/user/queue/online-init", (msg) => {
+                        console.log("init" + msg.body);
+                    });
                     // connection.subscribe("/topic/online", (msg) => {
                     //     console.log(msg.body);
                     // });
