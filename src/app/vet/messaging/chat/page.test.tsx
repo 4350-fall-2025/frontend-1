@@ -1,10 +1,7 @@
 import "@testing-library/jest-dom";
-import { render, screen, waitFor, act } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import Messaging from "./page";
 import { Client } from "@stomp/stompjs";
-import { getAuthenticatedVet } from "~util/auth/getAuthenticatedUser";
-import Chat from "~components/chat/chat";
-import PetProfile from "~components/petProfile/petProfile";
 import { mockAuthVet } from "~data/vets/mock";
 import { setAuthCookie } from "~util/auth/authCookies";
 
