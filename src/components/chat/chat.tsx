@@ -80,6 +80,7 @@ export default function Chat({ websocket }: { websocket: Client }) {
                         <div
                             className={styles["message_" + msg.sender]}
                             key={index}
+                            data-testid='message'
                         >
                             {msg.text}
                         </div>
