@@ -21,9 +21,6 @@ export default function Messaging() {
                     connection.subscribe("/user/queue/online-init", (msg) => {
                         console.log("init" + msg.body);
                     });
-                    // connection.subscribe("/topic/online", (msg) => {
-                    //     console.log(msg.body);
-                    // });
                     setWebsocket(connection);
                 },
             });

@@ -43,6 +43,7 @@ export default function Chat({ websocket }: { websocket: Client }) {
         console.log(input);
 
         setMessages((prev) => [...prev, newMessage]);
+        //TODO: once the messaging socket is set up uncomment this code
         // websocket.publish({
         //     destination: null,
         //     body: input
