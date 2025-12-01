@@ -1,5 +1,5 @@
 "use client";
-import { Badge, Box, Button, Card, Grid, SimpleGrid } from "@mantine/core";
+import { Badge, Box, Button, Card, SimpleGrid } from "@mantine/core";
 import styles from "./page.module.scss";
 import globalStyles from "~app/layout.module.scss";
 import { useEffect, useState } from "react";
