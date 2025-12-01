@@ -6,6 +6,10 @@
     height: 84vh;
     gap: 16px;
 
+    .chat {
+        // empty on purpose for desktop
+    }
+
     .pet_profile {
         width: 350px;
         overflow-y: auto;
@@ -14,13 +18,21 @@
     }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
     .page {
-        grid-template-columns: 1fr; // only show the chat
+        display: flex;
+        flex-direction: column;
+        height: auto;
+    }
+
+    .chat {
+        height: 90vh;
     }
 
     .pet_profile {
-        display: none; // hide the panel
+        width: 100%;
+        border-left: none;
+        overflow-y: visible;
     }
 }
 

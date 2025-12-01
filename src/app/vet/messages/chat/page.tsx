@@ -42,7 +42,10 @@ export default function Messaging() {
 
     return (
         <div className={styles.page}>
-            <Chat websocket={websocket} />
+            <div className={styles.chat}>
+                <Chat websocket={websocket} />
+            </div>
+
             <div className={styles.pet_profile}>
                 <PetProfile id={"pbiTVPk5DfHe8NibJ3MK"} />
             </div>
