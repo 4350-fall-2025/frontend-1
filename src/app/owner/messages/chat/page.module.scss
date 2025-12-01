@@ -18,21 +18,21 @@
     }
 }
 
-@media (max-width: 900px) {
+@media screen and (max-width: 900px) {
     .page {
         display: flex;
         flex-direction: column;
         height: auto;
-    }
 
-    .chat {
-        height: 90vh;
-    }
+        .chat {
+            height: 90vh;
+        }
 
-    .pet_profile {
-        width: 100%;
-        border-left: none;
-        overflow-y: visible;
+        .pet_profile {
+            width: 100%;
+            border-left: none;
+            overflow-y: visible;
+        }
     }
 }
 
