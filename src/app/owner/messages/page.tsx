@@ -12,7 +12,7 @@ import { PetsAPI } from "~api/petsAPI";
 import { generatePetURL, getImageURL } from "src/firebase";
 import placeholderImage from "~public/placeholder.jpg";
 
-export default function MessagesPage() {
+export default function Messages() {
     const [numVets, setNumVets] = useState(0);
     const [error, setError] = useState("");
 
@@ -160,6 +160,7 @@ export default function MessagesPage() {
                                     onClick={() =>
                                         router.push("/owner/messages/chat")
                                     }
+                                    disabled={numVets <= 0}
                                 >
                                     Connect
                                 </Button>
@@ -167,6 +168,8 @@ export default function MessagesPage() {
                         </div>
                     )}
                 </Card>
+
+                {numVets <= 0 && <p>Can't connect yet, no vets are online.</p>}
                 {error && <p className={globalStyles.error_message}>{error}</p>}
             </div>
         </div>
