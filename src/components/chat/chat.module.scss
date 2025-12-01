@@ -84,13 +84,3 @@
     text-align: right;
 }
 
-@container (max-width: 900px) {
-    .page {
-        grid-template-columns: 1fr; // only show the chat
-    }
-
-    .pet_profile {
-        display: none; // hide the panel
-    }
-}
-

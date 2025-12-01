@@ -7,6 +7,10 @@ import { getAuthenticatedVet } from "~util/auth/getAuthenticatedUser";
 import { Client } from "@stomp/stompjs";
 import { Vet } from "src/models/vet";
 import Chat from "~components/chat/chat";
+import {
+    generateWebSocketUrl,
+    websocketVetTopics,
+} from "~data/messages/constants";
 
 export default function Messaging() {
     const [websocket, setWebsocket] = useState(null);
@@ -15,11 +19,13 @@ export default function Messaging() {
         let vet: Vet = getAuthenticatedVet();
         if (!websocket) {
             const connection = new Client({
-                brokerURL: `ws://localhost:3000/ws-chat/websocket?userId=${vet.id}`,
+                brokerURL: generateWebSocketUrl(vet.id),
                 onConnect: () => {
                     console.log("connected :D ");
                     setWebsocket(connection);
-                    connection.publish({ destination: "/app/vet/online" });
+                    connection.publish({
+                        destination: websocketVetTopics.vetAnnounceOnline,
+                    });
                 },
             });
             connection.onStompError = function (frame) {

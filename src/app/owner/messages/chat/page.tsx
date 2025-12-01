@@ -7,6 +7,10 @@ import styles from "./page.module.scss";
 import { getAuthenticatedOwner } from "~util/auth/getAuthenticatedUser";
 import { Owner } from "src/models/owner";
 import { Client } from "@stomp/stompjs";
+import {
+    generateWebSocketUrl,
+    websocketOwnerTopics,
+} from "~data/messages/constants";
 
 export default function Messaging() {
     const [websocket, setWebsocket] = useState<Client>(null);
@@ -15,12 +19,15 @@ export default function Messaging() {
         let owner: Owner = getAuthenticatedOwner();
         if (!websocket) {
             const connection = new Client({
-                brokerURL: `ws://localhost:3000/ws-chat/websocket?userId=${owner.id}`,
+                brokerURL: generateWebSocketUrl(owner.id),
                 onConnect: () => {
                     console.log("connected :D ");
-                    connection.subscribe("/user/queue/online-init", (msg) => {
-                        console.log("init" + msg.body);
-                    });
+                    connection.subscribe(
+                        websocketOwnerTopics.onlineInit,
+                        (msg) => {
+                            console.log("init" + msg.body);
+                        },
+                    );
                     setWebsocket(connection);
                 },
             });

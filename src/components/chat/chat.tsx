@@ -5,6 +5,7 @@ import styles from "./chat.module.scss";
 import { Client } from "@stomp/stompjs";
 import { hasRole } from "~util/auth/authCookies";
 import { UserRoles } from "~data/constants";
+import { websocketOwnerTopics } from "~data/messages/constants";
 enum Sender {
     me = "me",
     other = "other",
@@ -54,12 +55,15 @@ export default function Chat({ websocket }: { websocket: Client }) {
     useEffect(() => {
         if (hasRole(UserRoles.owner)) {
             if (websocket != null) {
-                websocket.subscribe("/topic/online", (msg) => {
-                    setMessages((prev) => [
-                        ...prev,
-                        { text: msg.body, sender: Sender.other },
-                    ]);
-                });
+                websocket.subscribe(
+                    websocketOwnerTopics.availableVets,
+                    (msg) => {
+                        setMessages((prev) => [
+                            ...prev,
+                            { text: msg.body, sender: Sender.other },
+                        ]);
+                    },
+                );
             }
         }
     }, [websocket]);
