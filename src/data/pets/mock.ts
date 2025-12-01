@@ -1,4 +1,5 @@
 import { AnimalGroup, Pet, SterileStatus } from "src/models/pet";
+import { mockAuthOwner } from "~data/owner/mock";
 
 export const mockPets: Pet[] = [
     {
@@ -11,6 +12,7 @@ export const mockPets: Pet[] = [
         sterileStatus: SterileStatus.nonsterile,
         species: "Dog",
         breed: "Beagle",
+        ownerId: mockAuthOwner.userId,
     },
     {
         id: "pet2",
@@ -22,5 +24,6 @@ export const mockPets: Pet[] = [
         sterileStatus: SterileStatus.sterile,
         species: "Cockatiel",
         breed: "White-faced cockatiel",
+        ownerId: mockAuthOwner.userId,
     },
 ];
