@@ -29,22 +29,6 @@
     color: $color-black;
 }
 
-.add_button {
-    background-color: $color-rose;
-    color: $color-white;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 24px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-
-    &:hover {
-        background-color: $color-rose-hover;
-    }
-}
-
 .add_button span {
     display: inline-flex;
     align-items: center;

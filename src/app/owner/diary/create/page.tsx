@@ -16,7 +16,7 @@ import { Owner } from "src/models/owner";
 import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { todayDate, UserRoles } from "~data/constants";
-import { generateDiaryURL, uploadFile, USE_STORAGE } from "src/firebase";
+import { generateDiaryURL, uploadFile } from "src/firebase";
 
 /**
  * Some sample code came from Mantine use-file-dialog
@@ -42,8 +42,6 @@ function NewDiary() {
     }, []);
 
     const [pets, setPets] = useState<Pet[]>([]);
-
-    // TODO: Make a util function for fetching pets and return the pets? to reduce duplicate code
 
     // Load pets when owner is available
     useEffect(() => {
@@ -144,10 +142,6 @@ function NewDiary() {
                     createTimestamp: todayDate,
                     files: pickedFilesList.map((file) => file.name),
                 };
-
-                if (!USE_STORAGE) {
-                    diaryEntryJSON["files"] = [];
-                }
 
                 const diaryEntry = new PetDiary(diaryEntryJSON);
 
