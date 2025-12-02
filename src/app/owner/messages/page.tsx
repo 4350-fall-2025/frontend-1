@@ -16,6 +16,8 @@ import {
     generateWebSocketUrl,
     websocketOwnerTopics,
 } from "~data/messages/constants";
+import { hasRole } from "~util/auth/authCookies";
+import { UserRoles } from "~data/constants";
 
 export default function Messages() {
     const [numVets, setNumVets] = useState(0);
@@ -45,7 +47,8 @@ export default function Messages() {
                     connection.subscribe(
                         websocketOwnerTopics.onlineInit,
                         (msg) => {
-                            console.log("init" + msg.body);
+                            const vetsArrayString = msg.body.split(",");
+                            setNumVets(vetsArrayString.length);
                         },
                     );
                     setWebsocket(connection);
@@ -62,6 +65,19 @@ export default function Messages() {
             connection.activate();
         }
     }, []);
+
+    useEffect(() => {
+        if (hasRole(UserRoles.owner)) {
+            if (websocket != null) {
+                websocket.subscribe(
+                    websocketOwnerTopics.availableVets,
+                    (msg) => {
+                        console.log(msg);
+                    },
+                );
+            }
+        }
+    }, [websocket]);
 
     // Load pets when owner is available
     useEffect(() => {
@@ -167,7 +183,8 @@ export default function Messages() {
                             <div className={styles.card_title}>
                                 <h2>Connect with a Vet</h2>
                                 <Badge variant='light' color='green'>
-                                    {numVets} vets online
+                                    {numVets <= 1 && numVets + " vet online"}
+                                    {numVets > 1 && numVets + " vets online"}
                                 </Badge>
                             </div>
 
