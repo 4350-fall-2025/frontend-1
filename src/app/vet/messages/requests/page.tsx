@@ -3,7 +3,6 @@ import { Badge, Button, Card, Modal, Dialog, Text } from "@mantine/core";
 import styles from "./page.module.scss";
 import globalStyles from "~app/layout.module.scss";
 import { useEffect, useState, useRef } from "react";
-import { useDisclosure } from "@mantine/hooks";
 import { useSocket } from "~app/context/ChatContext";
 import {
     RequestMessage,
@@ -13,7 +12,6 @@ import {
 import { getAuthenticatedVet } from "~util/auth/getAuthenticatedUser";
 import { Vet } from "src/models/vet";
 import { useRouter } from "next/navigation";
-import { Petrona } from "next/font/google";
 
 const testRequest: RequestMessage = {
     from: "WawrgHPyixxQoKQtaOuT",
@@ -35,7 +33,7 @@ export default function MessagesPage() {
     const [cancelDialogVisible, setDialogVisible] = useState(false);
     const { websocket, currentPartner, petID } = useSocket();
 
-    const modalOpen = requests.length > 0 && acceptedRequest == false;
+    const modalOpen = requests.length > 0 && !acceptedRequest;
 
     const handleRequests = (msg) => {
         const request: RequestMessage = JSON.parse(msg.body);
@@ -59,18 +57,14 @@ export default function MessagesPage() {
 
     useEffect(() => {
         if (websocket != null) {
-            try {
-                websocket.publish({
-                    destination: websocketVetTopics.vetAnnounceOnline,
-                });
+            websocket.publish({
+                destination: websocketVetTopics.vetAnnounceOnline,
+            });
 
-                websocket.subscribe(websocketVetTopics.userRequests, (msg) => {
-                    handleRequests(msg);
-                });
-                console.log("subscribed");
-            } catch (e) {
-                console.log(typeof websocket);
-            }
+            websocket.subscribe(websocketVetTopics.userRequests, (msg) => {
+                handleRequests(msg);
+            });
+            console.log("subscribed");
         }
     }, [websocket]);
 

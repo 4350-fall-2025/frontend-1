@@ -58,7 +58,6 @@ export default function Chat({
             text: input,
             sender: Sender.me,
         };
-        console.log(input);
 
         setMessages((prev) => [...prev, newMessage]);
         const message: ChatMessage = {
@@ -97,7 +96,7 @@ export default function Chat({
     }, []);
 
     useEffect(() => {
-        if (websocket != null && setupSub.current == false) {
+        if (websocket != null && !setupSub.current) {
             setupSub.current = true;
             websocket.subscribe(websocketOwnerTopics.incomingChat, (msg) => {
                 const incoming: ChatMessage = JSON.parse(msg.body);
@@ -109,8 +108,6 @@ export default function Chat({
             });
         }
     }, [websocket]);
-
-    console.log(websocket);
 
     return (
         <div className={styles.chat}>

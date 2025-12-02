@@ -4,10 +4,7 @@ import { createContext, useContext, useEffect, useState, useRef } from "react";
 import { Vet } from "src/models/vet";
 import { getAuthenticatedVet } from "~util/auth/getAuthenticatedUser";
 import { Client } from "@stomp/stompjs";
-import {
-    generateWebSocketUrl,
-    websocketVetTopics,
-} from "~data/messages/constants";
+import { generateWebSocketUrl } from "~data/messages/constants";
 
 const ChatContext = createContext(null);
 

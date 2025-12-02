@@ -2,11 +2,7 @@ import "@testing-library/jest-dom";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import Chat from "./chat";
 import { Client, IMessage } from "@stomp/stompjs";
-import {
-    hasRole,
-    setAuthCookie,
-    removeAuthCookie,
-} from "~util/auth/authCookies";
+import { setAuthCookie, removeAuthCookie } from "~util/auth/authCookies";
 import { MantineProvider } from "@mantine/core";
 import { mockAuthOwner, mockOwner } from "~data/owner/mock";
 import { OwnersAPI } from "~api/ownersAPI";
@@ -77,7 +73,6 @@ describe("Chat Component", () => {
 
     describe("Message Input", () => {
         beforeEach(() => {
-            //(hasRole as jest.Mock).mockReturnValue(true);
             setAuthCookie(mockAuthOwner);
             mockGetVet.mockResolvedValue(mockVet);
             render(
@@ -175,7 +170,6 @@ describe("Chat Component", () => {
         });
 
         test("websocket incoming message is appended", () => {
-            // Capture callback passed to websocket.subscribe
             const callback = mockSubscribe.mock.calls[0][1];
 
             act(() => {
