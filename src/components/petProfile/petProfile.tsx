@@ -5,8 +5,8 @@ import dayjs from "dayjs";
 import DiaryEntry from "~components/diaryEntry/diaryEntry";
 import {
     calculateAge,
-    formatAnimalGroup,
     formatSterileStatus,
+    getAnimalGroupDisplayLabel,
 } from "~util/strings/format-pet";
 import { useEffect, useState } from "react";
 import { PetsAPI } from "~api/petsAPI";
@@ -105,7 +105,9 @@ export default function PetProfile({ id }: PetProfileProps) {
                                         Animal group:
                                     </span>{" "}
                                     {pet?.animalGroup &&
-                                        formatAnimalGroup(pet?.animalGroup)}
+                                        getAnimalGroupDisplayLabel(
+                                            pet?.animalGroup,
+                                        )}
                                 </li>
                                 <li>
                                     <span className={styles.pet_info_label}>
