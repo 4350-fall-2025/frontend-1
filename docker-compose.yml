@@ -1,17 +1,21 @@
+# Partially built with Github copilot running Claude 4.5
+
 services:
-    nextjs:
-        build:
-            context: .
-            dockerfile: Dockerfile
-            args:
-                NEXT_PUBLIC_GCP_API_KEY: ${NEXT_PUBLIC_GCP_API_KEY}
-                NEXT_PUBLIC_GCP_AUTH_DOMAIN: ${NEXT_PUBLIC_GCP_AUTH_DOMAIN}
-                NEXT_PUBLIC_GCP_PROJECT_ID: ${NEXT_PUBLIC_GCP_PROJECT_ID}
-                NEXT_PUBLIC_GCP_BUCKET: ${NEXT_PUBLIC_GCP_BUCKET}
-                NEXT_PUBLIC_USE_EMULATOR: ${NEXT_PUBLIC_USE_EMULATOR}
-                NEXT_PUBLIC_USE_STORAGE: ${NEXT_PUBLIC_USE_STORAGE}
+    backend:
+        image: ghcr.io/4350-fall-2025/backend:latest
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./firebase-prod.json:/app/credentials/firebase-prod.json:ro
+        env_file:
+            - ./.env
+        restart: no
+    frontend:
+        image: ghcr.io/4350-fall-2025/frontend-1:pr-60
         ports:
             - "3001:3001"
         env_file:
             - ./.env
+        depends_on:
+            - backend
         restart: no

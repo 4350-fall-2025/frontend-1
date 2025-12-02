@@ -11,7 +11,7 @@
         "test:changed": "jest --onlyChanged",
         "test:watch": "jest --watch",
         "lint": "oxlint .",
-        "prepare": "if [ \"$NODE_ENV\" != 'production' ]; then husky install; fi",
+        "prepare": "husky",
         "format": "prettier --write ."
     },
     "keywords": [],
