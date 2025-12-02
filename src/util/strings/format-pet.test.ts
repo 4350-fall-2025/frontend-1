@@ -13,7 +13,7 @@ jest.mock("dayjs", () => {
 
 import {
     formatAgeFromDOB,
-    formatAnimalGroup,
+    getAnimalGroupDisplayLabel,
     formatSterileStatus,
 } from "./format-pet";
 
@@ -49,13 +49,15 @@ describe("formatAgeFromDOB", () => {
     });
 });
 
-describe("formatAnimalGroup", () => {
+describe("getAnimalGroupDisplayLabel", () => {
     it("converts enum value to sentence case", () => {
-        expect(formatAnimalGroup(AnimalGroup.bird)).toBe("Bird");
+        expect(getAnimalGroupDisplayLabel(AnimalGroup.bird)).toBe("Bird");
     });
 
     it("replaces underscores with space", () => {
-        expect(formatAnimalGroup(AnimalGroup.small)).toBe("Small mammal");
+        expect(getAnimalGroupDisplayLabel(AnimalGroup.small)).toBe(
+            "Small mammal",
+        );
     });
 });
 

@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import calculateAge from "src/util/ageCalculator";
 import styles from "./page.module.scss";
 import globalStyles from "~app/layout.module.scss";
 import placeholderImage from "~public/placeholder.jpg";
 import { Image } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
-import { getAnimalGroupDisplayLabel } from "src/util/strings/format-pet";
+import {
+    formatAgeFromDOB,
+    getAnimalGroupDisplayLabel,
+} from "src/util/strings/format-pet";
 import { PetsAPI } from "~api/petsAPI";
 import { Owner } from "src/models/owner";
 import { Pet } from "src/models/pet";
@@ -158,7 +160,7 @@ export default function PetDashboard() {
 
                                     <InfoRow
                                         label='Age'
-                                        value={calculateAge(pet.birthdate)}
+                                        value={formatAgeFromDOB(pet.birthdate)}
                                     />
                                     <InfoRow label='Sex' value={pet.sex} />
                                     <InfoRow
