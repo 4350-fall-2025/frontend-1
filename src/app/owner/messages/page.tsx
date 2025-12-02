@@ -47,8 +47,9 @@ export default function Messages() {
                     connection.subscribe(
                         websocketOwnerTopics.onlineInit,
                         (msg) => {
-                            const vetsArrayString = msg.body.split(",");
-                            setNumVets(vetsArrayString.length);
+                            const vetsArray = JSON.parse(msg.body);
+                            console.log(vetsArray);
+                            setNumVets(vetsArray.length);
                         },
                     );
                     setWebsocket(connection);
