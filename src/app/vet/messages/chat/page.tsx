@@ -1,7 +1,7 @@
 "use client";
 
 import PetProfile from "~components/petProfile/petProfile";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import styles from "./page.module.scss";
 import { getAuthenticatedVet } from "~util/auth/getAuthenticatedUser";
 import { Client } from "@stomp/stompjs";
@@ -11,34 +11,13 @@ import {
     generateWebSocketUrl,
     websocketVetTopics,
 } from "~data/messages/constants";
+import { ChatProvider, useSocket } from "~app/context/ChatContext";
 
 export default function Messaging() {
-    const [websocket, setWebsocket] = useState(null);
+    const { websocket, currentPartner, setCurrentPartner, petID, setPetID } =
+        useSocket();
 
-    useEffect(() => {
-        let vet: Vet = getAuthenticatedVet();
-        if (!websocket) {
-            const connection = new Client({
-                brokerURL: generateWebSocketUrl(vet.id),
-                onConnect: () => {
-                    console.log("connected :D ");
-                    setWebsocket(connection);
-                    connection.publish({
-                        destination: websocketVetTopics.vetAnnounceOnline,
-                    });
-                },
-            });
-            connection.onStompError = function (frame) {
-                console.log(
-                    "Broker reported error: " + frame.headers["message"],
-                );
-                console.log("Additional details: " + frame.body);
-            };
-            connection.activate();
-        }
-    }, []);
-
-    console.log(websocket);
+    console.log(typeof websocket);
 
     return (
         <div className={styles.page}>
