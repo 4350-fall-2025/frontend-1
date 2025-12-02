@@ -2,7 +2,7 @@
 import { Badge, Button, Card, Modal, Dialog, Text } from "@mantine/core";
 import styles from "./page.module.scss";
 import globalStyles from "~app/layout.module.scss";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useSocket } from "~app/context/ChatContext";
 import {
     RequestMessage,
