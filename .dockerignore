@@ -71,3 +71,4 @@ firebase-*.json
 jest.config.ts
 next-env.d.ts
 .oxlintrc.json
+.husky/
