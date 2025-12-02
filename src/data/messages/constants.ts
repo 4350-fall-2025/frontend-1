@@ -35,6 +35,6 @@ export interface ChatMessage {
 export enum RequestStatus {
     accepted = "ACCEPTED",
     rejected = "REJECTED",
-    cancelled = "CANCELLED",
+    cancelled = "CANCELED",
     pending = "PENDING",
 }

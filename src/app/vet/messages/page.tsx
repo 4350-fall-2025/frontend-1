@@ -46,7 +46,7 @@ export default function MessagesPage() {
     };
 
     useEffect(() => {
-        if (websocket != null && setupSub.current == false) {
+        if (websocket != null && !setupSub.current) {
             setupSub.current = true;
             websocket.publish({
                 destination: websocketVetTopics.vetAnnounceOnline,
@@ -118,33 +118,6 @@ export default function MessagesPage() {
                         </div>
 
                         <p>Please wait as we get you connected with a Pet.</p>
-                        <Modal
-                            opened={modalOpen}
-                            onClose={() => rejectRequest()}
-                            title='Connection Request'
-                            centered
-                            closeOnClickOutside={false}
-                        >
-                            A pet is in need!
-                            <div
-                                className={
-                                    globalStyles.cancel_or_save +
-                                    " " +
-                                    globalStyles.center
-                                }
-                            >
-                                <Button onClick={() => rejectRequest()}>
-                                    reject
-                                </Button>
-
-                                <Button
-                                    variant='light'
-                                    onClick={() => acceptRequest()}
-                                >
-                                    accept
-                                </Button>
-                            </div>
-                        </Modal>
                     </div>
                 </Card>
                 {error && <p className={globalStyles.error_message}>{error}</p>}
@@ -161,6 +134,29 @@ export default function MessagesPage() {
                     The accepted client cancelled their appointment.
                 </Dialog>
             </div>
+            <Modal
+                opened={modalOpen}
+                onClose={() => rejectRequest()}
+                title='Connection Request'
+                centered
+                closeOnClickOutside={false}
+            >
+                A pet is in need!
+                <div
+                    className={
+                        globalStyles.cancel_or_save + " " + globalStyles.center
+                    }
+                >
+                    <Button
+                        color='grey'
+                        variant='outline'
+                        onClick={() => rejectRequest()}
+                    >
+                        Reject
+                    </Button>
+                    <Button onClick={() => acceptRequest()}>Accept</Button>
+                </div>
+            </Modal>
         </div>
     );
 }

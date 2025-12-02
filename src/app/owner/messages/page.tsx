@@ -49,9 +49,10 @@ export default function Messages() {
 
     const { websocket, currentPartner, petID } = useSocket();
 
-    const [cancelDialogVisible, setDialogVisible] = useState(false);
+    const [dialogVisible, setDialogVisible] = useState(false);
 
     const [sentRequest, setSentRequest] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState("");
 
     const modalOpen = showConnectWithVetCard && sentRequest;
 
@@ -62,14 +63,23 @@ export default function Messages() {
             currentPartner.current = request.from;
             petID.current = request.petId;
             router.push("/owner/messages/chat");
-        } else if (
-            request.status == RequestStatus.cancelled ||
-            request.status == RequestStatus.rejected
-        ) {
-            setVets((arr) => arr.filter((items) => items !== request.from));
+        } else if (request.status == RequestStatus.rejected) {
+            setDialogMessage(
+                "The Vet rejected your request, please request again.",
+            );
+            setDialogVisible(true);
 
-            //move on to next vet
             setSentRequest(false);
+            setVets(vets.slice(1));
+        } else if (request.status == RequestStatus.cancelled) {
+            if (vets[0] == request.from) {
+                setSentRequest(false);
+                setDialogMessage(
+                    "The Vet has disconnected, please request again.",
+                );
+                setDialogVisible(true);
+            }
+            setVets((arr) => arr.filter((items) => items !== request.from));
         }
     };
 
@@ -102,13 +112,11 @@ export default function Messages() {
     const sendRequestToVet = () => {
         sendResponse(vets[0], null);
         setSentRequest(true);
-
-        setVets(vets.slice(1));
     };
 
     useEffect(() => {
         if (hasRole(UserRoles.owner)) {
-            if (websocket != null && setupSub.current == false) {
+            if (websocket != null && !setupSub.current) {
                 setupSub.current = true;
                 // get an update whenever a vet comes online/offline
                 websocket.subscribe(websocketOwnerTopics.onlineInit, (msg) => {
@@ -256,6 +264,8 @@ export default function Messages() {
                                 }
                             >
                                 <Button
+                                    color='grey'
+                                    variant='outline'
                                     onClick={() => setConnectWithVetCard(false)}
                                 >
                                     Cancel
@@ -275,27 +285,26 @@ export default function Messages() {
                 </Card>
                 {error && <p className={globalStyles.error_message}>{error}</p>}
 
-                <Modal
-                    opened={modalOpen}
-                    onClose={() => cancelVetSearch()}
-                    title='Connection Request'
-                    centered
-                    closeOnClickOutside={false}
-                >
-                    We are looking for a vet for you... Please wait!
-                    <Button onClick={() => cancelVetSearch()}>Cancel</Button>
-                </Modal>
-
                 <Dialog
-                    opened={cancelDialogVisible}
+                    opened={dialogVisible}
                     withCloseButton
                     onClose={() => setDialogVisible(false)}
                     size='lg'
                     radius='md'
                 >
-                    Notice: The vet cancelled your appointment.
+                    Notice: {dialogMessage}
                 </Dialog>
             </div>
+            <Modal
+                opened={modalOpen}
+                onClose={() => cancelVetSearch()}
+                title='Connection Request'
+                centered
+                closeOnClickOutside={false}
+            >
+                We are looking for a vet for you... Please wait!
+                <Button onClick={() => cancelVetSearch()}>Cancel</Button>
+            </Modal>
         </div>
     );
 }
