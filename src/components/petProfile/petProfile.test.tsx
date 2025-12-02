@@ -25,7 +25,7 @@ jest.mock("~util/strings/format-pet", () => {
     return {
         __esModule: true,
         ...originalModule,
-        formatAgeFromDOB: jest.fn(() => {
+        calculateAge: jest.fn(() => {
             return "2 years";
         }),
         formatAnimalGroup: jest.fn(() => "amphibian"),

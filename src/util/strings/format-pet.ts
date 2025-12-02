@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { toSentenceCase } from "./normalize";
 import { AnimalGroup, SterileStatus } from "src/models/pet";
 
-export const formatAgeFromDOB = (birthdate?: string): string => {
+export const calculateAge = (birthdate?: string): string => {
     if (!birthdate) {
         return "Unknown";
     }

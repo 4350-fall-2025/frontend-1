@@ -29,7 +29,7 @@ jest.mock("~data/pets/mock", () => {
 // Mock the age calculator utility
 jest.mock("~util/strings/format-pet", () => ({
     ...jest.requireActual("~util/strings/format-pet"),
-    formatAgeFromDOB: jest.fn(() => {
+    calculateAge: jest.fn(() => {
         return "2 years 3 months";
     }),
 }));

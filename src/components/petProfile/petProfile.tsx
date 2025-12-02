@@ -4,7 +4,7 @@ import { Image } from "@mantine/core";
 import dayjs from "dayjs";
 import DiaryEntry from "~components/diaryEntry/diaryEntry";
 import {
-    formatAgeFromDOB,
+    calculateAge,
     formatAnimalGroup,
     formatSterileStatus,
 } from "~util/strings/format-pet";
@@ -138,7 +138,7 @@ export default function PetProfile({ id }: PetProfileProps) {
                                         Age:{" "}
                                     </span>
                                     {pet?.birthdate &&
-                                        formatAgeFromDOB(pet?.birthdate)}
+                                        calculateAge(pet?.birthdate)}
                                 </li>
                                 <li>
                                     <span className={styles.pet_info_label}>

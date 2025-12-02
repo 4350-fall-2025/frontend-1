@@ -8,7 +8,7 @@ import placeholderImage from "~public/placeholder.jpg";
 import { Image } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import {
-    formatAgeFromDOB,
+    calculateAge,
     getAnimalGroupDisplayLabel,
 } from "src/util/strings/format-pet";
 import { PetsAPI } from "~api/petsAPI";
@@ -160,7 +160,7 @@ export default function PetDashboard() {
 
                                     <InfoRow
                                         label='Age'
-                                        value={formatAgeFromDOB(pet.birthdate)}
+                                        value={calculateAge(pet.birthdate)}
                                     />
                                     <InfoRow label='Sex' value={pet.sex} />
                                     <InfoRow
