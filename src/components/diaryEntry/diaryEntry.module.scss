@@ -1,20 +1,34 @@
 @import "../../app/globals.scss";
 
 .entry_card {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
+    display: flex;
+    flex-direction: row;
 
     border: 1px solid var(--mantine-color-gray-6);
     border-radius: 4px;
 
     padding: 16px;
+    margin-bottom: 10px;
 
     max-width: 500px;
 
     cursor: default;
     &:hover {
         cursor: pointer;
+    }
+
+    .entry_body {
+        width: 100%;
+    }
+
+    .pet_name {
+        margin: 0;
+        color: $color-green-dark;
+        font-size: $font-small-med;
+        text-overflow: ellipsis;
+        text-transform: capitalize;
+        text-wrap: nowrap;
+        overflow: hidden;
     }
 
     .entry_header {
@@ -24,6 +38,7 @@
 
         .heading {
             margin: 0;
+            font-weight: bold;
         }
     }
 
@@ -31,9 +46,6 @@
     // https://stackoverflow.com/questions/20685684/truncating-text-to-specifc-number-of-lines-after-formatting
     // and https://stackoverflow.com/questions/20685684/truncating-text-to-specifc-number-of-lines-after-formatting
     .entry_content {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-clamp: 2;
-        box-orient: vertical;
+        color: $color-light-gray;
     }
 }

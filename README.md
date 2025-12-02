@@ -33,7 +33,7 @@ Using npm:
 npm install -g pnpm@latest-10
 ```
 
-### 3: Install dev dependecies
+### 3: Install dev dependencies
 
 ```bash
 pnpm install
@@ -46,6 +46,17 @@ As our server is not currently hosted on the cloud in order to run the app local
 The instructions are located [here](https://github.com/4350-fall-2025/backend/blob/develop/README.md).
 
 Once done please run the back end server.
+
+### 5: (optional) Add Firebase related values in .env file
+
+if you want to connect to a real database instance, create a .env file with the following values:
+
+```bash
+NEXT_PUBLIC_GCP_API_KEY=
+NEXT_PUBLIC_GCP_AUTH_DOMAIN=
+NEXT_PUBLIC_GCP_PROJECT_ID=
+NEXT_PUBLIC_GCP_BUCKET=
+```
 
 ### 5: Run the Front End Server
 
@@ -94,3 +105,11 @@ pnpm prepare
 ```bash
 pnpm oxlint .
 ```
+
+## Running the app in a container
+
+Pre-built images of the application can be found in our [repository packages](https://github.com/orgs/4350-fall-2025/packages?repo_name=frontend-1).
+
+To run the latest version of the application simply run `docker compose up` in your terminal and it should pull the image locally and run it in a container.
+
+**Important**: Make sure that you have docker installed and running before running the compose file. For instructions on installing Docker and Docker Desktop, visit their [official documentation](https://docs.docker.com/desktop/)

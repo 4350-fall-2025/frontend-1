@@ -1,4 +1,4 @@
-# Intallation steps:
+# Installation steps:
 
 ### 1: Clone the repository
 
@@ -20,7 +20,7 @@ Using npm:
 npm install -g pnpm@latest-10
 ```
 
-### 3: Install dev dependecies
+### 3: Install dev dependencies
 
 ```bash
 pnpm install

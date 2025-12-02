@@ -9,12 +9,14 @@ import { validateOptionalImage } from "~util/validation/validation";
 import { validateDiaryContentBody } from "~util/validation/validate-diary";
 import { Button, Group, List, Select, Textarea } from "@mantine/core";
 import { noteTypeOptions } from "~data/diary/constants";
+import { getAuthenticatedOwner } from "~util/auth/getAuthenticatedUser";
 import { useFileDialog } from "@mantine/hooks";
 import { Pet } from "src/models/pet";
 import { Owner } from "src/models/owner";
 import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
-import { todayDate } from "~data/constants";
+import { todayDate, UserRoles } from "~data/constants";
+import { generateDiaryURL, uploadFile, USE_STORAGE } from "src/firebase";
 
 /**
  * Some sample code came from Mantine use-file-dialog
@@ -24,22 +26,24 @@ function NewDiary() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [error, setError] = useState("");
-    const [owner, setOwner] = useState<Owner>(null);
+    const [owner, setOwner] = useState<Owner | null>(null);
     const [isNoteTypePreselected, setIsNoteTypePreselected] = useState(false);
+    const [pickedFilesList, setFilesList] = useState([]);
 
     useEffect(() => {
-        let storedUser = localStorage.getItem("currentUser");
-        if (storedUser) {
-            const storedOwner = new Owner(JSON.parse(storedUser));
-
-            setOwner(storedOwner);
+        try {
+            const authenticatedOwner = getAuthenticatedOwner();
+            setOwner(authenticatedOwner);
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            }
         }
     }, []);
 
     const [pets, setPets] = useState<Pet[]>([]);
 
     // TODO: Make a util function for fetching pets and return the pets? to reduce duplicate code
-    // localStorage code above might benefit from this too but we are switching to firestore so not needed
 
     // Load pets when owner is available
     useEffect(() => {
@@ -101,15 +105,18 @@ function NewDiary() {
 
     const fileDialog = useFileDialog({
         accept: "image/*",
+        onChange(files) {
+            if (files != null) {
+                const filesArray = Array.from(files || []);
+                const fullFileList = pickedFilesList.concat(filesArray);
+                setFilesList(fullFileList);
+            }
+        },
     });
-
-    const pickedFiles = Array.from(fileDialog.files || []);
-    const pickedFilesList = pickedFiles.map((file) => (
-        <List.Item key={file.name}>{file.name}</List.Item>
-    ));
 
     // clears file dialog and resets files contents
     const resetFiles = () => {
+        setFilesList([]);
         fileDialog.reset();
         form.setFieldValue("files", null);
     };
@@ -135,12 +142,31 @@ function NewDiary() {
                     contentBody: values.contentBody,
                     contentType: values.contentType,
                     createTimestamp: todayDate,
-                    files: [],
+                    files: pickedFilesList.map((file) => file.name),
                 };
+
+                if (!USE_STORAGE) {
+                    diaryEntryJSON["files"] = [];
+                }
 
                 const diaryEntry = new PetDiary(diaryEntryJSON);
 
-                await PetDiaryAPI.createDiary(petId, diaryEntry);
+                const createdEntryID = (
+                    await PetDiaryAPI.createDiary(petId, diaryEntry)
+                ).id;
+
+                //upload files to firebase - this method uploads all at the same time
+                let promises = [];
+                for (const file of pickedFilesList) {
+                    let url = generateDiaryURL(
+                        owner.id,
+                        petId,
+                        createdEntryID,
+                        file.name,
+                    );
+                    promises.push(uploadFile(file, url));
+                }
+                await Promise.all(promises);
                 router.push("/owner/diary/dashboard");
             } else {
                 setError(
@@ -215,7 +241,11 @@ function NewDiary() {
                             </Group>
                             {pickedFilesList.length > 0 && (
                                 <List mt='sm' size='sm'>
-                                    {pickedFilesList}
+                                    {pickedFilesList.map((file, index) => (
+                                        <List.Item key={index}>
+                                            {file.name}
+                                        </List.Item>
+                                    ))}
                                 </List>
                             )}
                         </div>
@@ -233,7 +263,9 @@ function NewDiary() {
                             </Button>
                         </div>
 
-                        <p className={globalStyles.error_message}>{error}</p>
+                        <p className={globalStyles.error_message_end}>
+                            {error}
+                        </p>
                     </div>
                 </form>
             </main>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconPlus, IconArrowsSort } from "@tabler/icons-react";
 import { noteTypeOptions } from "src/data/diary/constants";
@@ -12,6 +12,9 @@ import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { PetDiary } from "src/models/pet-diary";
 import DiaryEntry from "~components/diaryEntry/diaryEntry";
+import { getAuthenticatedOwner } from "~util/auth/getAuthenticatedUser";
+
+const INIT_FILTER = { value: "ALL", label: "All" };
 
 /**
  * CREDITS
@@ -26,21 +29,54 @@ export default function PetDiaryDashboard() {
     const router = useRouter();
 
     const [error, setError] = useState("");
-    const [owner, setOwner] = useState<Owner>(null);
+    const [owner, setOwner] = useState<Owner | null>(null);
+
+    const [diaries, setDiaries] = useState<{ entry: PetDiary; pet: Pet }[]>([]);
+
+    const [sortBy, setSortBy] = useState("Newest first");
+
+    const filters = [INIT_FILTER, ...noteTypeOptions];
+    const [activeFilter, setActiveFilter] = useState(INIT_FILTER);
+
+    const filteredAndSortedEntries = useMemo(() => {
+        //first apply filtering
+        let result =
+            activeFilter.label == "All"
+                ? diaries
+                : diaries.filter(
+                      (entry) => entry.entry.contentType == activeFilter.value,
+                  );
+        //then sort
+        if (sortBy === "Newest first") {
+            result.sort(
+                (a, b) =>
+                    new Date(b.entry.createTimestamp).getTime() -
+                    new Date(a.entry.createTimestamp).getTime(),
+            );
+        } else if (sortBy === "Oldest first") {
+            result.sort(
+                (a, b) =>
+                    new Date(a.entry.createTimestamp).getTime() -
+                    new Date(b.entry.createTimestamp).getTime(),
+            );
+        }
+        return result;
+    }, [diaries, sortBy, activeFilter]);
 
     useEffect(() => {
-        let storedUser = localStorage.getItem("currentUser");
-        if (storedUser) {
-            const storedOwner = new Owner(JSON.parse(storedUser));
-
-            setOwner(storedOwner);
+        try {
+            const authenticatedOwner = getAuthenticatedOwner();
+            setOwner(authenticatedOwner);
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            }
         }
     }, []);
 
     const [pets, setPets] = useState<Pet[]>([]);
 
     // TODO: Make a util function for fetching pets and return the pets? to reduce duplicate code
-    // localStorage code above might benefit from this too but we are switching to firestore so not needed
 
     useEffect(() => {
         const fetchPets = async () => {
@@ -60,18 +96,20 @@ export default function PetDiaryDashboard() {
     }, [owner]);
 
     // TODO: Make a util function for fetching diaries and return the diaries? to reduce duplicate code
-    const [diaries, setDiaries] = useState<PetDiary[]>([]);
-
     useEffect(() => {
         const fetchDiaries = async () => {
             if (owner?.id && pets.length > 0) {
                 try {
-                    const fetchedDiaries: PetDiary[] = [];
+                    const fetchedDiaries: { entry: PetDiary; pet: Pet }[] = [];
                     for (const pet of pets) {
                         const petDiaries = await PetDiaryAPI.getDiaryEntries(
                             pet.id,
                         );
-                        fetchedDiaries.push(...petDiaries);
+                        let namedEntry = petDiaries.map((entry) => ({
+                            entry: entry,
+                            pet: pet,
+                        }));
+                        fetchedDiaries.push(...namedEntry); //idea:
                     }
 
                     setDiaries(fetchedDiaries);
@@ -86,115 +124,100 @@ export default function PetDiaryDashboard() {
         fetchDiaries();
     }, [owner, pets]);
 
-    const [activeFilter, setActiveFilter] = useState("All");
-    const [sortBy, setSortBy] = useState("Newest first");
-
-    const filters = [
-        "All",
-        ...noteTypeOptions.map((option) =>
-            option.label === "Measurement" ? "Weight" : option.label,
-        ),
-    ];
-
     const handleQuickAdd = (noteType: string) => {
         // Navigate to new entry page with pre-selected note type
         router.push(`/owner/diary/create?noteType=${noteType}`);
     };
 
     return (
-        <div className={styles.container}>
+        <>
             {/* Header */}
-            <div className={styles.mainContent}>
-                <div className={styles.header}>
-                    <h1 className={styles.title}>Pet Diary</h1>
-                    <button
-                        className={styles.newEntryBtn}
-                        onClick={() => router.push("/owner/diary/create")}
-                    >
-                        <IconPlus size={16} />
-                        New Entry
-                    </button>
-                </div>
+            <div className={styles.header}>
+                <h1 className={styles.title}>Pet Diary</h1>
+                <button
+                    className={styles.newEntryBtn}
+                    onClick={() => router.push("/owner/diary/create")}
+                >
+                    <IconPlus size={16} />
+                    New Entry
+                </button>
+            </div>
 
-                {/* Content Wrapper - Entries + Sidebar */}
-                <div className={styles.contentWrapper}>
-                    {/* Filters and Sort */}
-                    <div className={styles.controls}>
-                        <div className={styles.filters}>
-                            {filters.map((filter) => (
-                                <button
-                                    key={filter}
-                                    onClick={() => setActiveFilter(filter)}
-                                    className={`${styles.filterBtn} ${
-                                        activeFilter === filter
-                                            ? styles.filterBtnActive
-                                            : ""
-                                    }`}
-                                >
-                                    {filter}
-                                </button>
-                            ))}
-                        </div>
-
-                        <div className={styles.sortContainer}>
-                            <span className={styles.sortLabel}>Sort by:</span>
-                            <select
-                                value={sortBy}
-                                onChange={(e) => setSortBy(e.target.value)}
-                                className={styles.sortSelect}
+            {/* Content Wrapper - Entries + Sidebar */}
+            <div className={styles.contentWrapper}>
+                {/* Filters and Sort */}
+                <div className={styles.controls}>
+                    <div className={styles.filters}>
+                        {filters.map((filter) => (
+                            <button
+                                key={filter.label}
+                                onClick={() => setActiveFilter(filter)}
+                                className={`${styles.filterBtn} ${
+                                    activeFilter === filter
+                                        ? styles.filterBtnActive
+                                        : ""
+                                }`}
                             >
-                                <option> Newest first </option>
-                                <option> Oldest first </option>
-                                <option> Pet name </option>
-                            </select>
-                            <IconArrowsSort
-                                size={16}
-                                className={styles.sortIcon}
-                            />
-                        </div>
+                                {filter.label}
+                            </button>
+                        ))}
                     </div>
 
-                    {/* Diary Entries Placeholder */}
-                    <div className={styles.entriesContainer}>
-                        {diaries && diaries.length <= 0 && (
+                    <div className={styles.sortContainer}>
+                        <span className={styles.sortLabel}>Sort by:</span>
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                            className={styles.sortSelect}
+                        >
+                            <option> Newest first </option>
+                            <option> Oldest first </option>
+                            <option> Pet name </option>
+                        </select>
+                        <IconArrowsSort size={16} className={styles.sortIcon} />
+                    </div>
+                </div>
+
+                {/* Diary Entries Placeholder */}
+                <div className={styles.entriesContainer}>
+                    {filteredAndSortedEntries &&
+                        filteredAndSortedEntries.length <= 0 && (
                             <p>No diary entry yet</p>
                         )}
 
-                        {diaries &&
-                            diaries.length > 0 &&
-                            diaries.map((diary) => (
-                                <DiaryEntry key={diary.id} entry={diary} />
-                            ))}
+                    {filteredAndSortedEntries.map((diary) => (
+                        <DiaryEntry
+                            key={diary.entry.id}
+                            entry={diary.entry}
+                            pet={diary.pet}
+                        />
+                    ))}
 
-                        <p className={globalStyles.error_message}>{error}</p>
-                    </div>
-
-                    <aside className={styles.diarySidebar}>
-                        <h2 className={styles.sidebarTitle}> Quick Add</h2>
-                        <div className={styles.quickAddButtons}>
-                            {noteTypeOptions
-                                .filter((option) => option.label !== "Other")
-                                .map((option) => {
-                                    const displayLabel =
-                                        option.label === "Measurement"
-                                            ? "Weight"
-                                            : option.label;
-                                    return (
-                                        <button
-                                            key={option.value}
-                                            className={styles.quickAddBtn}
-                                            onClick={() =>
-                                                handleQuickAdd(option.value)
-                                            }
-                                        >
-                                            Add {displayLabel} entry
-                                        </button>
-                                    );
-                                })}
-                        </div>
-                    </aside>
+                    <p className={globalStyles.error_message}>{error}</p>
                 </div>
+
+                <aside className={styles.diarySidebar}>
+                    <h2 className={styles.sidebarTitle}> Quick Add</h2>
+                    <div className={styles.quickAddButtons}>
+                        {noteTypeOptions
+                            .filter((option) => option.label !== "Other")
+                            .map((option) => {
+                                const displayLabel = option.label;
+                                return (
+                                    <button
+                                        key={option.value}
+                                        className={styles.quickAddBtn}
+                                        onClick={() =>
+                                            handleQuickAdd(option.value)
+                                        }
+                                    >
+                                        Add {displayLabel} entry
+                                    </button>
+                                );
+                            })}
+                    </div>
+                </aside>
             </div>
-        </div>
+        </>
     );
 }

@@ -31,7 +31,7 @@ dist/
 npm-debug.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
 
 # typescript
@@ -44,3 +44,7 @@ next-env.d.ts
 .DS_Store
 # vscode
 .vscode/*
+
+# Google Cloud
+firebase-*.json
+service-account-key.json

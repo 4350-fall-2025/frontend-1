@@ -12,6 +12,8 @@ import {
 } from "~util/validation/validate-signup";
 
 import styles from "./page.module.scss";
+import globalStyles from "~app/layout.module.scss";
+
 import { OwnersAPI } from "src/api/ownersAPI";
 import { Owner } from "src/models/owner";
 
@@ -98,7 +100,9 @@ export default function OwnerSignup() {
                     <Button type='submit'>I'm ready!</Button>
                 </Group>
             </form>
-            {error != "" && <h3 className={styles.red_text}>{error}</h3>}
+            {error != "" && (
+                <h3 className={globalStyles.error_message}>{error}</h3>
+            )}
         </>
     );
 }

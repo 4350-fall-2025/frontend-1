@@ -4,9 +4,7 @@
 @import "../../../globals.scss";
 
 .page {
-  background-color: $color-white;
-  min-height: 100vh;
-  padding: 5% 8%;
+    min-height: 100vh;
 }
 
 // HEADER SECTION
@@ -14,9 +12,19 @@
     margin-bottom: 32px;
 }
 
-.title {
+.welcome_header {
+    margin: 0 0 45px 0;
+}
+
+.welcome_title {
     font-size: $font-xlarge;
+    width: 100%;
     font-weight: 700;
+    margin: 0 0 20px 0;
+}
+
+.title {
+    font-size: $font-large;
     margin: 0 0 20px 0;
     color: $color-black;
 }
@@ -66,7 +74,7 @@
     border: 1px solid $color-off-white;
     border-radius: 12px;
     overflow: hidden;
-    width: 400px;
+    max-width: 400px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
 }
@@ -82,6 +90,9 @@
 
 .image_icon {
     font-size: 30px;
+    width: 100%;
+    height: auto;
+    justify-self: center;
 }
 
 .pet_content {

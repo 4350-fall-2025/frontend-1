@@ -17,7 +17,8 @@ import { notesMaxCharacters, notesMinCharacters } from "~data/pets/constants";
 import { mockPets } from "~data/pets/mock";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
 import { PetsAPI } from "~api/petsAPI";
-import { owner } from "~data/owner/mock";
+import { mockAuthOwner } from "~data/owner/mock";
+import { setAuthCookie } from "~util/auth/authCookies";
 
 // Mock router
 const pushMock = jest.fn();
@@ -49,6 +50,12 @@ jest.mock("@mantine/hooks", () => {
     };
 });
 
+jest.mock("../../../../firebase", () => ({
+    auth: {},
+    storage: {},
+    uploadFile: jest.fn(() => Promise.resolve()),
+}));
+
 describe("New Diary Entry page", () => {
     let pet: HTMLElement;
     let noteType: HTMLElement;
@@ -71,8 +78,8 @@ describe("New Diary Entry page", () => {
             // Reset mockGet to return null (no query params)
             mockGet.mockReturnValue(null);
 
-            // Set up mock user in localStorage
-            localStorage.setItem("currentUser", JSON.stringify(owner));
+            // Set up mock user in cookies
+            setAuthCookie(mockAuthOwner);
 
             user = userEvent.setup();
 
@@ -317,10 +324,7 @@ describe("New Diary Entry page", () => {
                 return null;
             });
 
-            localStorage.setItem(
-                "currentUser",
-                JSON.stringify({ id: 1, firstName: "Test", lastName: "User" }),
-            );
+            setAuthCookie(mockAuthOwner);
 
             user = userEvent.setup();
             render(<NewDiary />);
@@ -367,7 +371,7 @@ describe("New Diary Entry page", () => {
             // Reset mockGet to return null (no query params)
             mockGet.mockReturnValue(null);
 
-            // Don't set up localStorage - simulating no logged-in user
+            // Simulating no logged-in user
             // Mock will return empty array for pets since no owner ID
             PetsAPI.getAllPets = jest.fn().mockResolvedValue([]);
 

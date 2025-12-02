@@ -2,17 +2,6 @@
 
 @import "../../../globals.scss";
 
-.container {
-    display: flex;
-    height: 100vh;
-    background-color: $color-white;
-}
-
-.mainContent {
-    flex: 1;
-    padding: 2rem;
-}
-
 .header {
     display: flex;
     align-items: center;
@@ -21,16 +10,15 @@
 }
 
 .title {
-    font-size: 40px;
+    font-size: $font-xlarge;
     font-weight: 700;
-    letter-spacing: 0.5px;
 }
 
 /* === Main grid: entries + sidebar === */
 .contentWrapper {
     display: grid;
     grid-template-columns: 1fr 320px;
-    gap: 24px;
+    gap: 16px;
     align-items: start;
 }
 
@@ -38,13 +26,16 @@
 .controls {
     grid-column: 1 / -1;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
     margin-bottom: 12px;
 }
 
 .filters {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
 }
 
@@ -94,20 +85,15 @@
     cursor: pointer;
 }
 
+.sortIcon {
+    pointer-events: none;
+}
+
 /* === Entries (left column) === */
 .entriesContainer {
     min-height: 360px;
-}
-
-.placeholder {
-    border: 2px dashed $color-light-gray;
-    border-radius: 12px;
-    min-height: 300px;
-    display: grid;
-    place-items: center;
-    color: $color-gray;
-    background: $color-off-white;
-    font-size: 15px;
+    min-width: 300px;
+    width: 100%;
 }
 
 /* === Sidebar (Quick Add section) === */
@@ -117,6 +103,8 @@
     border-radius: 12px;
     padding: 20px 16px;
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+    width: 100%;
+    max-width: 350px;
 }
 
 .sidebarTitle {
@@ -176,25 +164,7 @@
 }
 
  /* === Responsive tweaks === */
- @media (max-width: 768px) {
-     .container {
-         height: auto;
-     }
-
-     .mainContent {
-         padding: 1rem;
-         padding-top: 0;
-     }
-
-     .header {
-         margin-bottom: 16px;
-         padding-top: 1rem;
-         border-top: 1px solid $color-off-white;
-         flex-direction: column;
-         align-items: flex-start;
-         gap: 12px;
-     }
-
+ @media (max-width: $size-mobile) {
      .title {
          font-size: $font-large;
          font-weight: 700;
@@ -221,22 +191,15 @@
      }
 
      .filters {
-         overflow-x: auto;
-         -webkit-overflow-scrolling: touch;
-         scrollbar-width: none;
-         -ms-overflow-style: none;
+         display: flex;
+         flex-wrap: wrap;
          gap: 8px;
-     }
-
-     .filters::-webkit-scrollbar {
-         display: none;
      }
 
      .filterBtn {
          font-size: $font-small;
-         padding: 6px 12px;
+         padding: 8px 12px;
          white-space: nowrap;
-         flex-shrink: 0;
      }
 
      .sortContainer {
@@ -261,30 +224,38 @@
 
      .contentWrapper {
          grid-template-columns: 1fr;
-         gap: 16px;
+         max-width: 100%;
+         overflow-x: hidden;
      }
 
      .entriesContainer {
          min-height: auto;
      }
 
-     .placeholder {
-         min-height: 400px;
-         font-size: 14px;
-         margin-bottom: 20px;
-     }
-
-     .diarySidebar {
-         display: none;
-     }
  }
 
- @media (max-width: 1024px) {
+ @media (max-width: $size-tablet) {
+     .header {
+         margin-bottom: 16px;
+         flex-direction: column;
+         align-items: flex-start;
+     }
+    
      .contentWrapper {
          grid-template-columns: 1fr;
+         display: flex;
+         flex-direction: column;
+     }
+
+     .controls {
+         order: 1;
+     }
+
+     .entriesContainer {
+         order: 3;
      }
 
      .diarySidebar {
-         margin-top: 24px;
+         order: 2;
      }
  }

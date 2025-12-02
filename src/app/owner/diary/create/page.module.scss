@@ -43,32 +43,13 @@
 }
 
 @media (min-width: $size-mobile) {
-    .page {
-        padding: 2rem 1rem;
-
-        main {
-            padding: 0 1rem;
-        }
-    }
-
     .top_section {
         grid-template-columns: 1fr;
     }
 }
 
-@media (min-width: $size-tablet) {
-    .page {
-        padding: 2rem 1rem;
-    }
-}
 
 @media (min-width: $size-desktop) {
-    .page {
-        main {
-            padding: 0 2rem;
-        }
-    }
-
     .top_section {
         grid-template-columns: 0.5fr 0.5fr;
     }

@@ -12,6 +12,8 @@ import { getAnimalGroupDisplayLabel } from "src/util/strings/format-pet";
 import { PetsAPI } from "~api/petsAPI";
 import { Owner } from "src/models/owner";
 import { Pet } from "src/models/pet";
+import { generatePetURL, getImageURL } from "src/firebase";
+import { getAuthenticatedOwner } from "~util/auth/getAuthenticatedUser";
 
 /**
  * CREDITS
@@ -39,25 +41,40 @@ export default function PetDashboard() {
     const [owner, setOwner] = useState<Owner>(null);
 
     useEffect(() => {
-        let storedUser = localStorage.getItem("currentUser");
-        if (storedUser) {
-            const storedOwner = new Owner(JSON.parse(storedUser));
-
-            setOwner(storedOwner);
+        try {
+            const authenticatedOwner: Owner = getAuthenticatedOwner();
+            setOwner(authenticatedOwner);
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            }
         }
     }, []);
 
     const [pets, setPets] = useState<Pet[]>([]);
+    const [imageUrls, setImageUrls] = useState({}); //dictionary
 
     // TODO: Make a util function for fetching pets and return the pets? to reduce duplicate code
-    // localStorage code above might benefit from this too but we are switching to firestore so not needed
 
     useEffect(() => {
         const fetchPets = async () => {
             if (owner?.id) {
                 try {
-                    const fetchedPets = await PetsAPI.getAllPets(owner.id);
+                    const fetchedPets: Pet[] = await PetsAPI.getAllPets(
+                        owner.id,
+                    );
                     setPets(fetchedPets);
+
+                    const promises = [];
+                    const images = {};
+
+                    for (let pet of fetchedPets) {
+                        promises.push(getPetImage(owner.id, pet, images));
+                    }
+                    await Promise.all(promises);
+
+                    setPets(fetchedPets);
+                    setImageUrls(images);
                 } catch (error) {
                     setError(
                         "We can't retrieve all your pets. Please try again later.",
@@ -69,8 +86,28 @@ export default function PetDashboard() {
         fetchPets();
     }, [owner]);
 
+    const getPetImage = async (ownerId, pet: Pet, imageDict) => {
+        try {
+            const filePath = generatePetURL(ownerId, pet.id);
+            const url = await getImageURL(filePath);
+            imageDict[pet.id] = url;
+        } catch (error) {
+            imageDict[pet.id] = placeholderImage.src;
+        }
+    };
+
     return (
         <div className={styles.page}>
+            <header
+                className={styles.welcome_header}
+                data-testid='welcome-header'
+            >
+                <h1 className={styles.welcome_title}>
+                    Welcome back, {owner?.firstName || ""}!
+                </h1>
+                <p>Welcome to the pet owner dashboard!</p>
+            </header>
+
             <main>
                 <div className={styles.header}>
                     <h1 className={styles.title}>My Pets</h1>
@@ -93,9 +130,7 @@ export default function PetDashboard() {
                             <div key={pet.id} className={styles.pet_card}>
                                 <div className={styles.pet_image}>
                                     <Image
-                                        src={
-                                            placeholderImage.src
-                                        }
+                                        src={imageUrls[pet.id]}
                                         alt={`${pet.name} photo`}
                                         className={styles.image_icon}
                                     />
