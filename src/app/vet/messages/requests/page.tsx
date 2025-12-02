@@ -26,7 +26,7 @@ export default function MessagesPage() {
 
     const [opened, { toggle, close }] = useDisclosure(false);
     const [acceptedRequest, setAcceptedRequest] = useState(false);
-    const [requests, setRequests] = useState<RequestMessage[]>([testRequest]);
+    const [requests, setRequests] = useState<RequestMessage[]>([]);
     const { websocket, currentPartner, setCurrentPartner, petID, setPetID } =
         useSocket();
 
@@ -35,6 +35,10 @@ export default function MessagesPage() {
     useEffect(() => {
         if (websocket != null) {
             try {
+                websocket.publish({
+                    destination: websocketVetTopics.vetAnnounceOnline,
+                });
+
                 websocket.subscribe(websocketVetTopics.userRequests, (msg) => {
                     const request: RequestMessage = JSON.parse(msg.body);
                     console.log(msg.body);

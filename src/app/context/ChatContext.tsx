@@ -24,10 +24,6 @@ export const ChatProvider = ({ children }) => {
                 onConnect: () => {
                     console.log("connected :D ");
                     setWebsocket(connection);
-
-                    connection.publish({
-                        destination: websocketVetTopics.vetAnnounceOnline,
-                    });
                 },
             });
 
