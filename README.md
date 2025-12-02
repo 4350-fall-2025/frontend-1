@@ -29,6 +29,8 @@ brew install pnpm
 
 Using npm:
 
+**Note:** You should do this in bash if using Windows.
+
 ```bash
 npm install -g pnpm@latest-10
 ```
@@ -58,7 +60,7 @@ NEXT_PUBLIC_GCP_PROJECT_ID=
 NEXT_PUBLIC_GCP_BUCKET=
 ```
 
-### 5: Run the Front End Server
+### 6: Run the Front End Server
 
 ```bash
 pnpm dev
@@ -69,6 +71,8 @@ pnpm dev
 ### Install the dependencies
 
 **Note:** Your IDE might warn you to use the same version of pnpm that we use (see the `packageManager` value in `package.json`). You can safely ignore that warning if your version is higher than what we use. If you use a majorly lower one, you might notice some subtle bugs. For example, being 1 major version (version 9) behind ours (version 10.7) can be bad, but being a few minor versions (version 10.4) behind ours is fine. This is because old PNPM might not successfully read new PNPM lockfiles.
+
+**Note:** You should do this in bash if using Windows.
 
 ```bash
 pnpm install

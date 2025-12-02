@@ -248,7 +248,13 @@ function NewDiary() {
                             )}
                         </div>
 
-                        <div className={globalStyles.cancel_or_save}>
+                        <div
+                            className={
+                                globalStyles.cancel_or_save +
+                                " " +
+                                globalStyles.end
+                            }
+                        >
                             <Button variant='default' onClick={handleCancel}>
                                 Cancel
                             </Button>

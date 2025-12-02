@@ -10,7 +10,12 @@ import { Owner } from "src/models/owner";
 import { getAuthenticatedOwner } from "~util/auth/getAuthenticatedUser";
 import { PetsAPI } from "~api/petsAPI";
 import { generatePetURL, getImageURL } from "src/firebase";
+import { Client } from "@stomp/stompjs";
 import placeholderImage from "~public/placeholder.jpg";
+import {
+    generateWebSocketUrl,
+    websocketOwnerTopics,
+} from "~data/messages/constants";
 
 export default function Messages() {
     const [numVets, setNumVets] = useState(0);
@@ -26,14 +31,35 @@ export default function Messages() {
 
     const [owner, setOwner] = useState<Owner | null>(null);
 
+    const [websocket, setWebsocket] = useState<Client>(null);
+
     useEffect(() => {
-        try {
-            const authenticatedOwner = getAuthenticatedOwner();
-            setOwner(authenticatedOwner);
-        } catch (error) {
-            if (error instanceof Error) {
-                setError(error.message);
-            }
+        let owner: Owner = getAuthenticatedOwner();
+        setOwner(owner);
+
+        if (!websocket) {
+            const connection = new Client({
+                brokerURL: generateWebSocketUrl(owner.id),
+                onConnect: () => {
+                    console.log("connected :D ");
+                    connection.subscribe(
+                        websocketOwnerTopics.onlineInit,
+                        (msg) => {
+                            console.log("init" + msg.body);
+                        },
+                    );
+                    setWebsocket(connection);
+                },
+            });
+
+            connection.onStompError = function (frame) {
+                console.log(
+                    "Broker reported error: " + frame.headers["message"],
+                );
+                console.log("Additional details: " + frame.body);
+            };
+
+            connection.activate();
         }
     }, []);
 
@@ -150,7 +176,13 @@ export default function Messages() {
                                 selected pet!
                             </p>
 
-                            <div className={globalStyles.cancel_or_save}>
+                            <div
+                                className={
+                                    globalStyles.cancel_or_save +
+                                    " " +
+                                    globalStyles.center
+                                }
+                            >
                                 <Button
                                     onClick={() => setConnectWithVetCard(false)}
                                 >
@@ -165,11 +197,12 @@ export default function Messages() {
                                     Connect
                                 </Button>
                             </div>
+                            {numVets <= 0 && (
+                                <p>Can't connect yet, no vets are online.</p>
+                            )}
                         </div>
                     )}
                 </Card>
-
-                {numVets <= 0 && <p>Can't connect yet, no vets are online.</p>}
                 {error && <p className={globalStyles.error_message}>{error}</p>}
             </div>
         </div>
