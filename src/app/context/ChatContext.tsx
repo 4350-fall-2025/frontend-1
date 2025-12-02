@@ -2,9 +2,14 @@
 
 import { createContext, useContext, useEffect, useState, useRef } from "react";
 import { Vet } from "src/models/vet";
-import { getAuthenticatedVet } from "~util/auth/getAuthenticatedUser";
+import {
+    getAuthenticatedOwner,
+    getAuthenticatedVet,
+} from "~util/auth/getAuthenticatedUser";
 import { Client } from "@stomp/stompjs";
 import { generateWebSocketUrl } from "~data/messages/constants";
+import { hasRole } from "~util/auth/authCookies";
+import { UserRoles } from "~data/constants";
 
 const ChatContext = createContext(null);
 
@@ -15,9 +20,15 @@ export const ChatProvider = ({ children }) => {
 
     useEffect(() => {
         if (!websocket) {
-            let vet: Vet = getAuthenticatedVet();
+            let user;
+            if (hasRole(UserRoles.vet)) {
+                user = getAuthenticatedVet();
+            } else {
+                user = getAuthenticatedOwner();
+            }
+
             const connection = new Client({
-                brokerURL: generateWebSocketUrl(vet.id),
+                brokerURL: generateWebSocketUrl(user.id),
                 onConnect: () => {
                     console.log("connected :D ");
                     setWebsocket(connection);
