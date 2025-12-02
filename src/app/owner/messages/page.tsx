@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import styles from "./page.module.scss";
 import globalStyles from "~app/layout.module.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ImageCheckbox } from "~components/imageCheckbox/imageCheckbox";
 import { useRouter } from "next/navigation";
 import { Pet } from "src/models/pet";
@@ -18,10 +18,8 @@ import { Owner } from "src/models/owner";
 import { getAuthenticatedOwner } from "~util/auth/getAuthenticatedUser";
 import { PetsAPI } from "~api/petsAPI";
 import { generatePetURL, getImageURL } from "src/firebase";
-import { Client } from "@stomp/stompjs";
 import placeholderImage from "~public/placeholder.jpg";
 import {
-    generateWebSocketUrl,
     RequestMessage,
     RequestStatus,
     websocketOwnerTopics,
@@ -30,14 +28,8 @@ import { hasRole } from "~util/auth/authCookies";
 import { UserRoles } from "~data/constants";
 import { useSocket } from "~app/context/ChatContext";
 
-const testRequest: RequestMessage = {
-    from: "WawrgHPyixxQoKQtaOuT",
-    to: "123",
-    petId: "pbiTVPk5DfHe8NibJ3MK",
-    status: RequestStatus.pending,
-};
-
 export default function Messages() {
+    const setupSub = useRef(false);
     const [vets, setVets] = useState([]);
     const [error, setError] = useState("");
 
@@ -55,44 +47,37 @@ export default function Messages() {
         setOwner(owner);
     }, []);
 
-    const [websocket, setWebsocket] = useState<Client>(null);
+    const { websocket, currentPartner, petID } = useSocket();
 
     const [cancelDialogVisible, setDialogVisible] = useState(false);
-    // const { websocket, currentPartner, petID } = useSocket();
 
-    const [acceptedRequest, setAcceptedRequest] = useState(false);
-    const [requests, setRequests] = useState<RequestMessage[]>([
-        testRequest,
-        testRequest,
-    ]);
+    const [sentRequest, setSentRequest] = useState(false);
 
-    const modalOpen = vets.length > 0 && !acceptedRequest;
+    const modalOpen = showConnectWithVetCard && sentRequest;
 
-    const handleRequests = (msg) => {
+    const handleResponses = (msg) => {
         const request: RequestMessage = JSON.parse(msg.body);
 
-        if (request.status == RequestStatus.pending) {
-            setRequests((prev) => [...prev, request]);
-        } else if (request.status == RequestStatus.accepted) {
-            if (selectedPetId != null) {
-                // todo: remove?
-                router.push("/owner/messages/chat");
-            }
+        if (request.status == RequestStatus.accepted) {
+            currentPartner.current = request.from;
+            petID.current = request.petId;
+            router.push("/owner/messages/chat");
         } else if (
             request.status == RequestStatus.cancelled ||
             request.status == RequestStatus.rejected
         ) {
-            setRequests((arr) =>
-                arr.filter((items) => items.petId !== request.petId),
-            );
+            setVets((arr) => arr.filter((items) => items !== request.from));
+
+            //move on to next vet
+            setSentRequest(false);
         }
     };
 
     // TODO: maybe util for vet and owner, use parameter for from?
-    const sendResponse = (request: RequestMessage, status: RequestStatus) => {
+    const sendResponse = (vetID, status?: RequestStatus) => {
         const response = {
             from: owner.id,
-            to: request.from,
+            to: vetID,
             petId: selectedPetId,
             status: status,
         };
@@ -109,54 +94,30 @@ export default function Messages() {
 
     const cancelVetSearch = () => {
         sendResponse(vets[0], RequestStatus.cancelled);
+        setSentRequest(false);
 
         setVets(vets.slice(1));
     };
 
     const sendRequestToVet = () => {
-        sendResponse(vets[0], RequestStatus.accepted);
+        sendResponse(vets[0], null);
+        setSentRequest(true);
 
         setVets(vets.slice(1));
     };
 
     useEffect(() => {
-        if (websocket != null) {
-            const connection = new Client({
-                brokerURL: generateWebSocketUrl(owner.id),
-                onConnect: () => {
-                    console.log("connected :D ");
-
-                    // get the initial list of online vet
-                    connection.subscribe(
-                        websocketOwnerTopics.onlineInit,
-                        (msg) => {
-                            const vetsArray = JSON.parse(msg.body);
-                            setVets(vetsArray);
-                        },
-                    );
-                    setWebsocket(connection);
-                },
-            });
-
-            connection.onStompError = function (frame) {
-                console.log(
-                    "Broker reported error: " + frame.headers["message"],
-                );
-                console.log("Additional details: " + frame.body);
-            };
-
-            connection.activate();
-        }
-    }, [websocket]);
-
-    useEffect(() => {
         if (hasRole(UserRoles.owner)) {
-            if (websocket != null) {
+            if (websocket != null && setupSub.current == false) {
+                setupSub.current = true;
                 // get an update whenever a vet comes online/offline
+                websocket.subscribe(websocketOwnerTopics.onlineInit, (msg) => {
+                    setVets(JSON.parse(msg.body));
+                });
                 websocket.subscribe(
                     websocketOwnerTopics.availableVets,
                     (msg) => {
-                        console.log(msg);
+                        setVets(JSON.parse(msg.body));
                     },
                 );
 
@@ -164,7 +125,7 @@ export default function Messages() {
                 websocket.subscribe(
                     websocketOwnerTopics.incomingRequests,
                     (msg) => {
-                        console.log(msg);
+                        handleResponses(msg);
                     },
                 );
             }

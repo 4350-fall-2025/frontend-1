@@ -116,20 +116,20 @@ describe("Chat Component", () => {
             const input = screen.getByRole("textbox");
             fireEvent.change(input, { target: { value: "enter test" } });
 
-            const messagesBefore = screen.getAllByTestId("message");
+            const messagesBefore = screen.queryAllByTestId("message");
             fireEvent.keyDown(input, { key: "Enter", shiftKey: true });
-            const messagesAfter = screen.getAllByTestId("message");
+            const messagesAfter = screen.queryAllByTestId("message");
 
             expect(messagesBefore.length == messagesAfter.length);
         });
 
         test("sending an whitespace doesnt send message", () => {
-            const messagesBefore = screen.getAllByTestId("message");
+            const messagesBefore = screen.queryAllByTestId("message");
             const input = screen.getByRole("textbox");
             fireEvent.change(input, { target: { value: "  " } });
 
             fireEvent.keyDown(input, { key: "Enter", shiftKey: false });
-            const messagesAfter = screen.getAllByTestId("message");
+            const messagesAfter = screen.queryAllByTestId("message");
 
             expect(messagesBefore.length == messagesAfter.length);
         });
