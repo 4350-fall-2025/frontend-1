@@ -56,6 +56,8 @@ NEXT_PUBLIC_GCP_API_KEY=
 NEXT_PUBLIC_GCP_AUTH_DOMAIN=
 NEXT_PUBLIC_GCP_PROJECT_ID=
 NEXT_PUBLIC_GCP_BUCKET=
+NEXT_PUBLIC_USE_EMULATOR=false
+NEXT_PUBLIC_USE_STORAGE=true
 ```
 
 ### 5: Run the Front End Server
@@ -112,4 +114,7 @@ Pre-built images of the application can be found in our [repository packages](ht
 
 To run the latest version of the application simply run `docker compose up` in your terminal and it should pull the image locally and run it in a container.
 
-**Important**: Make sure that you have docker installed and running before running the compose file. For instructions on installing Docker and Docker Desktop, visit their [official documentation](https://docs.docker.com/desktop/)
+**Important Notes**:
+
+- Make sure that you have docker installed and running before running the compose file. For instructions on installing Docker and Docker Desktop, visit their [official documentation](https://docs.docker.com/desktop/)
+- Make sure that you have your service account key in the root of the project.
