@@ -142,14 +142,15 @@ export default function MessagesPage() {
                                     globalStyles.center
                                 }
                             >
+                                <Button onClick={() => rejectRequest()}>
+                                    reject
+                                </Button>
+
                                 <Button
                                     variant='light'
                                     onClick={() => acceptRequest()}
                                 >
                                     accept
-                                </Button>
-                                <Button onClick={() => rejectRequest()}>
-                                    reject
                                 </Button>
                             </div>
                         </Modal>
