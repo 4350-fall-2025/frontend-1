@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, useRef } from "react";
-import { Vet } from "src/models/vet";
 import {
     getAuthenticatedOwner,
     getAuthenticatedVet,
