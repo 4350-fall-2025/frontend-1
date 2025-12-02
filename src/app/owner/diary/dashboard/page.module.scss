@@ -137,30 +137,16 @@
 }
 
 /* === New Entry button === */
-.newEntryBtn {
-    background: $color-rose;
-    color: $color-white;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
 
-.newEntryBtn span {
+.new_entry_button span {
     display: inline-flex;
     align-items: center;
     gap: 6px;
 }
 
-.newEntryBtn svg {
+.new_entry_button svg {
     padding-top: 4px;
     padding-right: 3px;
-}
-
-.newEntryBtn:hover {
-    background: $color-rose-hover;
 }
 
  /* === Responsive tweaks === */
@@ -169,17 +155,6 @@
          font-size: $font-large;
          font-weight: 700;
          text-align: left;
-     }
-
-     .newEntryBtn {
-         width: auto;
-         font-size: $font-small-med;
-         padding: 10px 14px;
-         display: flex;
-         justify-content: center;
-         align-items: center;
-         gap: 6px;
-         margin-top: -10px;
      }
 
      .controls {

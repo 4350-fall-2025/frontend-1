@@ -2,7 +2,7 @@
 
 /* Main grid layout */
 .globalFonts {
-    h1 {
+    h1, h2 {
         font-family: var(--font-tsukimi_rounded), var(--font-dm_sans), Arial;
     }
 
@@ -47,9 +47,16 @@
 .cancel_or_save {
     display: flex;
     gap: 10px;
-    justify-content: flex-end;
     padding-top: 2rem;
-    padding-left: 2rem;
+
+    &.end {
+        justify-content: flex-end;
+    }
+
+    &.center {
+        justify-content: center;
+        align-items: center;
+    }
 
     button {
         width: fit-content;
@@ -58,5 +65,35 @@
     // makes the save button (which is 2nd button) color rose
     button:nth-child(2) {
         background-color: $color-rose;
+
+        &:disabled {
+            background-color: $color-light-gray;
+            color: $color-gray;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+    }
+}
+
+.rose_button {
+    background-color: $color-rose;
+    color: $color-white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+        background-color: $color-rose-hover;
+    }
+    
+    &:disabled {
+        background-color: $color-light-gray;
+        color: $color-gray;
+        cursor: not-allowed;
+        opacity: 0.6;
     }
 }

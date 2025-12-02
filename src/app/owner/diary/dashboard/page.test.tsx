@@ -8,7 +8,7 @@ import userEvent from "@testing-library/user-event";
 import PetDiaryDashboard from "./page";
 import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
-import { MOCK_DIARY_ENTRIES, MOCK_DIARY_ENTRY } from "~data/diary/mock";
+import { MOCK_DIARY_ENTRIES } from "~data/diary/mock";
 import { mockPets } from "~data/pets/mock";
 import { mockAuthOwner } from "~data/owner/mock";
 import { toSentenceCase } from "~util/strings/normalize";

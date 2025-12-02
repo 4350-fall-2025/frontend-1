@@ -29,7 +29,7 @@ export const ownerNavLinks: NavLinkItem[] = [
     },
     {
         label: "Messages",
-        href: "/under-construction",
+        href: "/owner/messages",
     },
 ];
 

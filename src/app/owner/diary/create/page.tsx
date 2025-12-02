@@ -15,7 +15,7 @@ import { Pet } from "src/models/pet";
 import { Owner } from "src/models/owner";
 import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
-import { todayDate, UserRoles } from "~data/constants";
+import { todayDate } from "~data/constants";
 import { generateDiaryURL, uploadFile, USE_STORAGE } from "src/firebase";
 
 /**
@@ -42,8 +42,6 @@ function NewDiary() {
     }, []);
 
     const [pets, setPets] = useState<Pet[]>([]);
-
-    // TODO: Make a util function for fetching pets and return the pets? to reduce duplicate code
 
     // Load pets when owner is available
     useEffect(() => {
@@ -250,7 +248,13 @@ function NewDiary() {
                             )}
                         </div>
 
-                        <div className={globalStyles.cancel_or_save}>
+                        <div
+                            className={
+                                globalStyles.cancel_or_save +
+                                " " +
+                                globalStyles.end
+                            }
+                        >
                             <Button variant='default' onClick={handleCancel}>
                                 Cancel
                             </Button>

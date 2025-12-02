@@ -131,7 +131,7 @@ describe("Sidebar Component", () => {
                 "href",
                 "/under-construction",
             );
-            expect(messagesLink).toHaveAttribute("href", "/under-construction");
+            expect(messagesLink).toHaveAttribute("href", "/owner/messages");
         });
 
         it("nav links should have navLink class styling", () => {

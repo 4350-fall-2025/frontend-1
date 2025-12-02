@@ -54,8 +54,6 @@ export default function PetDashboard() {
     const [pets, setPets] = useState<Pet[]>([]);
     const [imageUrls, setImageUrls] = useState({}); //dictionary
 
-    // TODO: Make a util function for fetching pets and return the pets? to reduce duplicate code
-
     useEffect(() => {
         const fetchPets = async () => {
             if (owner?.id) {
@@ -112,7 +110,9 @@ export default function PetDashboard() {
                 <div className={styles.header}>
                     <h1 className={styles.title}>My Pets</h1>
                     <button
-                        className={styles.add_button}
+                        className={
+                            globalStyles.rose_button + " " + styles.add_button
+                        }
                         onClick={() => router.push("/owner/pets/create")}
                     >
                         <IconPlus size={16} />
