@@ -22,12 +22,6 @@ export default function Messaging() {
                 brokerURL: generateWebSocketUrl(owner.id),
                 onConnect: () => {
                     console.log("connected :D ");
-                    connection.subscribe(
-                        websocketOwnerTopics.onlineInit,
-                        (msg) => {
-                            console.log("init" + msg.body);
-                        },
-                    );
                     setWebsocket(connection);
                 },
             });
@@ -44,7 +38,7 @@ export default function Messaging() {
     return (
         <div className={styles.page}>
             <div className={styles.chat}>
-                <Chat websocket={websocket} />
+                <Chat websocket={websocket} otherId='vlARuxJwPBD9DOjbNrO8' />
             </div>
 
             <div className={styles.pet_profile}>

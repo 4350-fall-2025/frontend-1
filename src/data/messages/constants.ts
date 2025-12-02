@@ -7,6 +7,8 @@ export const websocketOwnerTopics = {
     onlineInit: "/user/queue/online-init",
     sendRequest: "/app/owner/cancel",
     incomingRequests: "/user/queue/requests",
+    sendChat: "/app/message",
+    incomingChat: "/user/queue/message",
 };
 
 export const websocketVetTopics = {
@@ -21,6 +23,12 @@ export interface RequestMessage {
     to: string;
     petId: string;
     status?: string;
+}
+
+export interface ChatMessage {
+    from: string;
+    to: string;
+    message: string;
 }
 
 export enum RequestStatus {

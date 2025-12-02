@@ -1,11 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Textarea, ActionIcon } from "@mantine/core";
 import { ArrowUpIcon } from "@radix-ui/react-icons";
 import styles from "./chat.module.scss";
 import { Client } from "@stomp/stompjs";
 import { hasRole } from "~util/auth/authCookies";
 import { UserRoles } from "~data/constants";
-import { websocketOwnerTopics } from "~data/messages/constants";
+import { ChatMessage, websocketOwnerTopics } from "~data/messages/constants";
+import {
+    getAuthenticatedOwner,
+    getAuthenticatedVet,
+} from "~util/auth/getAuthenticatedUser";
+import { VetsAPI } from "~api/vetsAPI";
+import { Vet } from "src/models/vet";
+import { OwnersAPI } from "~api/ownersAPI";
+import { Owner } from "src/models/owner";
 enum Sender {
     me = "me",
     other = "other",
@@ -30,9 +38,18 @@ const messagesMock: Message[] = [
     },
     { text: "abc", sender: Sender.me },
 ];
-export default function Chat({ websocket }: { websocket: Client }) {
+export default function Chat({
+    websocket,
+    otherId,
+}: {
+    websocket: Client;
+    otherId: string;
+}) {
     const [messages, setMessages] = useState<Message[]>(messagesMock);
     const [input, setInput] = useState("");
+    const myID = useRef(null);
+    const [name, setName] = useState("");
+    const setupSub = useRef(false);
 
     const sendMessage = () => {
         if (!input.trim()) return;
@@ -44,34 +61,61 @@ export default function Chat({ websocket }: { websocket: Client }) {
         console.log(input);
 
         setMessages((prev) => [...prev, newMessage]);
-        //TODO: once the messaging socket is set up uncomment this code
-        // websocket.publish({
-        //     destination: null,
-        //     body: input
-        // });
+        const message: ChatMessage = {
+            from: myID.current,
+            to: otherId,
+            message: input,
+        };
+        websocket.publish({
+            destination: websocketOwnerTopics.sendChat,
+            body: JSON.stringify(message),
+            headers: { "content-type": "application/json" },
+        });
         setInput("");
+    };
+
+    const getVetsName = async () => {
+        const vet: Vet = await VetsAPI.getVet(otherId);
+        setName(`Dr. ${vet.lastName}`);
+    };
+
+    const getOwnersName = async () => {
+        const owner: Owner = await OwnersAPI.getOwner(otherId);
+        setName(`${owner.firstName} ${owner.lastName}`);
     };
 
     useEffect(() => {
         if (hasRole(UserRoles.owner)) {
-            if (websocket != null) {
-                websocket.subscribe(
-                    websocketOwnerTopics.availableVets,
-                    (msg) => {
-                        setMessages((prev) => [
-                            ...prev,
-                            { text: msg.body, sender: Sender.other },
-                        ]);
-                    },
-                );
-            }
+            const owner = getAuthenticatedOwner();
+            myID.current = owner.id;
+            getVetsName();
+        } else {
+            const vet = getAuthenticatedVet();
+            myID.current = vet.id;
+            getOwnersName();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (websocket != null && setupSub.current == false) {
+            setupSub.current = true;
+            websocket.subscribe(websocketOwnerTopics.incomingChat, (msg) => {
+                const incoming: ChatMessage = JSON.parse(msg.body);
+                //if(incoming.from == otherId) //uncoment this later for setting an error
+                setMessages((prev) => [
+                    ...prev,
+                    { text: incoming.message, sender: Sender.other },
+                ]);
+            });
         }
     }, [websocket]);
+
+    console.log(websocket);
 
     return (
         <div className={styles.chat}>
             <div className={styles.chat_header}>
-                <h1 className={styles.chat_header_name}>Dr. Doctor</h1>
+                <h1 className={styles.chat_header_name}>{name}</h1>
                 <span className={styles.chat_subheader}>
                     Chat about pet name
                 </span>
