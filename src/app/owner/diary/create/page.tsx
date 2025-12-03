@@ -15,7 +15,7 @@ import { Pet } from "src/models/pet";
 import { Owner } from "src/models/owner";
 import { PetsAPI } from "~api/petsAPI";
 import { PetDiaryAPI } from "~api/petDiaryAPI";
-import { todayDate } from "~data/constants";
+import { MAX_FILE_SIZE, todayDate } from "~data/constants";
 import { generateDiaryURL, uploadFile, USE_STORAGE } from "src/firebase";
 
 /**
@@ -105,8 +105,18 @@ function NewDiary() {
         accept: "image/*",
         onChange(files) {
             if (files != null) {
-                const filesArray = Array.from(files || []);
-                const fullFileList = pickedFilesList.concat(filesArray);
+                const filesArrayRaw = Array.from(files || []);
+                const filesArrayAccepted = filesArrayRaw.filter(
+                    (file) => file.size <= MAX_FILE_SIZE,
+                );
+
+                if (filesArrayAccepted.length < filesArrayRaw.length) {
+                    alert(
+                        `Some files were too large and have been excluded. Maximum file size is ${MAX_FILE_SIZE / (1024 * 1024)}MB.`,
+                    );
+                }
+
+                const fullFileList = pickedFilesList.concat(filesArrayAccepted);
                 setFilesList(fullFileList);
             }
         },
