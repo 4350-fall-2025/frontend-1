@@ -1,3 +1,9 @@
+/**
+ * References:
+ * For instructions on how to use stompjs: https://stomp-js.github.io/guide/stompjs/using-stompjs-v5.html
+ *
+ * Used ChatGpt to generate the basic Context setup
+ */
 "use client";
 
 import { createContext, useContext, useEffect, useState, useRef } from "react";
@@ -32,7 +38,12 @@ export const ChatProvider = ({ children }) => {
                     console.log("connected :D ");
                     setWebsocket(connection);
                 },
+                onWebSocketClose: () => {
+                    setWebsocket(null);
+                },
             });
+
+            connection.connectionTimeout = 8000; //
 
             connection.onStompError = function (frame) {
                 console.log(
@@ -45,9 +56,7 @@ export const ChatProvider = ({ children }) => {
                 connection.deactivate();
             };
         }
-        return () => {
-            websocket.deactivate();
-        };
+        return () => {};
     }, []);
 
     return (

@@ -10,12 +10,19 @@ import { VetsAPI } from "~api/vetsAPI";
 import { mockAuthVet, mockVet } from "~data/vets/mock";
 import { ChatMessage, websocketOwnerTopics } from "~data/messages/constants";
 
+const push = jest.fn();
+const refresh = jest.fn();
+jest.mock("next/navigation", () => ({
+    useRouter: () => ({ push, refresh }),
+}));
+
 // Helper to mock websocket client
 const mockSubscribe = jest.fn();
 const mockPublish = jest.fn();
 const mockWebSocket = {
     subscribe: mockSubscribe,
     publish: mockPublish,
+    connected: true,
 } as unknown as Client;
 
 //Helpers for the API calls
@@ -77,10 +84,7 @@ describe("Chat Component", () => {
             mockGetVet.mockResolvedValue(mockVet);
             render(
                 <MantineProvider>
-                    <Chat
-                        websocket={mockWebSocket}
-                        otherId={mockAuthOwner.userId}
-                    />
+                    <Chat websocket={mockWebSocket} otherId={mockVet.id} />
                 </MantineProvider>,
             );
         });
@@ -96,7 +100,7 @@ describe("Chat Component", () => {
             const input = screen.getByRole("textbox");
             fireEvent.change(input, { target: { value: "test abc" } });
 
-            const button = screen.getByRole("button");
+            const button = screen.getByTestId("send");
             fireEvent.click(button);
 
             expect(screen.getByText("test abc")).toBeInTheDocument();
@@ -141,13 +145,11 @@ describe("Chat Component", () => {
             mockGetVet.mockResolvedValue(mockVet);
             render(
                 <MantineProvider>
-                    <Chat
-                        websocket={mockWebSocket}
-                        otherId={mockAuthOwner.userId}
-                    />
+                    <Chat websocket={mockWebSocket} otherId={mockVet.id} />
                 </MantineProvider>,
             );
         });
+
         test("does subscribe upon loading", () => {
             expect(mockSubscribe).toHaveBeenCalled();
         });
@@ -156,13 +158,13 @@ describe("Chat Component", () => {
             const input = screen.getByRole("textbox");
             fireEvent.change(input, { target: { value: "test message" } });
 
-            const button = screen.getByRole("button");
+            const button = screen.getByTestId("send");
             fireEvent.click(button);
             expect(mockPublish).toHaveBeenCalledWith({
                 destination: websocketOwnerTopics.sendChat,
                 body: JSON.stringify({
                     from: mockAuthOwner.userId,
-                    to: mockOwner.id,
+                    to: mockVet.id,
                     message: "test message",
                 }),
                 headers: { "content-type": "application/json" },
@@ -174,8 +176,8 @@ describe("Chat Component", () => {
 
             act(() => {
                 let innerMessage: ChatMessage = {
-                    from: "test",
-                    to: "me",
+                    from: mockVet.id,
+                    to: mockAuthOwner.userId,
                     message: "incoming message",
                 };
                 const msg = { body: JSON.stringify(innerMessage) } as IMessage;
