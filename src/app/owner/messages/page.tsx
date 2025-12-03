@@ -1,8 +1,16 @@
 "use client";
-import { Badge, Box, Button, Card, SimpleGrid } from "@mantine/core";
+import {
+    Badge,
+    Box,
+    Button,
+    Card,
+    Dialog,
+    Modal,
+    SimpleGrid,
+} from "@mantine/core";
 import styles from "./page.module.scss";
 import globalStyles from "~app/layout.module.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ImageCheckbox } from "~components/imageCheckbox/imageCheckbox";
 import { useRouter } from "next/navigation";
 import { Pet } from "src/models/pet";
@@ -10,17 +18,19 @@ import { Owner } from "src/models/owner";
 import { getAuthenticatedOwner } from "~util/auth/getAuthenticatedUser";
 import { PetsAPI } from "~api/petsAPI";
 import { generatePetURL, getImageURL } from "src/firebase";
-import { Client } from "@stomp/stompjs";
 import placeholderImage from "~public/placeholder.jpg";
 import {
-    generateWebSocketUrl,
+    RequestMessage,
+    RequestStatus,
     websocketOwnerTopics,
 } from "~data/messages/constants";
 import { hasRole } from "~util/auth/authCookies";
 import { UserRoles } from "~data/constants";
+import { useSocket } from "~app/context/ChatContext";
 
 export default function Messages() {
-    const [numVets, setNumVets] = useState(0);
+    const setupSub = useRef(false);
+    const [vets, setVets] = useState([]);
     const [error, setError] = useState("");
 
     const [showConnectWithVetCard, setConnectWithVetCard] = useState(false);
@@ -32,48 +42,98 @@ export default function Messages() {
     const [imageUrls, setImageUrls] = useState({});
 
     const [owner, setOwner] = useState<Owner | null>(null);
-
-    const [websocket, setWebsocket] = useState<Client>(null);
-
     useEffect(() => {
         let owner: Owner = getAuthenticatedOwner();
         setOwner(owner);
-
-        if (!websocket) {
-            const connection = new Client({
-                brokerURL: generateWebSocketUrl(owner.id),
-                onConnect: () => {
-                    console.log("connected :D ");
-                    connection.subscribe(
-                        websocketOwnerTopics.onlineInit,
-                        (msg) => {
-                            const vetsArray = JSON.parse(msg.body);
-                            console.log(vetsArray);
-                            setNumVets(vetsArray.length);
-                        },
-                    );
-                    setWebsocket(connection);
-                },
-            });
-
-            connection.onStompError = function (frame) {
-                console.log(
-                    "Broker reported error: " + frame.headers["message"],
-                );
-                console.log("Additional details: " + frame.body);
-            };
-
-            connection.activate();
-        }
     }, []);
+
+    const { websocket, currentPartner, petID } = useSocket();
+
+    const [dialogVisible, setDialogVisible] = useState(false);
+
+    const [sentRequest, setSentRequest] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState("");
+
+    const modalOpen = showConnectWithVetCard && sentRequest;
+
+    const handleResponses = (msg) => {
+        const request: RequestMessage = JSON.parse(msg.body);
+
+        if (request.status == RequestStatus.accepted) {
+            currentPartner.current = request.from;
+            petID.current = request.petId;
+            router.push("/owner/messages/chat");
+        } else if (request.status == RequestStatus.rejected) {
+            setDialogMessage(
+                "The Vet rejected your request, please request again.",
+            );
+            setDialogVisible(true);
+
+            setSentRequest(false);
+            setVets(vets.slice(1));
+        } else if (request.status == RequestStatus.cancelled) {
+            if (vets[0] == request.from) {
+                setSentRequest(false);
+                setDialogMessage(
+                    "The Vet has disconnected, please request again.",
+                );
+                setDialogVisible(true);
+            }
+            setVets((arr) => arr.filter((items) => items !== request.from));
+        }
+    };
+
+    // TODO: maybe util for vet and owner, use parameter for from?
+    const sendResponse = (vetID, status?: RequestStatus) => {
+        const response = {
+            from: owner.id,
+            to: vetID,
+            petId: selectedPetId,
+            status: status,
+        };
+
+        websocket.publish({
+            destination:
+                status == RequestStatus.cancelled
+                    ? websocketOwnerTopics.cancelRequest
+                    : websocketOwnerTopics.requestVet,
+            body: JSON.stringify(response),
+            headers: { "content-type": "application/json" },
+        });
+    };
+
+    const cancelVetSearch = () => {
+        sendResponse(vets[0], RequestStatus.cancelled);
+        setSentRequest(false);
+
+        setVets(vets.slice(1));
+    };
+
+    const sendRequestToVet = () => {
+        sendResponse(vets[0], null);
+        setSentRequest(true);
+    };
 
     useEffect(() => {
         if (hasRole(UserRoles.owner)) {
-            if (websocket != null) {
+            if (websocket != null && !setupSub.current) {
+                setupSub.current = true;
+                // get an update whenever a vet comes online/offline
+                websocket.subscribe(websocketOwnerTopics.onlineInit, (msg) => {
+                    setVets(JSON.parse(msg.body));
+                });
                 websocket.subscribe(
                     websocketOwnerTopics.availableVets,
                     (msg) => {
-                        console.log(msg);
+                        setVets(JSON.parse(msg.body));
+                    },
+                );
+
+                // get connect responses from the vets
+                websocket.subscribe(
+                    websocketOwnerTopics.incomingRequests,
+                    (msg) => {
+                        handleResponses(msg);
                     },
                 );
             }
@@ -184,8 +244,10 @@ export default function Messages() {
                             <div className={styles.card_title}>
                                 <h2>Connect with a Vet</h2>
                                 <Badge variant='light' color='green'>
-                                    {numVets <= 1 && numVets + " vet online"}
-                                    {numVets > 1 && numVets + " vets online"}
+                                    {vets.length <= 1 &&
+                                        vets.length + " vet online"}
+                                    {vets.length > 1 &&
+                                        vets.length + " vets online"}
                                 </Badge>
                             </div>
 
@@ -202,27 +264,47 @@ export default function Messages() {
                                 }
                             >
                                 <Button
+                                    color='grey'
+                                    variant='outline'
                                     onClick={() => setConnectWithVetCard(false)}
                                 >
                                     Cancel
                                 </Button>
                                 <Button
-                                    onClick={() =>
-                                        router.push("/owner/messages/chat")
-                                    }
-                                    disabled={numVets <= 0}
+                                    onClick={() => sendRequestToVet()}
+                                    disabled={vets.length <= 0}
                                 >
                                     Connect
                                 </Button>
                             </div>
-                            {numVets <= 0 && (
+                            {vets.length <= 0 && (
                                 <p>Can't connect yet, no vets are online.</p>
                             )}
                         </div>
                     )}
                 </Card>
                 {error && <p className={globalStyles.error_message}>{error}</p>}
+
+                <Dialog
+                    opened={dialogVisible}
+                    withCloseButton
+                    onClose={() => setDialogVisible(false)}
+                    size='lg'
+                    radius='md'
+                >
+                    Notice: {dialogMessage}
+                </Dialog>
             </div>
+            <Modal
+                opened={modalOpen}
+                onClose={() => cancelVetSearch()}
+                title='Connection Request'
+                centered
+                closeOnClickOutside={false}
+            >
+                We are looking for a vet for you... Please wait!
+                <Button onClick={() => cancelVetSearch()}>Cancel</Button>
+            </Modal>
         </div>
     );
 }

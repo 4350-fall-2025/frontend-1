@@ -2,7 +2,7 @@
 import { Badge, Button, Card, Modal, Dialog, Text } from "@mantine/core";
 import styles from "./page.module.scss";
 import globalStyles from "~app/layout.module.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSocket } from "~app/context/ChatContext";
 import {
     RequestMessage,
@@ -13,23 +13,14 @@ import { getAuthenticatedVet } from "~util/auth/getAuthenticatedUser";
 import { Vet } from "src/models/vet";
 import { useRouter } from "next/navigation";
 
-const testRequest: RequestMessage = {
-    from: "WawrgHPyixxQoKQtaOuT",
-    to: "123",
-    petId: "pbiTVPk5DfHe8NibJ3MK",
-    status: RequestStatus.pending,
-};
-
 export default function MessagesPage() {
+    const setupSub = useRef(false);
     const router = useRouter();
     const [error, setError] = useState(null);
     const [vet, setVet] = useState<Vet>(null);
 
     const [acceptedRequest, setAcceptedRequest] = useState(false);
-    const [requests, setRequests] = useState<RequestMessage[]>([
-        testRequest,
-        testRequest,
-    ]);
+    const [requests, setRequests] = useState<RequestMessage[]>([]);
     const [cancelDialogVisible, setDialogVisible] = useState(false);
     const { websocket, currentPartner, petID } = useSocket();
 
@@ -47,16 +38,16 @@ export default function MessagesPage() {
         } else if (request.status == RequestStatus.cancelled) {
             if (petID.current == request.petId) {
                 setAcceptedRequest(false); //very unlikely outcome
-            } else {
-                setRequests((arr) =>
-                    arr.filter((items) => items.petId !== request.petId),
-                );
             }
+            setRequests((arr) =>
+                arr.filter((items) => items.petId != request.petId),
+            );
         }
     };
 
     useEffect(() => {
-        if (websocket != null) {
+        if (websocket != null && !setupSub.current) {
+            setupSub.current = true;
             websocket.publish({
                 destination: websocketVetTopics.vetAnnounceOnline,
             });
@@ -127,33 +118,6 @@ export default function MessagesPage() {
                         </div>
 
                         <p>Please wait as we get you connected with a Pet.</p>
-                        <Modal
-                            opened={modalOpen}
-                            onClose={() => rejectRequest()}
-                            title='Connection Request'
-                            centered
-                            closeOnClickOutside={false}
-                        >
-                            A pet is in need!
-                            <div
-                                className={
-                                    globalStyles.cancel_or_save +
-                                    " " +
-                                    globalStyles.center
-                                }
-                            >
-                                <Button onClick={() => rejectRequest()}>
-                                    reject
-                                </Button>
-
-                                <Button
-                                    variant='light'
-                                    onClick={() => acceptRequest()}
-                                >
-                                    accept
-                                </Button>
-                            </div>
-                        </Modal>
                     </div>
                 </Card>
                 {error && <p className={globalStyles.error_message}>{error}</p>}
@@ -170,6 +134,29 @@ export default function MessagesPage() {
                     The accepted client cancelled their appointment.
                 </Dialog>
             </div>
+            <Modal
+                opened={modalOpen}
+                onClose={() => rejectRequest()}
+                title='Connection Request'
+                centered
+                closeOnClickOutside={false}
+            >
+                A pet is in need!
+                <div
+                    className={
+                        globalStyles.cancel_or_save + " " + globalStyles.center
+                    }
+                >
+                    <Button
+                        color='grey'
+                        variant='outline'
+                        onClick={() => rejectRequest()}
+                    >
+                        Reject
+                    </Button>
+                    <Button onClick={() => acceptRequest()}>Accept</Button>
+                </div>
+            </Modal>
         </div>
     );
 }

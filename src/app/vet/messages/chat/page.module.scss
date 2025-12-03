@@ -7,7 +7,8 @@
     gap: 16px;
 
     .chat {
-        // empty on purpose for desktop
+        height: 100%;
+        overflow-y: hidden;
     }
 
     .pet_profile {
@@ -35,4 +36,3 @@
         }
     }
 }
-

@@ -51,6 +51,6 @@ export const vetNavLinks: NavLinkItem[] = [
     },
     {
         label: "Messages",
-        href: "/under-construction",
+        href: "/vet/messages",
     },
 ];

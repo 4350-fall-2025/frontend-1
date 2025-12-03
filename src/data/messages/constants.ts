@@ -5,7 +5,8 @@ export function generateWebSocketUrl(id: string) {
 export const websocketOwnerTopics = {
     availableVets: "/topic/online",
     onlineInit: "/user/queue/online-init",
-    sendRequest: "/app/owner/cancel",
+    requestVet: "/app/vet/request",
+    cancelRequest: "/app/owner/cancel",
     incomingRequests: "/user/queue/requests",
     sendChat: "/app/message",
     incomingChat: "/user/queue/message",
@@ -34,6 +35,6 @@ export interface ChatMessage {
 export enum RequestStatus {
     accepted = "ACCEPTED",
     rejected = "REJECTED",
-    cancelled = "CANCELLED",
+    cancelled = "CANCELED",
     pending = "PENDING",
 }

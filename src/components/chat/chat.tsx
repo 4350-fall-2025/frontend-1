@@ -14,30 +14,17 @@ import { VetsAPI } from "~api/vetsAPI";
 import { Vet } from "src/models/vet";
 import { OwnersAPI } from "~api/ownersAPI";
 import { Owner } from "src/models/owner";
-enum Sender {
+
+export enum Sender {
     me = "me",
     other = "other",
 }
 
-// Lightweight interface instead of a class
-interface Message {
+export interface Message {
     text: string;
     sender: Sender;
 }
 
-const messagesMock: Message[] = [
-    { text: "wowowowow", sender: Sender.other },
-    { text: "wowowowow", sender: Sender.me },
-    {
-        text: "A lack of economic opportunity among black men, and the shame and frustration...",
-        sender: Sender.me,
-    },
-    {
-        text: "When a new flu infects one human being, all are at risk...",
-        sender: Sender.other,
-    },
-    { text: "abc", sender: Sender.me },
-];
 export default function Chat({
     websocket,
     otherId,
@@ -45,7 +32,7 @@ export default function Chat({
     websocket: Client;
     otherId: string;
 }) {
-    const [messages, setMessages] = useState<Message[]>(messagesMock);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
     const myID = useRef(null);
     const [name, setName] = useState("");
@@ -100,7 +87,6 @@ export default function Chat({
             setupSub.current = true;
             websocket.subscribe(websocketOwnerTopics.incomingChat, (msg) => {
                 const incoming: ChatMessage = JSON.parse(msg.body);
-                //if(incoming.from == otherId) //uncoment this later for setting an error
                 setMessages((prev) => [
                     ...prev,
                     { text: incoming.message, sender: Sender.other },
@@ -114,7 +100,7 @@ export default function Chat({
             <div className={styles.chat_header}>
                 <h1 className={styles.chat_header_name}>{name}</h1>
                 <span className={styles.chat_subheader}>
-                    Chat about pet name
+                    Virtual Walk-In Appointment
                 </span>
             </div>
             <div className={styles.chat_body}>
