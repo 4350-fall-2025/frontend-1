@@ -45,6 +45,32 @@ jest.mock("../../../firebase.ts", () => ({
 describe("Messages Page", () => {
     const user = userEvent.setup();
 
+    const singleVetOnlineSetup = async () => {
+        render(<Messages />);
+        const vetOnlineCallback = mockSubscribe.mock.calls[0][1];
+
+        act(() => {
+            let vetList = ["vet1"];
+            const msg = { body: JSON.stringify(vetList) } as IMessage;
+            vetOnlineCallback(msg);
+        });
+
+        await selectFirstPet();
+
+        const connectButton = await screen.findByRole("button", {
+            name: /^connect$/i,
+        });
+        await user.click(connectButton);
+    };
+
+    const selectFirstPet = async () => {
+        const petCheckbox = await screen.findByText(mockPets[0].name);
+        await user.click(petCheckbox);
+
+        const nextButton = screen.getByRole("button", { name: /next/i });
+        await user.click(nextButton);
+    };
+
     beforeEach(() => {
         jest.clearAllMocks();
         setAuthCookie(mockAuthOwner);
@@ -112,11 +138,7 @@ describe("Messages Page", () => {
         it("shows connect with vet card when Next is clicked", async () => {
             render(<Messages />);
 
-            const petCheckbox = await screen.findByText(mockPets[0].name);
-            await user.click(petCheckbox);
-
-            const nextButton = screen.getByRole("button", { name: /next/i });
-            await user.click(nextButton);
+            await selectFirstPet();
 
             expect(
                 await screen.findByText("Connect with a Vet"),
@@ -124,20 +146,7 @@ describe("Messages Page", () => {
         });
 
         it("displays vet count correctly for single vet", async () => {
-            render(<Messages />);
-            const vetOnlineCallback = mockSubscribe.mock.calls[0][1];
-
-            act(() => {
-                let vetList = ["vet1"];
-                const msg = { body: JSON.stringify(vetList) } as IMessage;
-                vetOnlineCallback(msg);
-            });
-
-            const petCheckbox = await screen.findByText(mockPets[0].name);
-            await user.click(petCheckbox);
-
-            const nextButton = screen.getByRole("button", { name: /next/i });
-            await user.click(nextButton);
+            await singleVetOnlineSetup();
 
             expect(await screen.findByText("1 vet online")).toBeInTheDocument();
         });
@@ -152,11 +161,7 @@ describe("Messages Page", () => {
                 vetOnlineCallback(msg);
             });
 
-            const petCheckbox = await screen.findByText(mockPets[0].name);
-            await user.click(petCheckbox);
-
-            const nextButton = screen.getByRole("button", { name: /next/i });
-            await user.click(nextButton);
+            await selectFirstPet();
 
             expect(
                 await screen.findByText("3 vets online"),
@@ -166,11 +171,7 @@ describe("Messages Page", () => {
         it("disables Connect button when no vets are online", async () => {
             render(<Messages />);
 
-            const petCheckbox = await screen.findByText(mockPets[0].name);
-            await user.click(petCheckbox);
-
-            const nextButton = screen.getByRole("button", { name: /next/i });
-            await user.click(nextButton);
+            await selectFirstPet();
 
             const connectButton = await screen.findByRole("button", {
                 name: /^connect$/i,
@@ -182,25 +183,7 @@ describe("Messages Page", () => {
         });
 
         it("sends request to vet when Connect is clicked", async () => {
-            render(<Messages />);
-            const vetOnlineCallback = mockSubscribe.mock.calls[0][1];
-
-            act(() => {
-                let vetList = ["vet1"];
-                const msg = { body: JSON.stringify(vetList) } as IMessage;
-                vetOnlineCallback(msg);
-            });
-
-            const petCheckbox = await screen.findByText(mockPets[0].name);
-            await user.click(petCheckbox);
-
-            const nextButton = screen.getByRole("button", { name: /next/i });
-            await user.click(nextButton);
-
-            const connectButton = await screen.findByRole("button", {
-                name: /^connect$/i,
-            });
-            await user.click(connectButton);
+            await singleVetOnlineSetup();
 
             expect(mockPublish).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -210,25 +193,7 @@ describe("Messages Page", () => {
         });
 
         it("shows loading modal after sending request", async () => {
-            render(<Messages />);
-            const vetOnlineCallback = mockSubscribe.mock.calls[0][1];
-
-            act(() => {
-                let vetList = ["vet1"];
-                const msg = { body: JSON.stringify(vetList) } as IMessage;
-                vetOnlineCallback(msg);
-            });
-
-            const petCheckbox = await screen.findByText(mockPets[0].name);
-            await user.click(petCheckbox);
-
-            const nextButton = screen.getByRole("button", { name: /next/i });
-            await user.click(nextButton);
-
-            const connectButton = await screen.findByRole("button", {
-                name: /^connect$/i,
-            });
-            await user.click(connectButton);
+            await singleVetOnlineSetup();
 
             expect(
                 await screen.findByText(/We are looking for a vet for you/i),
@@ -238,25 +203,7 @@ describe("Messages Page", () => {
 
     describe("Request responses", () => {
         beforeEach(async () => {
-            const user = userEvent.setup();
-            render(<Messages />);
-
-            const vetOnlineCallback = mockSubscribe.mock.calls[0][1];
-
-            act(() => {
-                let vetList = ["vet1"];
-                const msg = { body: JSON.stringify(vetList) } as IMessage;
-                vetOnlineCallback(msg);
-            });
-
-            const petCheckbox = await screen.findByText(mockPets[0].name);
-            await user.click(petCheckbox);
-            const nextButton = screen.getByRole("button", { name: /next/i });
-            await user.click(nextButton);
-            const connectButton = await screen.findByRole("button", {
-                name: /^connect$/i,
-            });
-            await user.click(connectButton);
+            await singleVetOnlineSetup();
         });
         it("navigates to chat when vet accepts request", async () => {
             const acceptedCallback = mockSubscribe.mock.calls[2][1];
@@ -346,11 +293,7 @@ describe("Messages Page", () => {
         it("goes back to pet selection when Cancel is clicked", async () => {
             render(<Messages />);
 
-            const petCheckbox = await screen.findByText(mockPets[0].name);
-            await user.click(petCheckbox);
-
-            const nextButton = screen.getByRole("button", { name: /next/i });
-            await user.click(nextButton);
+            await selectFirstPet();
 
             expect(
                 await screen.findByText("Connect with a Vet"),
@@ -365,25 +308,7 @@ describe("Messages Page", () => {
         });
 
         it("sends cancel request when canceling vet search", async () => {
-            const user = userEvent.setup();
-            render(<Messages />);
-
-            const vetOnlineCallback = mockSubscribe.mock.calls[0][1];
-
-            act(() => {
-                let vetList = ["vet1"];
-                const msg = { body: JSON.stringify(vetList) } as IMessage;
-                vetOnlineCallback(msg);
-            });
-
-            const petCheckbox = await screen.findByText(mockPets[0].name);
-            await user.click(petCheckbox);
-            const nextButton = screen.getByRole("button", { name: /next/i });
-            await user.click(nextButton);
-            const connectButton = await screen.findByRole("button", {
-                name: /^connect$/i,
-            });
-            await user.click(connectButton);
+            await singleVetOnlineSetup();
 
             // Modal should be visible
             expect(
