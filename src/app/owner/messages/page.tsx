@@ -71,11 +71,9 @@ export default function Messages() {
             setSentRequest(false);
             setVets(vets.slice(1));
         } else if (request.status == RequestStatus.cancelled) {
-            if (currentPartner.current == request.from) {
-                setSentRequest(false);
-                setDialogMessage("The Vet has disconnected, please try again.");
-                setDialogVisible(true);
-            }
+            setSentRequest(false);
+            setDialogMessage("The Vet has disconnected, please try again.");
+            setDialogVisible(true);
             setVets((arr) => arr.filter((items) => items !== request.from));
         }
     };
@@ -302,7 +300,12 @@ export default function Messages() {
                 closeOnClickOutside={false}
             >
                 We are looking for a vet for you... Please wait!
-                <Button onClick={() => cancelVetSearch()}>Cancel</Button>
+                <Button
+                    onClick={() => cancelVetSearch()}
+                    data-testid='modal_cancel'
+                >
+                    Cancel
+                </Button>
             </Modal>
         </div>
     );
