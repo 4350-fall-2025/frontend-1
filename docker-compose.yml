@@ -11,7 +11,7 @@ services:
             - ./.env
         restart: no
     frontend:
-        image: ghcr.io/4350-fall-2025/frontend-1:pr-60
+        image: ghcr.io/4350-fall-2025/frontend-1:latest
         ports:
             - "3001:3001"
         env_file:
