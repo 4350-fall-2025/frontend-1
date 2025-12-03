@@ -27,11 +27,10 @@ jest.mock("~data/pets/mock", () => {
 });
 
 // Mock the age calculator utility
-jest.mock("~util/ageCalculator", () => ({
-    __esModule: true,
-    default: jest.fn(() => {
-        // Simple mock that returns a fixed age for testing
-        return "5y 3m";
+jest.mock("~util/strings/format-pet", () => ({
+    ...jest.requireActual("~util/strings/format-pet"),
+    calculateAge: jest.fn(() => {
+        return "2 years 3 months";
     }),
 }));
 

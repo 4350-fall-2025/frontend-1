@@ -12,50 +12,52 @@ jest.mock("dayjs", () => {
 });
 
 import {
-    formatAgeFromDOB,
-    formatAnimalGroup,
+    calculateAge,
+    getAnimalGroupDisplayLabel,
     formatSterileStatus,
 } from "./format-pet";
 
 import { AnimalGroup, SterileStatus } from "src/models/pet";
 
-describe("formatAgeFromDOB", () => {
+describe("calculateAge", () => {
     it("returns 'Unknown' when birthdate is undefined", () => {
-        expect(formatAgeFromDOB(undefined)).toBe("Unknown");
+        expect(calculateAge(undefined)).toBe("Unknown");
     });
 
     it("returns 'Unknown' for an invalid date string", () => {
-        expect(formatAgeFromDOB("not-a-date")).toBe("Unknown");
+        expect(calculateAge("not-a-date")).toBe("Unknown");
     });
 
     it("returns '< 1 month' for a birthdate less than 1 month ago", () => {
-        expect(formatAgeFromDOB("2024-01-10")).toBe("< 1 month");
+        expect(calculateAge("2024-01-10")).toBe("< 1 month");
     });
 
     it("returns only the year for exact dates", () => {
-        expect(formatAgeFromDOB("2023-01-15")).toBe("1 year");
+        expect(calculateAge("2023-01-15")).toBe("1 year");
     });
 
     it("pluralizes year", () => {
-        expect(formatAgeFromDOB("2022-01-15")).toBe("2 years");
+        expect(calculateAge("2022-01-15")).toBe("2 years");
     });
 
     it("returns year and month", () => {
-        expect(formatAgeFromDOB("2022-12-15")).toBe("1 year 1 month");
+        expect(calculateAge("2022-12-15")).toBe("1 year 1 month");
     });
 
     it("pluralizes month", () => {
-        expect(formatAgeFromDOB("2023-11-15")).toBe("2 months");
+        expect(calculateAge("2023-11-15")).toBe("2 months");
     });
 });
 
-describe("formatAnimalGroup", () => {
+describe("getAnimalGroupDisplayLabel", () => {
     it("converts enum value to sentence case", () => {
-        expect(formatAnimalGroup(AnimalGroup.bird)).toBe("Bird");
+        expect(getAnimalGroupDisplayLabel(AnimalGroup.bird)).toBe("Bird");
     });
 
     it("replaces underscores with space", () => {
-        expect(formatAnimalGroup(AnimalGroup.small)).toBe("Small mammal");
+        expect(getAnimalGroupDisplayLabel(AnimalGroup.small)).toBe(
+            "Small mammal",
+        );
     });
 });
 
