@@ -8,12 +8,18 @@ import { mockAuthOwner, mockOwner } from "~data/owner/mock";
 import { OwnersAPI } from "~api/ownersAPI";
 import { VetsAPI } from "~api/vetsAPI";
 import { mockAuthVet, mockVet } from "~data/vets/mock";
-import { ChatMessage, websocketOwnerTopics } from "~data/messages/constants";
+import {
+    ChatMessage,
+    RequestMessage,
+    RequestStatus,
+    websocketOwnerTopics,
+} from "~data/messages/constants";
 
 const push = jest.fn();
 const refresh = jest.fn();
+const back = jest.fn();
 jest.mock("next/navigation", () => ({
-    useRouter: () => ({ push, refresh }),
+    useRouter: () => ({ push, refresh, back }),
 }));
 
 // Helper to mock websocket client
@@ -32,6 +38,28 @@ OwnersAPI.getOwner = mockGetOwner;
 const mockGetVet = jest.fn();
 VetsAPI.getVet = mockGetVet;
 
+const mockOwnerAccess = () => {
+    setAuthCookie(mockAuthOwner);
+    mockGetVet.mockResolvedValue(mockVet);
+
+    render(
+        <MantineProvider>
+            <Chat websocket={mockWebSocket} otherId={mockVet.id} />
+        </MantineProvider>,
+    );
+};
+
+const mockVetAccess = () => {
+    setAuthCookie(mockAuthVet);
+    mockGetOwner.mockResolvedValue(mockOwner);
+
+    render(
+        <MantineProvider>
+            <Chat websocket={mockWebSocket} otherId={mockOwner.id} />
+        </MantineProvider>,
+    );
+};
+
 describe("Chat Component", () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -44,14 +72,7 @@ describe("Chat Component", () => {
 
     describe("Name Display", () => {
         test("displays vet name when user is owner", async () => {
-            setAuthCookie(mockAuthOwner);
-            mockGetVet.mockResolvedValue(mockVet);
-
-            render(
-                <MantineProvider>
-                    <Chat websocket={mockWebSocket} otherId={mockVet.id} />
-                </MantineProvider>,
-            );
+            mockOwnerAccess();
 
             expect(mockGetVet).toHaveBeenCalledWith(mockVet.id);
             expect(
@@ -60,14 +81,7 @@ describe("Chat Component", () => {
         });
 
         test("displays owner name when user is vet", async () => {
-            setAuthCookie(mockAuthVet);
-            mockGetOwner.mockResolvedValue(mockOwner);
-
-            render(
-                <MantineProvider>
-                    <Chat websocket={mockWebSocket} otherId={mockOwner.id} />
-                </MantineProvider>,
-            );
+            mockVetAccess();
 
             expect(mockGetOwner).toHaveBeenCalledWith(mockOwner.id);
             expect(
@@ -78,15 +92,35 @@ describe("Chat Component", () => {
         });
     });
 
+    describe("End Appointment Button", () => {
+        test("End appointment redirects to owner dashboard if owner", () => {
+            mockOwnerAccess();
+
+            const endApptButton = screen.getByRole("button", {
+                name: "End Appointment",
+            });
+
+            fireEvent.click(endApptButton);
+
+            expect(push).toHaveBeenCalledWith("/owner/pets/dashboard");
+        });
+
+        test("End appointment redirects to owner dashboard if owner", () => {
+            mockVetAccess();
+
+            const endApptButton = screen.getByRole("button", {
+                name: "End Appointment",
+            });
+
+            fireEvent.click(endApptButton);
+
+            expect(push).toHaveBeenCalledWith("/vet/dashboard");
+        });
+    });
+
     describe("Message Input", () => {
         beforeEach(() => {
-            setAuthCookie(mockAuthOwner);
-            mockGetVet.mockResolvedValue(mockVet);
-            render(
-                <MantineProvider>
-                    <Chat websocket={mockWebSocket} otherId={mockVet.id} />
-                </MantineProvider>,
-            );
+            mockOwnerAccess();
         });
 
         test("user can type a message", () => {
@@ -141,13 +175,7 @@ describe("Chat Component", () => {
 
     describe("Websocket related", () => {
         beforeEach(() => {
-            setAuthCookie(mockAuthOwner);
-            mockGetVet.mockResolvedValue(mockVet);
-            render(
-                <MantineProvider>
-                    <Chat websocket={mockWebSocket} otherId={mockVet.id} />
-                </MantineProvider>,
-            );
+            mockOwnerAccess();
         });
 
         test("does subscribe upon loading", () => {
@@ -184,7 +212,78 @@ describe("Chat Component", () => {
                 callback(msg);
             });
 
-            expect(screen.getByText("incoming message")).toBeInTheDocument();
+            const messages = screen.getAllByTestId("message");
+            expect(messages[messages.length - 1]).toHaveTextContent(
+                "incoming message",
+            );
+        });
+
+        test("websocket incoming error isn't appended", () => {
+            const messagesBefore = screen.queryAllByTestId("message");
+            const callback = mockSubscribe.mock.calls[0][1];
+
+            act(() => {
+                let innerMessage: ChatMessage = {
+                    from: "server",
+                    to: mockAuthOwner.userId,
+                    message: "Cannot send message.",
+                };
+                const msg = { body: JSON.stringify(innerMessage) } as IMessage;
+                callback(msg);
+            });
+
+            const messagesAfter = screen.queryAllByTestId("message");
+            expect(messagesBefore.length == messagesAfter.length);
+            expect(
+                screen.getByText("Cannot send message."),
+            ).toBeInTheDocument();
+        });
+
+        test("when partner disconnects modal appears ", async () => {
+            const callback = mockSubscribe.mock.calls[1][1];
+
+            act(() => {
+                let innerMessage: RequestMessage = {
+                    from: mockVet.id,
+                    to: mockAuthOwner.userId,
+                    petId: "empty",
+                    status: RequestStatus.cancelled,
+                };
+                const msg = { body: JSON.stringify(innerMessage) } as IMessage;
+                callback(msg);
+            });
+
+            // Wait for modal to appear
+            const modalTitle = await screen.findByText("Disconnect Notice");
+            expect(modalTitle).toBeInTheDocument();
+
+            // Verify the modal's opened prop by checking if content is visible
+            expect(screen.getByRole("dialog")).toBeInTheDocument();
+        });
+
+        test("when partner disconnects, clicking 'Have another Appointment' redirects to messages ", async () => {
+            const callback = mockSubscribe.mock.calls[1][1];
+
+            act(() => {
+                let innerMessage: RequestMessage = {
+                    from: mockVet.id,
+                    to: mockAuthOwner.userId,
+                    petId: "empty",
+                    status: RequestStatus.cancelled,
+                };
+                const msg = { body: JSON.stringify(innerMessage) } as IMessage;
+                callback(msg);
+            });
+
+            await screen.findByText("Disconnect Notice");
+
+            const newApptButton = screen.getByRole("button", {
+                name: "Have another Appointment",
+            });
+            fireEvent.click(newApptButton);
+
+            expect(refresh).toHaveBeenCalled();
+            expect(back).toHaveBeenCalled();
         });
     });
 });
