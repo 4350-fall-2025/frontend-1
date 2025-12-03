@@ -4,7 +4,7 @@ import { Box, Button, Group, Select, Switch, TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { DatePickerInput } from "@mantine/dates";
-import { todayDate, UserRoles } from "~data/constants";
+import { MAX_FILE_SIZE, todayDate, UserRoles } from "~data/constants";
 import {
     animalGroupOptions,
     sexOptions,
@@ -107,11 +107,18 @@ export default function NewPet() {
     useEffect(() => {
         // If a new file is selected, create a new object URL and store the image in the form
         if (fileDialog.files && fileDialog.files.length > 0) {
-            const petFile: File = fileDialog.files[0];
-            const newUrl = URL.createObjectURL(petFile);
+            const fileUpload = fileDialog.files[0];
+            if (fileUpload.size < MAX_FILE_SIZE) {
+                const petFile: File = fileDialog.files[0];
+                const newUrl = URL.createObjectURL(petFile);
 
-            setPreviewUrl(newUrl);
-            form.setFieldValue("petImage", petFile);
+                setPreviewUrl(newUrl);
+                form.setFieldValue("petImage", petFile);
+            } else {
+                alert(
+                    `File is too large. Maximum limit is ${MAX_FILE_SIZE / (1024 * 1024)}MB.`,
+                );
+            }
         } else {
             setImageToPlaceholderFile();
         }
