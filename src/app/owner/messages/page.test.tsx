@@ -2,16 +2,15 @@ import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "~tests/utils/custom-testing-library";
 import userEvent from "@testing-library/user-event";
 import Messages from "./page";
-import { mockOwner } from "~data/owner/mock";
+import { mockAuthOwner } from "~data/owner/mock";
 import { mockPets } from "~data/pets/mock";
 import { PetsAPI } from "~api/petsAPI";
+import { setAuthCookie } from "~util/auth/authCookies";
 import { RequestStatus } from "~data/messages/constants";
 
 const mockPush = jest.fn();
 const mockSubscribe = jest.fn();
 const mockPublish = jest.fn();
-const mockGetAuthenticatedOwner = jest.fn();
-const mockHasRole = jest.fn();
 
 jest.mock("next/navigation", () => ({
     useRouter: () => ({ push: mockPush }),
@@ -38,20 +37,12 @@ jest.mock("../../../firebase.ts", () => ({
     getImageURL: (...args: any[]) => mockGetImageURL(...args),
 }));
 
-jest.mock("~util/auth/getAuthenticatedUser", () => ({
-    getAuthenticatedOwner: (...args: any[]) =>
-        mockGetAuthenticatedOwner(...args),
-}));
-
-jest.mock("~util/auth/authCookies", () => ({
-    hasRole: (...args: any[]) => mockHasRole(...args),
-}));
-
 describe("Messages Page", () => {
+    const user = userEvent.setup();
+
     beforeEach(() => {
         jest.clearAllMocks();
-        mockGetAuthenticatedOwner.mockReturnValue(mockOwner);
-        mockHasRole.mockReturnValue(true);
+        setAuthCookie(mockAuthOwner);
         mockGeneratePetURL.mockReturnValue("pets/owner123/pet123");
         mockGetImageURL.mockResolvedValue("/test-image.jpg");
         (PetsAPI.getAllPets as jest.Mock).mockResolvedValue(mockPets);
@@ -71,7 +62,9 @@ describe("Messages Page", () => {
             render(<Messages />);
 
             await waitFor(() => {
-                expect(PetsAPI.getAllPets).toHaveBeenCalledWith(mockOwner.id);
+                expect(PetsAPI.getAllPets).toHaveBeenCalledWith(
+                    mockAuthOwner.userId,
+                );
             });
 
             expect(
@@ -89,7 +82,6 @@ describe("Messages Page", () => {
         });
 
         it("enables Next button when a pet is selected", async () => {
-            const user = userEvent.setup();
             render(<Messages />);
 
             const petCheckbox = await screen.findByText(mockPets[0].name);
@@ -100,7 +92,6 @@ describe("Messages Page", () => {
         });
 
         it("allows deselecting a pet by clicking again", async () => {
-            const user = userEvent.setup();
             render(<Messages />);
 
             const petCheckbox = await screen.findByText(mockPets[0].name);
@@ -116,7 +107,6 @@ describe("Messages Page", () => {
 
     describe("Connect with vet flow", () => {
         it("shows connect with vet card when Next is clicked", async () => {
-            const user = userEvent.setup();
             render(<Messages />);
 
             const petCheckbox = await screen.findByText(mockPets[0].name);
@@ -131,7 +121,6 @@ describe("Messages Page", () => {
         });
 
         it("displays vet count correctly for single vet", async () => {
-            const user = userEvent.setup();
             mockSubscribe.mockImplementation((topic, callback) => {
                 if (topic.includes("online-init")) {
                     callback({ body: JSON.stringify(["vet1"]) });
@@ -150,7 +139,6 @@ describe("Messages Page", () => {
         });
 
         it("displays vet count correctly for multiple vets", async () => {
-            const user = userEvent.setup();
             mockSubscribe.mockImplementation((topic, callback) => {
                 if (topic.includes("online-init")) {
                     callback({
@@ -173,7 +161,6 @@ describe("Messages Page", () => {
         });
 
         it("disables Connect button when no vets are online", async () => {
-            const user = userEvent.setup();
             mockSubscribe.mockImplementation((topic, callback) => {
                 if (topic.includes("online-init")) {
                     callback({ body: JSON.stringify([]) });
@@ -198,7 +185,6 @@ describe("Messages Page", () => {
         });
 
         it("sends request to vet when Connect is clicked", async () => {
-            const user = userEvent.setup();
             mockSubscribe.mockImplementation((topic, callback) => {
                 if (topic.includes("online-init")) {
                     callback({ body: JSON.stringify(["vet1"]) });
@@ -226,7 +212,6 @@ describe("Messages Page", () => {
         });
 
         it("shows loading modal after sending request", async () => {
-            const user = userEvent.setup();
             mockSubscribe.mockImplementation((topic, callback) => {
                 if (topic.includes("online-init")) {
                     callback({ body: JSON.stringify(["vet1"]) });
@@ -255,7 +240,6 @@ describe("Messages Page", () => {
     describe("Request responses", () => {
         // FAILING TEST
         // it("navigates to chat when vet accepts request", async () => {
-        //     const user = userEvent.setup();
         //     const callbacks: Record<string, any> = {};
         //     mockSubscribe.mockImplementation((topic, callback) => {
         //         callbacks[topic] = callback;
@@ -293,7 +277,6 @@ describe("Messages Page", () => {
         // });
         // FAILING TEST
         // it("shows dialog when vet rejects request", async () => {
-        //     const user = userEvent.setup();
         //     const callbacks: Record<string, any> = {};
         //     mockSubscribe.mockImplementation((topic, callback) => {
         //         callbacks[topic] = callback;
@@ -328,7 +311,6 @@ describe("Messages Page", () => {
         // });
         // FAILING TEST
         // it("shows dialog when vet disconnects", async () => {
-        //     const user = userEvent.setup();
         //     const callbacks: Record<string, any> = {};
         //     mockSubscribe.mockImplementation((topic, callback) => {
         //         callbacks[topic] = callback;
@@ -394,7 +376,6 @@ describe("Messages Page", () => {
 
     describe("Cancel functionality", () => {
         it("goes back to pet selection when Cancel is clicked", async () => {
-            const user = userEvent.setup();
             render(<Messages />);
 
             const petCheckbox = await screen.findByText(mockPets[0].name);
@@ -417,7 +398,6 @@ describe("Messages Page", () => {
 
         // FAILING TEST
         // it("sends cancel request when canceling vet search", async () => {
-        //     const user = userEvent.setup();
         //     mockSubscribe.mockImplementation((topic, callback) => {
         //         if (topic.includes("online-init")) {
         //             callback({ body: JSON.stringify(["vet1"]) });
