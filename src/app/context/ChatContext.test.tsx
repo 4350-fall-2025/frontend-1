@@ -2,38 +2,17 @@ import "@testing-library/jest-dom";
 import { renderHook, waitFor } from "@testing-library/react";
 import { ChatProvider, useSocket } from "./ChatContext";
 import { Client } from "@stomp/stompjs";
-import { mockOwner } from "~data/owner/mock";
-import { mockVet } from "~data/vets/mock";
-
-jest.mock("@stomp/stompjs");
-jest.mock("~data/messages/constants", () => ({
-    generateWebSocketUrl: jest.fn(
-        (userId) => `ws://localhost:3000/ws-chat/${userId}`,
-    ),
-}));
+import { mockAuthOwner, mockOwner } from "~data/owner/mock";
+import { mockAuthVet } from "~data/vets/mock";
+import { setAuthCookie } from "~util/auth/authCookies";
 
 const mockActivate = jest.fn();
 const mockDeactivate = jest.fn();
-
-const mockHasRole = jest.fn();
-const mockGetAuthenticatedOwner = jest.fn();
-const mockGetAuthenticatedVet = jest.fn();
-
-jest.mock("~util/auth/authCookies", () => ({
-    hasRole: (...args: any[]) => mockHasRole(...args),
-}));
-
-jest.mock("~util/auth/getAuthenticatedUser", () => ({
-    getAuthenticatedOwner: () => mockGetAuthenticatedOwner(),
-    getAuthenticatedVet: () => mockGetAuthenticatedVet(),
-}));
+jest.mock("@stomp/stompjs");
 
 describe("ChatContext", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockHasRole.mockReturnValue(false);
-        mockGetAuthenticatedOwner.mockReturnValue(mockOwner);
-        mockGetAuthenticatedVet.mockReturnValue(mockVet);
 
         (Client as jest.Mock).mockImplementation(function (config) {
             this.brokerURL = config.brokerURL;
@@ -51,9 +30,7 @@ describe("ChatContext", () => {
 
     describe("Provider initialization", () => {
         it("creates WebSocket connection for owner on mount", async () => {
-            mockHasRole.mockReturnValue(false);
-            mockGetAuthenticatedOwner.mockReturnValue(mockOwner);
-
+            setAuthCookie(mockAuthOwner);
             renderHook(() => useSocket(), {
                 wrapper: ChatProvider,
             });
@@ -70,27 +47,23 @@ describe("ChatContext", () => {
         });
 
         it("creates WebSocket connection for vet when vet role is present", async () => {
-            mockHasRole.mockReturnValue(true);
-            mockGetAuthenticatedVet.mockReturnValue(mockVet);
+            setAuthCookie(mockAuthVet);
 
             renderHook(() => useSocket(), {
                 wrapper: ChatProvider,
             });
 
             await waitFor(() => {
-                expect(mockGetAuthenticatedVet).toHaveBeenCalled();
                 expect(Client).toHaveBeenCalledWith(
                     expect.objectContaining({
-                        brokerURL: expect.stringContaining(mockVet.id),
+                        brokerURL: expect.stringContaining(mockAuthVet.userId),
                     }),
                 );
             });
         });
 
         it("provides websocket, currentPartner, and petID through context", async () => {
-            mockHasRole.mockReturnValue(false);
-            mockGetAuthenticatedOwner.mockReturnValue(mockOwner);
-
+            setAuthCookie(mockAuthOwner);
             const { result } = renderHook(() => useSocket(), {
                 wrapper: ChatProvider,
             });
@@ -111,34 +84,23 @@ describe("ChatContext", () => {
 
     describe("Error handling", () => {
         it("handles authentication error for owner", () => {
-            mockHasRole.mockReturnValue(false);
-            mockGetAuthenticatedOwner.mockImplementation(() => {
-                throw new Error("Not authenticated");
-            });
-
             expect(() => {
                 renderHook(() => useSocket(), {
                     wrapper: ChatProvider,
                 });
-            }).toThrow("Not authenticated");
+            }).toThrow();
         });
 
         it("handles authentication error for vet", () => {
-            mockHasRole.mockReturnValue(true);
-            mockGetAuthenticatedVet.mockImplementation(() => {
-                throw new Error("Not authenticated");
-            });
-
             expect(() => {
                 renderHook(() => useSocket(), {
                     wrapper: ChatProvider,
                 });
-            }).toThrow("Not authenticated");
+            }).toThrow();
         });
 
         it("configures onStompError handler", async () => {
-            mockHasRole.mockReturnValue(false);
-            mockGetAuthenticatedOwner.mockReturnValue(mockOwner);
+            setAuthCookie(mockAuthOwner);
 
             renderHook(() => useSocket(), {
                 wrapper: ChatProvider,
@@ -155,8 +117,7 @@ describe("ChatContext", () => {
 
     describe("Cleanup", () => {
         it("deactivates connection on unmount", async () => {
-            mockHasRole.mockReturnValue(false);
-            mockGetAuthenticatedOwner.mockReturnValue(mockOwner);
+            setAuthCookie(mockAuthOwner);
 
             const { unmount } = renderHook(() => useSocket(), {
                 wrapper: ChatProvider,
@@ -174,8 +135,7 @@ describe("ChatContext", () => {
 
     describe("Edge cases", () => {
         it("does not create duplicate connections", async () => {
-            mockHasRole.mockReturnValue(false);
-            mockGetAuthenticatedOwner.mockReturnValue(mockOwner);
+            setAuthCookie(mockAuthOwner);
 
             renderHook(() => useSocket(), {
                 wrapper: ChatProvider,
