@@ -124,13 +124,14 @@ describe("Messages Page", () => {
         });
 
         it("displays vet count correctly for single vet", async () => {
-            mockSubscribe.mockImplementation((topic, callback) => {
-                if (topic.includes("online-init")) {
-                    callback({ body: JSON.stringify(["vet1"]) });
-                }
-            });
-
             render(<Messages />);
+            const vetOnlineCallback = mockSubscribe.mock.calls[0][1];
+
+            act(() => {
+                let vetList = ["vet1"];
+                const msg = { body: JSON.stringify(vetList) } as IMessage;
+                vetOnlineCallback(msg);
+            });
 
             const petCheckbox = await screen.findByText(mockPets[0].name);
             await user.click(petCheckbox);
@@ -142,15 +143,14 @@ describe("Messages Page", () => {
         });
 
         it("displays vet count correctly for multiple vets", async () => {
-            mockSubscribe.mockImplementation((topic, callback) => {
-                if (topic.includes("online-init")) {
-                    callback({
-                        body: JSON.stringify(["vet1", "vet2", "vet3"]),
-                    });
-                }
-            });
-
             render(<Messages />);
+            const vetOnlineCallback = mockSubscribe.mock.calls[0][1];
+
+            act(() => {
+                let vetList = ["vet1", "vet2", "vet3"];
+                const msg = { body: JSON.stringify(vetList) } as IMessage;
+                vetOnlineCallback(msg);
+            });
 
             const petCheckbox = await screen.findByText(mockPets[0].name);
             await user.click(petCheckbox);
@@ -164,12 +164,6 @@ describe("Messages Page", () => {
         });
 
         it("disables Connect button when no vets are online", async () => {
-            mockSubscribe.mockImplementation((topic, callback) => {
-                if (topic.includes("online-init")) {
-                    callback({ body: JSON.stringify([]) });
-                }
-            });
-
             render(<Messages />);
 
             const petCheckbox = await screen.findByText(mockPets[0].name);
@@ -188,13 +182,14 @@ describe("Messages Page", () => {
         });
 
         it("sends request to vet when Connect is clicked", async () => {
-            mockSubscribe.mockImplementation((topic, callback) => {
-                if (topic.includes("online-init")) {
-                    callback({ body: JSON.stringify(["vet1"]) });
-                }
-            });
-
             render(<Messages />);
+            const vetOnlineCallback = mockSubscribe.mock.calls[0][1];
+
+            act(() => {
+                let vetList = ["vet1"];
+                const msg = { body: JSON.stringify(vetList) } as IMessage;
+                vetOnlineCallback(msg);
+            });
 
             const petCheckbox = await screen.findByText(mockPets[0].name);
             await user.click(petCheckbox);
@@ -215,13 +210,14 @@ describe("Messages Page", () => {
         });
 
         it("shows loading modal after sending request", async () => {
-            mockSubscribe.mockImplementation((topic, callback) => {
-                if (topic.includes("online-init")) {
-                    callback({ body: JSON.stringify(["vet1"]) });
-                }
-            });
-
             render(<Messages />);
+            const vetOnlineCallback = mockSubscribe.mock.calls[0][1];
+
+            act(() => {
+                let vetList = ["vet1"];
+                const msg = { body: JSON.stringify(vetList) } as IMessage;
+                vetOnlineCallback(msg);
+            });
 
             const petCheckbox = await screen.findByText(mockPets[0].name);
             await user.click(petCheckbox);
@@ -241,7 +237,7 @@ describe("Messages Page", () => {
     });
 
     describe("Request responses", () => {
-        it("navigates to chat when vet accepts request", async () => {
+        beforeEach(async () => {
             const user = userEvent.setup();
             render(<Messages />);
 
@@ -261,7 +257,8 @@ describe("Messages Page", () => {
                 name: /^connect$/i,
             });
             await user.click(connectButton);
-
+        });
+        it("navigates to chat when vet accepts request", async () => {
             const acceptedCallback = mockSubscribe.mock.calls[2][1];
 
             act(() => {
@@ -279,74 +276,41 @@ describe("Messages Page", () => {
                 expect(mockPush).toHaveBeenCalledWith("/owner/messages/chat");
             });
         });
-        // FAILING TEST
-        // it("shows dialog when vet rejects request", async () => {
-        //     const callbacks: Record<string, any> = {};
-        //     mockSubscribe.mockImplementation((topic, callback) => {
-        //         callbacks[topic] = callback;
-        //         if (topic.includes("online-init")) {
-        //             callback({ body: JSON.stringify(["vet1"]) });
-        //         }
-        //     });
-        //     render(<Messages />);
-        //     const petCheckbox = await screen.findByText(mockPets[0].name);
-        //     await user.click(petCheckbox);
-        //     const nextButton = screen.getByRole("button", { name: /next/i });
-        //     await user.click(nextButton);
-        //     const connectButton = await screen.findByRole("button", { name: /^connect$/i });
-        //     await user.click(connectButton);
-        //     // Wait for subscriptions to be set up
-        //     await waitFor(() => {
-        //         const incomingRequestsTopic = Object.keys(callbacks).find(topic =>
-        //             topic.includes("incoming-requests")
-        //         );
-        //         expect(incomingRequestsTopic).toBeDefined();
-        //     });
-        //     const incomingRequestsTopic = Object.keys(callbacks).find(topic =>
-        //         topic.includes("incoming-requests")
-        //     );
-        //     callbacks[incomingRequestsTopic!]({
-        //         body: JSON.stringify({
-        //             from: "vet1",
-        //             status: RequestStatus.rejected,
-        //         }),
-        //     });
-        //     expect(await screen.findByText(/The Vet rejected your request/i)).toBeInTheDocument();
-        // });
-        // FAILING TEST
-        // it("shows dialog when vet disconnects", async () => {
-        //     const callbacks: Record<string, any> = {};
-        //     mockSubscribe.mockImplementation((topic, callback) => {
-        //         callbacks[topic] = callback;
-        //         if (topic.includes("online-init")) {
-        //             callback({ body: JSON.stringify(["vet1"]) });
-        //         }
-        //     });
-        //     render(<Messages />);
-        //     const petCheckbox = await screen.findByText(mockPets[0].name);
-        //     await user.click(petCheckbox);
-        //     const nextButton = screen.getByRole("button", { name: /next/i });
-        //     await user.click(nextButton);
-        //     const connectButton = await screen.findByRole("button", { name: /^connect$/i });
-        //     await user.click(connectButton);
-        //     // Wait for subscriptions to be set up
-        //     await waitFor(() => {
-        //         const incomingRequestsTopic = Object.keys(callbacks).find(topic =>
-        //             topic.includes("incoming-requests")
-        //         );
-        //         expect(incomingRequestsTopic).toBeDefined();
-        //     });
-        //     const incomingRequestsTopic = Object.keys(callbacks).find(topic =>
-        //         topic.includes("incoming-requests")
-        //     );
-        //     callbacks[incomingRequestsTopic!]({
-        //         body: JSON.stringify({
-        //             from: "vet1",
-        //             status: RequestStatus.cancelled,
-        //         }),
-        //     });
-        //     expect(await screen.findByText(/The Vet has disconnected/i)).toBeInTheDocument();
-        // });
+
+        it("shows dialog when vet rejects request", async () => {
+            const rejectedCallback = mockSubscribe.mock.calls[2][1];
+            act(() => {
+                let innerMessage: RequestMessage = {
+                    from: "vet1",
+                    to: mockAuthOwner.userId,
+                    petId: mockPets[0].id,
+                    status: RequestStatus.rejected,
+                };
+                const msg = { body: JSON.stringify(innerMessage) } as IMessage;
+                rejectedCallback(msg);
+            });
+
+            expect(
+                await screen.findByText(/The Vet rejected your request/i),
+            ).toBeInTheDocument();
+        });
+
+        it("shows dialog when vet disconnects", async () => {
+            const cancelledCallback = mockSubscribe.mock.calls[2][1];
+            act(() => {
+                let innerMessage: RequestMessage = {
+                    from: "vet1",
+                    to: mockAuthOwner.userId,
+                    petId: "empty",
+                    status: RequestStatus.cancelled,
+                };
+                const msg = { body: JSON.stringify(innerMessage) } as IMessage;
+                cancelledCallback(msg);
+            });
+            expect(
+                await screen.findByText(/The Vet has disconnected/i),
+            ).toBeInTheDocument();
+        });
     });
 
     describe("Error handling", () => {
@@ -400,43 +364,50 @@ describe("Messages Page", () => {
             expect(await screen.findByText("Select a Pet")).toBeInTheDocument();
         });
 
-        // FAILING TEST
-        // it("sends cancel request when canceling vet search", async () => {
-        //     mockSubscribe.mockImplementation((topic, callback) => {
-        //         if (topic.includes("online-init")) {
-        //             callback({ body: JSON.stringify(["vet1"]) });
-        //         }
-        //     });
+        it("sends cancel request when canceling vet search", async () => {
+            const user = userEvent.setup();
+            render(<Messages />);
 
-        //     render(<Messages />);
+            const vetOnlineCallback = mockSubscribe.mock.calls[0][1];
 
-        //     const petCheckbox = await screen.findByText(mockPets[0].name);
-        //     await user.click(petCheckbox);
+            act(() => {
+                let vetList = ["vet1"];
+                const msg = { body: JSON.stringify(vetList) } as IMessage;
+                vetOnlineCallback(msg);
+            });
 
-        //     const nextButton = screen.getByRole("button", { name: /next/i });
-        //     await user.click(nextButton);
+            const petCheckbox = await screen.findByText(mockPets[0].name);
+            await user.click(petCheckbox);
+            const nextButton = screen.getByRole("button", { name: /next/i });
+            await user.click(nextButton);
+            const connectButton = await screen.findByRole("button", {
+                name: /^connect$/i,
+            });
+            await user.click(connectButton);
 
-        //     const connectButton = await screen.findByRole("button", { name: /^connect$/i });
-        //     await user.click(connectButton);
+            // Modal should be visible
+            expect(
+                await screen.findByText(/We are looking for a vet for you/i),
+            ).toBeInTheDocument();
 
-        //     // Modal should be visible
-        //     expect(await screen.findByText(/We are looking for a vet for you/i)).toBeInTheDocument();
+            await waitFor(() => {
+                expect(mockPublish).toHaveBeenCalledTimes(1);
+            });
 
-        //     // Clear previous calls
-        //     mockPublish.mockClear();
+            // Clear the mock to track only the cancel call
+            mockPublish.mockClear();
 
-        //     // Find cancel button in modal
-        //     const cancelButtons = screen.getAllByRole("button", { name: /cancel/i });
-        //     const modalCancelButton = cancelButtons[cancelButtons.length - 1];
-        //     await user.click(modalCancelButton);
+            // Find cancel button in modal
+            const modalCancelButton = screen.getByTestId("modal_cancel");
+            await user.click(modalCancelButton);
 
-        //     // Check that publish was called for cancel
-        //     await waitFor(() => {
-        //         expect(mockPublish).toHaveBeenCalledTimes(1);
-        //     });
-        //     const cancelCall = mockPublish.mock.calls[0][0];
-        //     expect(cancelCall.body).toContain("vet1");
-        //     expect(cancelCall.body).toContain(RequestStatus.cancelled);
-        // });
+            // Check that publish was called for cancel
+            await waitFor(() => {
+                expect(mockPublish).toHaveBeenCalledTimes(1);
+            });
+            const cancelCall = mockPublish.mock.calls[0][0];
+            expect(cancelCall.body).toContain("vet1");
+            expect(cancelCall.body).toContain(RequestStatus.cancelled);
+        });
     });
 });
