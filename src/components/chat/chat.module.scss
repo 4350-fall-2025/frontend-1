@@ -11,6 +11,13 @@
     background-color: $color-off-white;
     padding: 20px;
     border-radius: 20px;
+    flex-direction: row;
+    justify-content: space-between;
+    display: flex;
+
+    .button {
+        align-self: center;
+    }
 }
 
 .chat_header_name {
@@ -84,3 +91,9 @@
     text-align: right;
 }
 
+.modal_buttons {
+    flex-direction: row;
+    justify-content: space-between;
+    display: flex;
+    margin-top: 30px;
+}

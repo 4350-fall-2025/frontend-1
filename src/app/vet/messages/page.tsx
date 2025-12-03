@@ -21,7 +21,7 @@ export default function MessagesPage() {
 
     const [acceptedRequest, setAcceptedRequest] = useState(false);
     const [requests, setRequests] = useState<RequestMessage[]>([]);
-    const [cancelDialogVisible, setDialogVisible] = useState(false);
+    const [dialogVisible, setDialogVisible] = useState(false);
     const { websocket, currentPartner, petID } = useSocket();
 
     const modalOpen = requests.length > 0 && !acceptedRequest;
@@ -36,27 +36,38 @@ export default function MessagesPage() {
                 router.push("/vet/messages/chat");
             }
         } else if (request.status == RequestStatus.cancelled) {
-            if (petID.current == request.petId) {
-                setAcceptedRequest(false); //very unlikely outcome
+            if (currentPartner.current == request.from) {
+                setAcceptedRequest(false);
+                setDialogVisible(true);
             }
             setRequests((arr) =>
-                arr.filter((items) => items.petId != request.petId),
+                arr.filter((items) => items.from != request.from),
             );
         }
     };
 
     useEffect(() => {
+        let subscribe = null;
         if (websocket != null && !setupSub.current) {
             setupSub.current = true;
             websocket.publish({
                 destination: websocketVetTopics.vetAnnounceOnline,
             });
 
-            websocket.subscribe(websocketVetTopics.userRequests, (msg) => {
-                handleRequests(msg);
-            });
-            console.log("subscribed");
+            subscribe = websocket.subscribe(
+                websocketVetTopics.userRequests,
+                (msg) => {
+                    handleRequests(msg);
+                },
+            );
         }
+        return () => {
+            if (subscribe) {
+                subscribe.unsubscribe();
+            }
+
+            setupSub.current = false; // Reset the flag
+        };
     }, [websocket]);
 
     useEffect(() => {
@@ -122,7 +133,7 @@ export default function MessagesPage() {
                 </Card>
                 {error && <p className={globalStyles.error_message}>{error}</p>}
                 <Dialog
-                    opened={cancelDialogVisible}
+                    opened={dialogVisible}
                     withCloseButton
                     onClose={() => setDialogVisible(false)}
                     size='lg'

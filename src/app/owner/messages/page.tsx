@@ -60,23 +60,20 @@ export default function Messages() {
         const request: RequestMessage = JSON.parse(msg.body);
 
         if (request.status == RequestStatus.accepted) {
-            currentPartner.current = request.from;
-            petID.current = request.petId;
             router.push("/owner/messages/chat");
         } else if (request.status == RequestStatus.rejected) {
             setDialogMessage(
                 "The Vet rejected your request, please request again.",
             );
             setDialogVisible(true);
+            currentPartner.current = null;
 
             setSentRequest(false);
             setVets(vets.slice(1));
         } else if (request.status == RequestStatus.cancelled) {
-            if (vets[0] == request.from) {
+            if (currentPartner.current == request.from) {
                 setSentRequest(false);
-                setDialogMessage(
-                    "The Vet has disconnected, please request again.",
-                );
+                setDialogMessage("The Vet has disconnected, please try again.");
                 setDialogVisible(true);
             }
             setVets((arr) => arr.filter((items) => items !== request.from));
@@ -110,6 +107,8 @@ export default function Messages() {
     };
 
     const sendRequestToVet = () => {
+        currentPartner.current = vets[0];
+        petID.current = selectedPetId;
         sendResponse(vets[0], null);
         setSentRequest(true);
     };
