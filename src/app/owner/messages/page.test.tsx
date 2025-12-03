@@ -1,12 +1,18 @@
 import "@testing-library/jest-dom";
-import { render, screen, waitFor } from "~tests/utils/custom-testing-library";
+import {
+    act,
+    render,
+    screen,
+    waitFor,
+} from "~tests/utils/custom-testing-library";
 import userEvent from "@testing-library/user-event";
 import Messages from "./page";
 import { mockAuthOwner } from "~data/owner/mock";
 import { mockPets } from "~data/pets/mock";
 import { PetsAPI } from "~api/petsAPI";
 import { setAuthCookie } from "~util/auth/authCookies";
-import { RequestStatus } from "~data/messages/constants";
+import { RequestMessage, RequestStatus } from "~data/messages/constants";
+import { IMessage } from "@stomp/stompjs";
 
 const mockPush = jest.fn();
 const mockSubscribe = jest.fn();
@@ -30,11 +36,10 @@ jest.mock("~app/context/ChatContext", () => ({
 jest.mock("~api/petsAPI");
 
 const mockGetImageURL = jest.fn();
-const mockGeneratePetURL = jest.fn();
 
 jest.mock("../../../firebase.ts", () => ({
-    generatePetURL: (...args: any[]) => mockGeneratePetURL(...args),
-    getImageURL: (...args: any[]) => mockGetImageURL(...args),
+    auth: {},
+    storage: {},
 }));
 
 describe("Messages Page", () => {
@@ -43,8 +48,6 @@ describe("Messages Page", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         setAuthCookie(mockAuthOwner);
-        mockGeneratePetURL.mockReturnValue("pets/owner123/pet123");
-        mockGetImageURL.mockResolvedValue("/test-image.jpg");
         (PetsAPI.getAllPets as jest.Mock).mockResolvedValue(mockPets);
     });
 
@@ -238,43 +241,44 @@ describe("Messages Page", () => {
     });
 
     describe("Request responses", () => {
-        // FAILING TEST
-        // it("navigates to chat when vet accepts request", async () => {
-        //     const callbacks: Record<string, any> = {};
-        //     mockSubscribe.mockImplementation((topic, callback) => {
-        //         callbacks[topic] = callback;
-        //         if (topic.includes("online-init")) {
-        //             callback({ body: JSON.stringify(["vet1"]) });
-        //         }
-        //     });
-        //     render(<Messages />);
-        //     const petCheckbox = await screen.findByText(mockPets[0].name);
-        //     await user.click(petCheckbox);
-        //     const nextButton = screen.getByRole("button", { name: /next/i });
-        //     await user.click(nextButton);
-        //     const connectButton = await screen.findByRole("button", { name: /^connect$/i });
-        //     await user.click(connectButton);
-        //     // Wait for subscriptions to be set up, then find and call the callback
-        //     await waitFor(() => {
-        //         const incomingRequestsTopic = Object.keys(callbacks).find(topic =>
-        //             topic.includes("incoming-requests")
-        //         );
-        //         expect(incomingRequestsTopic).toBeDefined();
-        //     });
-        //     const incomingRequestsTopic = Object.keys(callbacks).find(topic =>
-        //         topic.includes("incoming-requests")
-        //     );
-        //     callbacks[incomingRequestsTopic!]({
-        //         body: JSON.stringify({
-        //             from: "vet1",
-        //             status: RequestStatus.accepted,
-        //             petId: mockPets[0].id,
-        //         }),
-        //     });
-        //     await waitFor(() => {
-        //         expect(mockPush).toHaveBeenCalledWith("/owner/messages/chat");
-        //     });
-        // });
+        it("navigates to chat when vet accepts request", async () => {
+            const user = userEvent.setup();
+            render(<Messages />);
+
+            const vetOnlineCallback = mockSubscribe.mock.calls[0][1];
+
+            act(() => {
+                let vetList = ["vet1"];
+                const msg = { body: JSON.stringify(vetList) } as IMessage;
+                vetOnlineCallback(msg);
+            });
+
+            const petCheckbox = await screen.findByText(mockPets[0].name);
+            await user.click(petCheckbox);
+            const nextButton = screen.getByRole("button", { name: /next/i });
+            await user.click(nextButton);
+            const connectButton = await screen.findByRole("button", {
+                name: /^connect$/i,
+            });
+            await user.click(connectButton);
+
+            const acceptedCallback = mockSubscribe.mock.calls[2][1];
+
+            act(() => {
+                let innerMessage: RequestMessage = {
+                    from: "vet1",
+                    to: mockAuthOwner.userId,
+                    petId: mockPets[0].id,
+                    status: RequestStatus.accepted,
+                };
+                const msg = { body: JSON.stringify(innerMessage) } as IMessage;
+                acceptedCallback(msg);
+            });
+
+            await waitFor(() => {
+                expect(mockPush).toHaveBeenCalledWith("/owner/messages/chat");
+            });
+        });
         // FAILING TEST
         // it("shows dialog when vet rejects request", async () => {
         //     const callbacks: Record<string, any> = {};
