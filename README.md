@@ -49,20 +49,30 @@ The instructions are located [here](https://github.com/4350-fall-2025/backend/bl
 
 Once done please run the back end server.
 
-### 5: (optional) Add Firebase related values in .env file
 
-if you want to connect to a real database instance, create a .env file with the following values:
+### 5: Define Firebase Storage related values in .env file
+
+Define the following variables in a .env file located in the app's root folder. 
+These define if you are using an emulator or an a real database instance.
+
+```bash
+NEXT_PUBLIC_USE_EMULATOR=false
+NEXT_PUBLIC_USE_STORAGE=true
+```
+
+### 6: (optional) Add Firebase related values in .env file
+
+if you want to connect to a real database instance, add these values to the .env file with the following values:
 
 ```bash
 NEXT_PUBLIC_GCP_API_KEY=
 NEXT_PUBLIC_GCP_AUTH_DOMAIN=
 NEXT_PUBLIC_GCP_PROJECT_ID=
 NEXT_PUBLIC_GCP_BUCKET=
-NEXT_PUBLIC_USE_EMULATOR=false
-NEXT_PUBLIC_USE_STORAGE=true
 ```
 
-### 6: Run the Front End Server
+
+### 7: Run the Front End Server
 
 ```bash
 pnpm dev
